@@ -39,18 +39,27 @@ import { colors, shadows } from '../theme/colors';
 import { formatCurrency } from '../data/appData';
 
 const serviceIcons = [
-  { id: 'bespoke', label: 'Bespoke', icon: 'scissors-cutting', color: colors.forest, route: 'custom-design', badge: 'Kustom' },
-  { id: 'quiz', label: 'AI Stylist', icon: 'lightning-bolt', color: colors.terracotta, route: 'quiz', badge: 'Pintar' },
-  { id: 'exchange', label: 'Eco Swap', icon: 'recycle', color: colors.forest, route: 'exchange', badge: 'Tukar' },
-  { id: 'mto', label: 'Koleksi MTO', icon: 'hanger', color: colors.forestDark, route: 'explore' },
+  { id: 'bespoke', label: 'Bespoke', icon: 'scissors-cutting', color: colors.forest, route: 'custom-design' },
+  { id: 'quiz', label: 'AI Stylist', icon: 'sparkles', color: colors.ming, route: 'quiz' },
+  { id: 'exchange', label: 'Eco Swap', icon: 'recycle', color: colors.forest, route: 'exchange' },
+  { id: 'mto', label: 'Koleksi MTO', icon: 'hanger', color: colors.indigoDye, route: 'explore' },
   { id: 'tailor', label: 'Penjahit', icon: 'account-group-outline', color: colors.forestMid, route: 'explore' },
-  { id: 'passport', label: 'Passport', icon: 'qrcode-scan', color: colors.forest, route: 'passport-info' },
-  { id: 'voucher', label: 'Voucher Poin', icon: 'tag-multiple-outline', color: colors.warning, route: 'exchange' },
-  { id: 'flash', label: 'Flash Sale', icon: 'flash-outline', color: colors.error, route: 'explore', badge: 'Promo' },
+  { id: 'passport', label: 'Paspor DPP', icon: 'qrcode-scan', color: colors.forest, route: 'passport-info' },
+  { id: 'voucher', label: 'Poin Sirkular', icon: 'tag-multiple-outline', color: colors.ming, route: 'exchange' },
+  { id: 'flash', label: 'Kurasi Spesial', icon: 'star-outline', color: colors.forest, route: 'explore' },
 ];
 
 export default function HomeScreen({ isActive = true, onNavigate, onProductPress, onTailorPress, onExchange }) {
   const { width: screenWidth } = useWindowDimensions();
+  const maxContentWidth = Math.min(screenWidth, 1200);
+  const heroWidth = maxContentWidth;
+  const numCols = screenWidth >= 1100 ? 4 : screenWidth >= 768 ? 3 : 2;
+  const gridGap = screenWidth < 500 ? 12 : 16;
+  const availableGridWidth = maxContentWidth - 32;
+  const cardWidth = Math.floor((availableGridWidth - (numCols - 1) * gridGap) / numCols);
+  const cardSlotStyle = {
+    width: cardWidth,
+  };
   const [category, setCategory] = useState('Semua');
   const [heroIndex, setHeroIndex] = useState(0);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -115,26 +124,6 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     ];
   }, [products]);
 
-  const memberPromoItems = useMemo(() => {
-    if (!products || products.length === 0) return [];
-    return products.slice(0, 3).map((product, idx) => {
-      const discounts = ['25%', '20%', '20%'];
-      const discountMultipliers = [0.75, 0.8, 0.8];
-      const discount = discounts[idx % discounts.length];
-      const discountPrice = Math.round(product.price * discountMultipliers[idx % discountMultipliers.length]);
-      return {
-        id: `promo-${product.id}`,
-        productId: product.id,
-        product,
-        name: product.name,
-        discount,
-        price: discountPrice,
-        originalPrice: product.price,
-        image: product.image,
-      };
-    });
-  }, [products]);
-
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -151,7 +140,6 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   const heroScrollRef = useRef(null);
   const heroScrollX = useRef(new Animated.Value(0)).current;
   const heroIsDragging = useRef(false);
-  const heroWidth = screenWidth;
 
   const featuredProducts = category === 'Semua'
     ? products
@@ -232,91 +220,93 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           />
         }
       >
-        {/* ─── Top Blibli-Inspired Header Bar ─────────────────────────────── */}
+        {/* ─── Top Header Bar ────────────────────────────────────────── */}
         <View style={styles.topHeader}>
-          {/* Personalized Greeting Strip */}
-          <View style={styles.greetingStrip}>
-            <View style={styles.greetingLeft}>
-              <MaterialCommunityIcons name="hand-wave" size={14} color={colors.warning} />
-              <Text style={styles.greetingText}>
-                {(() => {
-                  const hour = new Date().getHours();
-                  if (hour < 11) return 'Selamat Pagi';
-                  if (hour < 15) return 'Selamat Siang';
-                  if (hour < 18) return 'Selamat Sore';
-                  return 'Selamat Malam';
-                })()}
-                {isLoggedIn ? ', Adi!' : '! Selamat datang di CIRCULAI'}
-              </Text>
-            </View>
-            <Pressable style={styles.greetingImpactBtn} onPress={() => onNavigate('impact')}>
-              <MaterialCommunityIcons name="leaf" size={11} color={colors.forest} />
-              <Text style={styles.greetingImpactText}>{circularPoints} poin</Text>
-            </Pressable>
-          </View>
-
-          <View style={styles.searchRow}>
-            {/* Scan Icon */}
-            <Pressable
-              style={styles.scanBtn}
-              onPress={() => setScanModalVisible(true)}
-              hitSlop={8}
-            >
-              <MaterialCommunityIcons name="qrcode-scan" size={20} color={colors.charcoal} />
-            </Pressable>
-
-
-            {/* Search Box Input */}
-            <AnimatedPressable
-              style={styles.searchBox}
-              onPress={() => onNavigate('explore')}
-              scaleDown={0.985}
-            >
-              <View style={styles.searchInner}>
-                <Text style={styles.searchText} numberOfLines={1}>
-                  Cari outfit, kain sisa, penjahit...
+          <View style={styles.topHeaderInner}>
+            {/* Personalized Greeting Strip */}
+            <View style={styles.greetingStrip}>
+              <View style={styles.greetingLeft}>
+                <MaterialCommunityIcons name="hand-wave" size={14} color={colors.warning} />
+                <Text style={styles.greetingText}>
+                  {(() => {
+                    const hour = new Date().getHours();
+                    if (hour < 11) return 'Selamat Pagi';
+                    if (hour < 15) return 'Selamat Siang';
+                    if (hour < 18) return 'Selamat Sore';
+                    return 'Selamat Malam';
+                  })()}
+                  {isLoggedIn ? ', Adi!' : '! Selamat datang di CIRCULAI'}
                 </Text>
-                <View style={styles.searchIconBg}>
-                  <Feather name="search" size={14} color={colors.white} />
-                </View>
               </View>
-            </AnimatedPressable>
+              <Pressable style={styles.greetingImpactBtn} onPress={() => onNavigate('impact')}>
+                <MaterialCommunityIcons name="leaf" size={11} color={colors.forest} />
+                <Text style={styles.greetingImpactText}>{circularPoints} poin</Text>
+              </Pressable>
+            </View>
 
-            {/* Login / Auth State Button */}
-            {!isLoggedIn ? (
-              <AnimatedPressable
-                style={styles.loginBtn}
-                onPress={() => openAuthModal('Masuk ke akun CIRCULAI untuk belanja dan menukar poin.')}
-                scaleDown={0.95}
+            <View style={styles.searchRow}>
+              {/* Scan Icon */}
+              <Pressable
+                style={styles.scanBtn}
+                onPress={() => setScanModalVisible(true)}
+                hitSlop={8}
               >
-                <Feather name="log-in" size={14} color={colors.white} />
-                <Text style={styles.loginBtnText}>Masuk</Text>
-              </AnimatedPressable>
-            ) : (
-              <View style={styles.headerActions}>
-                <View style={styles.cartWrap}>
-                  <IconButton name="shopping-cart" variant="default" size="md" onPress={() => onNavigate('cart')} />
-                  {!!cart.length && (
-                    <View style={styles.cartBadge}>
-                      <Text style={styles.cartBadgeText}>{cart.length}</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-            )}
-          </View>
+                <MaterialCommunityIcons name="qrcode-scan" size={20} color={colors.charcoal} />
+              </Pressable>
 
-          {/* Sub-header Location Bar */}
-          <Pressable
-            style={styles.locationBar}
-            onPress={() => requireAuth(() => onNavigate('profile-addresses'), 'Masuk untuk mengelola alamat pengiriman.')}
-          >
-            <Feather name="map-pin" size={12} color={colors.warmGray} />
-            <Text style={styles.locationText} numberOfLines={1}>
-              {activeAddressLabel}
-            </Text>
-            <Feather name="chevron-down" size={12} color={colors.warmGray} />
-          </Pressable>
+
+              {/* Search Box Input */}
+              <AnimatedPressable
+                style={styles.searchBox}
+                onPress={() => onNavigate('explore')}
+                scaleDown={0.985}
+              >
+                <View style={styles.searchInner}>
+                  <Text style={styles.searchText} numberOfLines={1}>
+                    Cari outfit, kain sisa, penjahit...
+                  </Text>
+                  <View style={styles.searchIconBg}>
+                    <Feather name="search" size={14} color={colors.white} />
+                  </View>
+                </View>
+              </AnimatedPressable>
+
+              {/* Login / Auth State Button */}
+              {!isLoggedIn ? (
+                <AnimatedPressable
+                  style={styles.loginBtn}
+                  onPress={() => openAuthModal('Masuk ke akun CIRCULAI untuk belanja dan menukar poin.')}
+                  scaleDown={0.95}
+                >
+                  <Feather name="log-in" size={14} color={colors.white} />
+                  <Text style={styles.loginBtnText}>Masuk</Text>
+                </AnimatedPressable>
+              ) : (
+                <View style={styles.headerActions}>
+                  <View style={styles.cartWrap}>
+                    <IconButton name="shopping-cart" variant="default" size="md" onPress={() => onNavigate('cart')} />
+                    {!!cart.length && (
+                      <View style={styles.cartBadge}>
+                        <Text style={styles.cartBadgeText}>{cart.length}</Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              )}
+            </View>
+
+            {/* Sub-header Location Bar */}
+            <Pressable
+              style={styles.locationBar}
+              onPress={() => requireAuth(() => onNavigate('profile-addresses'), 'Masuk untuk mengelola alamat pengiriman.')}
+            >
+              <Feather name="map-pin" size={12} color={colors.warmGray} />
+              <Text style={styles.locationText} numberOfLines={1}>
+                {activeAddressLabel}
+              </Text>
+              <Feather name="chevron-down" size={12} color={colors.warmGray} />
+            </Pressable>
+          </View>
         </View>
 
         {/* ─── Hero Promo Slider (Blibli concept) ────────────────────────── */}
@@ -415,10 +405,10 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </View>
         </View>
 
-        {/* ─── Trust Badges Bar (Auto-Scrolling Marquee) ──────────────────── */}
-        <AutoScrollingTrustBar />
+        {/* ─── Trust Badges ─────────────────────────────────────────── */}
+        <TrustStrip />
 
-        {/* ─── Service Grid Launcher (Blibli Concept: 2 rows of round icons) ─ */}
+        {/* ─── Service Grid Launcher ───────────────────────────────── */}
         <View style={styles.serviceGridContainer}>
           <View style={styles.serviceGrid}>
             {serviceIcons.map((service) => (
@@ -433,222 +423,139 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   }
                 }}
               >
-                <View style={[styles.serviceIconCircle, { backgroundColor: service.color + '15' }]}>
+                <View style={[styles.serviceIconCircle, { backgroundColor: service.color + '14' }]}>
                   <MaterialCommunityIcons name={service.icon} size={22} color={service.color} />
-                  {!!service.badge && (
-                    <View style={styles.serviceBadge}>
-                      <Text style={styles.serviceBadgeText}>{service.badge}</Text>
-                    </View>
-                  )}
                 </View>
-                <Text style={styles.serviceLabel} numberOfLines={2}>{service.label}</Text>
+                <Text style={styles.serviceLabel} numberOfLines={1}>{service.label}</Text>
               </Pressable>
             ))}
           </View>
         </View>
 
-        {/* ─── Midnight Sale Strip Banner (Blibli concept) ───────────────── */}
-        <AnimatedPressable
-          style={styles.midnightBanner}
-          onPress={() => onNavigate('explore')}
-          scaleDown={0.985}
-        >
-          <View style={styles.midnightLeft}>
-            <MaterialCommunityIcons name="lightning-bolt" size={18} color="#FFD700" />
-            <Text style={styles.midnightTitle}>8.8 MIDNIGHT SALE</Text>
-            <View style={styles.midnightTimePill}>
-              <Text style={styles.midnightTimeText}>00.00-01.00 WIB</Text>
+        {/* ─── Welcome Perk Card ────────────────────────────────────── */}
+        <View style={styles.welcomePerkContainer}>
+          <View style={styles.welcomePerkCard}>
+            <View style={styles.welcomePerkLeft}>
+              <View style={styles.welcomePerkIcon}>
+                <LeafMark size={16} color={colors.forest} />
+              </View>
+              <View style={styles.welcomePerkText}>
+                <Text style={styles.welcomePerkTitle}>Voucher Sambutan Sirkular</Text>
+                <Text style={styles.welcomePerkSub}>Diskon Rp25.000 untuk pesanan pertamamu</Text>
+                <View style={styles.welcomeCodeRow}>
+                  <Text style={styles.welcomeCodeTag}>Kode: NUZ2026-25</Text>
+                </View>
+              </View>
             </View>
-          </View>
-          <View style={styles.midnightRight}>
-            <Text style={styles.midnightSubText}>EXTRA VOUCHER</Text>
-            <Text style={styles.midnightPriceText}>25rb</Text>
-          </View>
-        </AnimatedPressable>
-
-        {/* ─── Member baru? Ini Promomu! (Blibli Section Concept) ───────── */}
-        <View style={styles.promoMemberSection}>
-          <View style={styles.promoMemberHeader}>
-            <View>
-              <Text style={styles.promoMemberTitle}>Member baru? Ini promomu!</Text>
-              <Text style={styles.promoMemberSub}>Nikmati cashback dan diskon pesanan pertama</Text>
-            </View>
-            <Pressable onPress={() => onNavigate('explore')}>
-              <Text style={styles.seeAllText}>Selengkapnya</Text>
+            <Pressable
+              style={[styles.copyBtn, copiedCode && styles.copyBtnDone]}
+              onPress={copyPromoCode}
+            >
+              <Text style={[styles.copyBtnText, copiedCode && styles.copyBtnTextDone]}>
+                {copiedCode ? 'Tersalin ✓' : 'Salin'}
+              </Text>
             </Pressable>
           </View>
+        </View>
 
-          <View style={styles.promoMemberContent}>
-            {/* Voucher Highlight Card */}
-            <View style={styles.cashbackCard}>
-              <LeafMark size={20} color={colors.forest} />
-              <Text style={styles.cashbackTitle}>Cashback</Text>
-              <Text style={styles.cashbackAmount}>Rp25.000</Text>
-
-              <View style={styles.codeRow}>
-                <Text style={styles.codeText}>NUZ2026-25</Text>
-                <Feather name="info" size={12} color={colors.warmGray} />
+        {/* ─── Kurasi Sirkular Terbatas (Curated Drops) ─────────────── */}
+        <View style={styles.curationSection}>
+          <View style={styles.curationInner}>
+            <View style={styles.curationHeader}>
+              <View style={styles.curationTitleRow}>
+                <View style={styles.curationDot} />
+                <Text style={styles.curationTitle}>Rilis Terbatas Atelier</Text>
+                <View style={styles.curationTimerPill}>
+                  <Feather name="clock" size={10} color={colors.forest} />
+                  <Text style={styles.curationTimerText}>
+                    {flashSaleTime.h}:{flashSaleTime.m}:{flashSaleTime.s}
+                  </Text>
+                </View>
               </View>
-
-              <Pressable
-                style={[styles.copyBtn, copiedCode && styles.copyBtnDone]}
-                onPress={copyPromoCode}
-              >
-                <Text style={[styles.copyBtnText, copiedCode && styles.copyBtnTextDone]}>
-                  {copiedCode ? 'Tersalin ✓' : 'Salin'}
-                </Text>
+              <Pressable onPress={() => onNavigate('explore')}>
+                <Text style={styles.curationSeeAll}>Lihat Semua</Text>
               </Pressable>
             </View>
 
-            {/* Promo items horizontal scroll */}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.promoItemsScroll}
+              contentContainerStyle={styles.curationScroll}
             >
-              {memberPromoItems.map((item) => (
-                <Pressable
-                  key={item.id}
-                  style={styles.promoItemCard}
-                  onPress={() => {
-                    const product = item.product || products.find((p) => p.id === item.productId);
-                    if (product) onProductPress(product);
-                    else onNavigate('explore');
-                  }}
-                >
-                  <View style={styles.promoItemImgWrap}>
+              {products.slice(0, 4).map((p) => {
+                const stock = p.stock ?? 1;
+                return (
+                  <AnimatedPressable
+                    key={p.id}
+                    style={styles.curationCard}
+                    onPress={() => onProductPress(p)}
+                    scaleDown={0.97}
+                  >
                     <ImageBackground
-                      source={{ uri: item.image }}
-                      style={styles.promoItemImg}
-                      imageStyle={{ borderRadius: 12 }}
+                      source={{ uri: p.image }}
+                      style={styles.curationImg}
+                      imageStyle={{ borderTopLeftRadius: 14, borderTopRightRadius: 14 }}
                     >
-                      <View style={styles.discountBadge}>
-                        <Text style={styles.discountBadgeText}>▼ {item.discount}</Text>
+                      <View style={styles.curationBadge}>
+                        <Text style={styles.curationBadgeText}>Upcycled</Text>
                       </View>
                     </ImageBackground>
-                  </View>
-                  <Text style={styles.promoItemName} numberOfLines={1}>{item.name}</Text>
-                  <Text style={styles.promoItemPrice}>{formatCurrency(item.price)}</Text>
-                  <Text style={styles.promoItemOriginal}>{formatCurrency(item.originalPrice)}</Text>
-                </Pressable>
-              ))}
+
+                    <View style={styles.curationBody}>
+                      <Text style={styles.curationProductTitle} numberOfLines={1}>{p.name}</Text>
+                      <Text style={styles.curationProductPrice}>{formatCurrency(p.price)}</Text>
+                      <View style={styles.curationMetaRow}>
+                        <Text style={styles.curationStockText}>Sisa {stock} unit</Text>
+                        <View style={styles.curationRating}>
+                          <Feather name="star" size={10} color={colors.warning} />
+                          <Text style={styles.curationRatingText}>{p.rating}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </AnimatedPressable>
+                );
+              })}
             </ScrollView>
           </View>
         </View>
 
-        {/* ─── Flash Sale Banner / Section (Blibli Concept with Forest Theme) ─ */}
-        <View style={styles.flashSaleSection}>
-          <View style={styles.flashSaleHeader}>
-            <View style={styles.flashSaleTitleRow}>
-              <Text style={styles.flashSaleTitle}>FLASH SALE</Text>
-              <View style={styles.timerPill}>
-                <Text style={styles.timerNum}>{flashSaleTime.h}</Text>
-                <Text style={styles.timerColon}>:</Text>
-                <Text style={styles.timerNum}>{flashSaleTime.m}</Text>
-                <Text style={styles.timerColon}>:</Text>
-                <Text style={styles.timerNum}>{flashSaleTime.s}</Text>
-              </View>
-            </View>
-            <Pressable onPress={() => onNavigate('explore')}>
-              <Text style={styles.flashSaleSeeAll}>Lihat semua</Text>
-            </Pressable>
-          </View>
+        {/* ─── Category chips filter ─────────────────────────────────────── */}
+        <View style={styles.sectionHeaderWrap}>
+          <SectionHeader
+            title="Koleksi Busana Sirkular"
+            action="Lihat Semua"
+            onAction={() => onNavigate('explore')}
+          />
+        </View>
 
+        <View style={styles.horizontalScrollWrap}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.flashSaleScroll}
+            contentContainerStyle={styles.categoryRow}
           >
-            {/* Highlight Banner Card on Left */}
-            <View style={styles.flashHighlightCard}>
-              <View style={styles.flashHighlightInner}>
-                <Text style={styles.flashHighlightTag}>CIRCULAR ECO</Text>
-                <Text style={styles.flashHighlightTitle}>BELANJA 200RB</Text>
-                <View style={styles.flashHighlightBadge}>
-                  <Text style={styles.flashHighlightBadgeText}>HEMAT 10RB</Text>
-                </View>
-              </View>
-            </View>
-
-            {products.slice(0, 4).map((p, idx) => {
-              const stock = p.stock ?? 1;
-              const initialStock = p.initialStock ?? 10;
-              const stockPercent = Math.min(100, Math.max(0, (stock / initialStock) * 100));
-              
-              return (
-                <AnimatedPressable
-                  key={p.id}
-                  style={styles.flashProductCard}
-                  onPress={() => onProductPress(p)}
-                  scaleDown={0.97}
-                >
-                  <ImageBackground
-                    source={{ uri: p.image }}
-                    style={styles.flashProductImg}
-                    imageStyle={{ borderTopLeftRadius: 14, borderTopRightRadius: 14 }}
-                  >
-                    <View style={styles.discountBadge}>
-                      <Text style={styles.discountBadgeText}>▼ {20 + idx * 10}%</Text>
-                    </View>
-                  </ImageBackground>
-
-                  <View style={styles.flashProductBody}>
-                    <Text style={styles.flashProductTitle} numberOfLines={1}>{p.name}</Text>
-                    <Text style={styles.flashProductPrice}>{formatCurrency(p.price)}</Text>
-
-                    {/* Stock bar */}
-                    <View style={styles.stockMeterTrack}>
-                      <View style={[styles.stockMeterFill, { width: `${stockPercent}%` }]} />
-                    </View>
-                    <Text style={styles.stockMeterText}>Sisa {stock} unit</Text>
-
-                    <Pressable
-                      style={styles.buyNowBtn}
-                      onPress={() => requireAuth(() => onProductPress(p), 'Masuk untuk melakukan pemesanan.')}
-                    >
-                      <Text style={styles.buyNowBtnText}>Beli sekarang</Text>
-                    </Pressable>
-                  </View>
-                </AnimatedPressable>
-              );
-            })}
+            {categories.map((item) => (
+              <Pressable
+                key={item}
+                style={[styles.chip, category === item && styles.chipActive]}
+                onPress={() => setCategory(item)}
+              >
+                <Text style={[styles.chipText, category === item && styles.chipTextActive]}>
+                  {item}
+                </Text>
+              </Pressable>
+            ))}
           </ScrollView>
         </View>
 
-
-
-        {/* ─── Category chips filter ─────────────────────────────────────── */}
-        <SectionHeader
-          title="Penawaran Spesial"
-          action="Lihat Semua"
-          onAction={() => onNavigate('explore')}
-        />
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoryRow}
-        >
-          {categories.map((item) => (
-            <Pressable
-              key={item}
-              style={[styles.chip, category === item && styles.chipActive]}
-              onPress={() => setCategory(item)}
-            >
-              <Text style={[styles.chipText, category === item && styles.chipTextActive]}>
-                {item}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-
         {/* ─── Featured Product Grid ─────────────────────────────────────── */}
         <View style={styles.productGrid}>
-          {featuredProducts.slice(0, 6).map((product) => (
+          {featuredProducts.slice(0, numCols * 2).map((product) => (
             <ProductCard
               key={product.id}
               product={product}
               grid
+              slotStyle={cardSlotStyle}
               favorite={wishlist.includes(product.id)}
               onToggleFavorite={() => requireAuth(() => toggleWishlist(product.id), 'Masuk ke akun untuk menyimpan produk ke Wishlist.')}
               onPress={() => onProductPress(product)}
@@ -657,50 +564,55 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         </View>
 
         {/* ─── Local Tailor Spotlight ─────────────────────────────────────── */}
-        <SectionHeader title="Local Tailor Spotlight" action="Lihat Semua" />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tailorRow}
-        >
-          {tailors.map((tailor) => (
-            <AnimatedPressable
-              key={tailor.id}
-              style={styles.tailorCard}
-              onPress={() => onTailorPress?.(tailor)}
-              scaleDown={0.97}
-            >
-              <ImageBackground
-                source={{ uri: tailor.image }}
-                style={styles.tailorImage}
-                imageStyle={styles.tailorImageStyle}
+        <View style={styles.sectionHeaderWrap}>
+          <SectionHeader title="Sorotan Penjahit Lokal" action="Lihat Semua" onAction={() => onNavigate('explore')} />
+        </View>
+
+        <View style={styles.horizontalScrollWrap}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tailorRow}
+          >
+            {tailors.map((tailor) => (
+              <AnimatedPressable
+                key={tailor.id}
+                style={styles.tailorCard}
+                onPress={() => onTailorPress?.(tailor)}
+                scaleDown={0.97}
               >
-                <View style={styles.tailorGradient} />
-                <View style={styles.tailorBadge}>
-                  <MaterialCommunityIcons name="leaf" size={10} color={colors.white} />
-                  <Text style={styles.tailorBadgeText}>Lokal</Text>
-                </View>
-              </ImageBackground>
-              <View style={styles.tailorInfo}>
-                <Text style={styles.tailorName} numberOfLines={1}>{tailor.name}</Text>
-                <View style={styles.tailorMeta}>
-                  <Feather name="map-pin" size={11} color={colors.warmGray} />
-                  <Text style={styles.tailorCity} numberOfLines={1}>{tailor.city}</Text>
-                </View>
-                <Text style={styles.tailorSpecialty} numberOfLines={2}>
-                  {tailor.specialty}
-                </Text>
-                <View style={styles.tailorFooter}>
-                  <View style={styles.tailorRating}>
-                    <Feather name="star" size={11} color={colors.warning} />
-                    <Text style={styles.tailorRatingText}>{tailor.rating}</Text>
+                <ImageBackground
+                  source={{ uri: tailor.image }}
+                  style={styles.tailorImage}
+                  imageStyle={styles.tailorImageStyle}
+                >
+                  <View style={styles.tailorGradient} />
+                  <View style={styles.tailorBadge}>
+                    <MaterialCommunityIcons name="leaf" size={10} color={colors.white} />
+                    <Text style={styles.tailorBadgeText}>Lokal</Text>
                   </View>
-                  <Text style={styles.tailorSold}>{tailor.sold} terjual</Text>
+                </ImageBackground>
+                <View style={styles.tailorInfo}>
+                  <Text style={styles.tailorName} numberOfLines={1}>{tailor.name}</Text>
+                  <View style={styles.tailorMeta}>
+                    <Feather name="map-pin" size={11} color={colors.warmGray} />
+                    <Text style={styles.tailorCity} numberOfLines={1}>{tailor.city}</Text>
+                  </View>
+                  <Text style={styles.tailorSpecialty} numberOfLines={2}>
+                    {tailor.specialty}
+                  </Text>
+                  <View style={styles.tailorFooter}>
+                    <View style={styles.tailorRating}>
+                      <Feather name="star" size={11} color={colors.warning} />
+                      <Text style={styles.tailorRatingText}>{tailor.rating}</Text>
+                    </View>
+                    <Text style={styles.tailorSold}>{tailor.sold} terjual</Text>
+                  </View>
                 </View>
-              </View>
-            </AnimatedPressable>
-          ))}
-        </ScrollView>
+              </AnimatedPressable>
+            ))}
+          </ScrollView>
+        </View>
 
           {/* ─── UMKM Impact Banner ──────────────────────────────────────── */}
           <AnimatedPressable
@@ -750,79 +662,28 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   );
 }
 
-const trustItems = [
-  { icon: 'shield-check', text: 'Gratis perlindungan lengkap' },
-  { icon: 'check-decagram', text: 'Pasti ori & handmade' },
-  { icon: 'sync', text: 'Retur alasan apa pun' },
-  { icon: 'truck-fast', text: 'Jaminan pengiriman MTO' },
+const trustBadges = [
+  { icon: 'leaf', text: '100% Upcycled Fabric' },
+  { icon: 'scissors-cutting', text: 'Artisan MTO Lokal' },
+  { icon: 'shield-check', text: 'Garansi Ukuran Pas' },
+  { icon: 'qrcode-scan', text: 'Paspor Digital DPP' },
 ];
 
-function AutoScrollingTrustBar() {
-  const animatedValue = useRef(new Animated.Value(0)).current;
-  const [singleWidth, setSingleWidth] = useState(0);
-
-  useEffect(() => {
-    if (singleWidth <= 0) return undefined;
-
-    animatedValue.setValue(0);
-    const animation = Animated.loop(
-      Animated.timing(animatedValue, {
-        toValue: -singleWidth,
-        duration: 14000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    );
-    animation.start();
-
-    return () => animation.stop();
-  }, [animatedValue, singleWidth]);
-
+function TrustStrip() {
   return (
-    <View style={styles.trustBarContainer}>
-      <Animated.View
-        style={[
-          styles.trustBarAnimatedContent,
-          {
-            transform: [{ translateX: animatedValue }],
-          },
-        ]}
+    <View style={styles.trustStripContainer}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.trustStripContent}
       >
-        <View
-          style={styles.trustBarRow}
-          onLayout={(e) => {
-            const w = e.nativeEvent.layout.width;
-            if (w > 0 && singleWidth === 0) {
-              setSingleWidth(w);
-            }
-          }}
-        >
-          {trustItems.map((item) => (
-            <View key={item.text} style={styles.trustItem}>
-              <MaterialCommunityIcons name={item.icon} size={14} color={colors.forest} />
-              <Text style={styles.trustText}>{item.text}</Text>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.trustBarRow}>
-          {trustItems.map((item) => (
-            <View key={`${item.text}-dup1`} style={styles.trustItem}>
-              <MaterialCommunityIcons name={item.icon} size={14} color={colors.forest} />
-              <Text style={styles.trustText}>{item.text}</Text>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.trustBarRow}>
-          {trustItems.map((item) => (
-            <View key={`${item.text}-dup2`} style={styles.trustItem}>
-              <MaterialCommunityIcons name={item.icon} size={14} color={colors.forest} />
-              <Text style={styles.trustText}>{item.text}</Text>
-            </View>
-          ))}
-        </View>
-      </Animated.View>
+        {trustBadges.map((item, idx) => (
+          <View key={idx} style={styles.trustBadgePill}>
+            <MaterialCommunityIcons name={item.icon} size={13} color={colors.forest} />
+            <Text style={styles.trustBadgeText}>{item.text}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -851,7 +712,20 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: colors.lightGray,
+    width: '100%',
+  },
+  topHeaderInner: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
     gap: 8,
+  },
+  // ─── Section Header Wrapper ────────────────────────────────────────────────
+  sectionHeaderWrap: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+    paddingHorizontal: 16,
   },
   // ─── Greeting Strip ────────────────────────────────────────────────────────
   greetingStrip: {
@@ -985,39 +859,42 @@ const styles = StyleSheet.create({
   // ─── Hero Carousel ────────────────────────────────────────────────────────
   heroCarousel: {
     position: 'relative',
-    marginHorizontal: 0,
-    marginTop: 8,
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 12,
     overflow: 'hidden',
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
   },
   heroSlide: {
-    minHeight: 138,
+    minHeight: 180,
     paddingHorizontal: 16,
+    alignSelf: 'center',
   },
   heroCard: {
     width: '100%',
-    minHeight: 138,
-    borderRadius: 16,
+    minHeight: 180,
+    borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: colors.forest,
     ...shadows.md,
   },
   heroImageBg: {
     width: '100%',
-    minHeight: 138,
+    minHeight: 180,
     justifyContent: 'center',
   },
   heroGradientOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(28, 43, 33, 0.65)',
-    borderRadius: 16,
+    borderRadius: 20,
   },
   heroContent: {
     width: '88%',
-    minHeight: 138,
+    minHeight: 180,
     justifyContent: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
     zIndex: 2,
   },
   heroBadge: {
@@ -1033,22 +910,22 @@ const styles = StyleSheet.create({
   },
   heroBadgeText: {
     color: colors.sand,
-    fontSize: 8,
+    fontSize: 9,
     fontWeight: '800',
     letterSpacing: 0.3,
   },
   heroTitle: {
     color: colors.white,
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '900',
-    lineHeight: 19,
+    lineHeight: 24,
     letterSpacing: -0.3,
   },
   heroCopy: {
     color: 'rgba(255,255,255,0.85)',
-    fontSize: 10,
-    lineHeight: 14,
-    marginTop: 2,
+    fontSize: 12,
+    lineHeight: 16,
+    marginTop: 4,
   },
   heroButton: {
     alignSelf: 'flex-start',
@@ -1084,36 +961,42 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     backgroundColor: colors.sand,
   },
-  // ─── Trust Bar Marquee ───────────────────────────────────────────────────
-  trustBarContainer: {
-    width: '100%',
-    overflow: 'hidden',
+  // ─── Trust Badges ─────────────────────────────────────────────────────────
+  trustStripContainer: {
     paddingVertical: 8,
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
   },
-  trustBarAnimatedContent: {
+  trustStripContent: {
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  trustBadgePill: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 99,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    ...shadows.sm,
   },
-  trustBarRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-    paddingRight: 20,
-  },
-  trustItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  trustText: {
-    fontSize: 10,
+  trustBadgeText: {
+    fontSize: 11,
     fontWeight: '700',
-    color: colors.charcoalMid,
+    color: colors.charcoal,
   },
-  // ─── Service Grid (Blibli Launchpad) ───────────────────────────────────────
+
+  // ─── Service Grid ─────────────────────────────────────────────────────────
   serviceGridContainer: {
     paddingHorizontal: 16,
     marginVertical: 10,
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
   },
   serviceGrid: {
     flexDirection: 'row',
@@ -1121,7 +1004,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     rowGap: 14,
     backgroundColor: colors.white,
-    padding: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.lightGray,
@@ -1130,389 +1014,237 @@ const styles = StyleSheet.create({
   serviceItem: {
     width: '23%',
     alignItems: 'center',
+    gap: 5,
   },
   serviceIconCircle: {
-    width: 46,
-    height: 46,
-    borderRadius: 18,
+    width: 48,
+    height: 48,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
-  },
-  serviceBadge: {
-    position: 'absolute',
-    top: -4,
-    right: -6,
-    backgroundColor: colors.error,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 6,
-  },
-  serviceBadgeText: {
-    color: colors.white,
-    fontSize: 7,
-    fontWeight: '900',
   },
   serviceLabel: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: colors.charcoal,
     textAlign: 'center',
-    marginTop: 5,
-    lineHeight: 13,
   },
-  // ─── Midnight Sale Strip Banner ───────────────────────────────────────────
-  midnightBanner: {
-    marginHorizontal: 16,
+
+  // ─── Welcome Perk Card ───────────────────────────────────────────────────
+  welcomePerkContainer: {
+    paddingHorizontal: 16,
     marginVertical: 8,
-    backgroundColor: colors.indigoDye,
-    borderRadius: 14,
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  welcomePerkCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(221,235,157,0.25)',
-    ...shadows.sm,
-  },
-  midnightLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  midnightTitle: {
-    color: colors.white,
-    fontSize: 12,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  midnightTimePill: {
-    backgroundColor: 'rgba(221,235,157,0.18)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 99,
-  },
-  midnightTimeText: {
-    color: colors.mindaro,
-    fontSize: 9,
-    fontWeight: '800',
-  },
-  midnightRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  midnightSubText: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: 9,
-    fontWeight: '800',
-  },
-  midnightPriceText: {
-    color: '#FFD700',
-    fontSize: 13,
-    fontWeight: '900',
-  },
-  // ─── Promo Member Section ──────────────────────────────────────────────────
-  promoMemberSection: {
-    backgroundColor: 'rgba(85,179,36,0.08)',
-    marginHorizontal: 16,
-    borderRadius: 20,
-    padding: 14,
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(85,179,36,0.18)',
-  },
-  promoMemberHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  promoMemberTitle: {
-    fontSize: 14,
-    fontWeight: '900',
-    color: colors.charcoal,
-  },
-  promoMemberSub: {
-    fontSize: 10,
-    color: colors.warmGray,
-    marginTop: 2,
-  },
-  seeAllText: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: colors.forestDark,
-  },
-  promoMemberContent: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  cashbackCard: {
-    width: 130,
     backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 12,
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    borderRadius: 18,
+    padding: 14,
     borderWidth: 1,
     borderColor: colors.lightGray,
     ...shadows.sm,
   },
-  cashbackTitle: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: colors.charcoal,
-    marginTop: 4,
-  },
-  cashbackAmount: {
-    fontSize: 14,
-    fontWeight: '900',
-    color: colors.forest,
-  },
-  codeRow: {
+  welcomePerkLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    marginTop: 4,
+    gap: 12,
+    flex: 1,
+    marginRight: 12,
   },
-  codeText: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: colors.warmGray,
-  },
-  copyBtn: {
-    width: '100%',
-    height: 28,
+  welcomePerkIcon: {
+    width: 40,
+    height: 40,
     borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: colors.forest,
+    backgroundColor: colors.sandLight,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+  },
+  welcomePerkText: {
+    flex: 1,
+  },
+  welcomePerkTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.charcoal,
+  },
+  welcomePerkSub: {
+    fontSize: 11,
+    color: colors.warmGray,
+    marginTop: 2,
+  },
+  welcomeCodeRow: {
+    marginTop: 4,
+  },
+  welcomeCodeTag: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: colors.forest,
+    letterSpacing: 0.3,
+  },
+  copyBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 99,
+    backgroundColor: colors.forest,
   },
   copyBtnDone: {
     backgroundColor: colors.successLight,
-    borderColor: colors.success,
   },
   copyBtnText: {
-    fontSize: 10,
-    fontWeight: '900',
-    color: colors.forest,
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.white,
   },
   copyBtnTextDone: {
     color: colors.success,
   },
-  promoItemsScroll: {
-    gap: 10,
-  },
-  promoItemCard: {
-    width: 105,
-    backgroundColor: colors.white,
-    borderRadius: 14,
-    padding: 7,
-    borderWidth: 1,
+
+  // ─── Curation Section ────────────────────────────────────────────────────
+  curationSection: {
+    backgroundColor: colors.sandLight,
+    paddingVertical: 16,
+    marginVertical: 12,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
     borderColor: colors.lightGray,
-  },
-  promoItemImgWrap: {
     width: '100%',
-    height: 90,
-    marginBottom: 6,
   },
-  promoItemImg: {
+  curationInner: {
+    maxWidth: 1200,
     width: '100%',
-    height: '100%',
-    justifyContent: 'flex-start',
+    alignSelf: 'center',
   },
-  discountBadge: {
-    backgroundColor: colors.error,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-    borderTopLeftRadius: 10,
-    borderBottomRightRadius: 8,
-  },
-  discountBadgeText: {
-    color: colors.white,
-    fontSize: 8,
-    fontWeight: '900',
-  },
-  promoItemName: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: colors.charcoal,
-  },
-  promoItemPrice: {
-    fontSize: 11,
-    fontWeight: '900',
-    color: colors.charcoal,
-    marginTop: 2,
-  },
-  promoItemOriginal: {
-    fontSize: 9,
-    color: colors.warmGrayLight,
-    textDecorationLine: 'line-through',
-  },
-  // ─── Flash Sale Section ───────────────────────────────────────────────────
-  flashSaleSection: {
-    backgroundColor: colors.indigoDye,
-    paddingVertical: 14,
-    marginVertical: 10,
-  },
-  flashSaleHeader: {
+  curationHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     marginBottom: 12,
   },
-  flashSaleTitleRow: {
+  curationTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
-  flashSaleTitle: {
-    color: colors.white,
-    fontSize: 15,
+  curationDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: colors.forest,
+  },
+  curationTitle: {
+    color: colors.charcoal,
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  curationTimerPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: colors.white,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 99,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+  },
+  curationTimerText: {
+    color: colors.charcoal,
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  curationSeeAll: {
+    color: colors.forest,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  curationScroll: {
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  curationCard: {
+    width: 140,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    overflow: 'hidden',
+    ...shadows.sm,
+  },
+  curationImg: {
+    height: 120,
+    justifyContent: 'flex-start',
+    backgroundColor: colors.sand,
+  },
+  curationBadge: {
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    alignSelf: 'flex-start',
+    margin: 6,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 99,
+  },
+  curationBadgeText: {
+    color: colors.forest,
+    fontSize: 8,
+    fontWeight: '800',
+  },
+  curationBody: {
+    padding: 10,
+    gap: 2,
+  },
+  curationProductTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.charcoal,
+  },
+  curationProductPrice: {
+    fontSize: 13,
     fontWeight: '900',
-    letterSpacing: 0.8,
-    fontStyle: 'italic',
+    color: colors.forest,
   },
-  timerPill: {
+  curationMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  curationStockText: {
+    fontSize: 10,
+    color: colors.warmGray,
+  },
+  curationRating: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
   },
-  timerNum: {
-    backgroundColor: colors.mindaro,
-    color: colors.indigoDye,
-    fontSize: 10,
-    fontWeight: '900',
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  timerColon: {
-    color: colors.white,
-    fontWeight: '900',
-    fontSize: 10,
-  },
-  flashSaleSeeAll: {
-    color: colors.mindaro,
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  flashSaleScroll: {
-    paddingHorizontal: 16,
-    gap: 10,
-  },
-  flashHighlightCard: {
-    width: 120,
-    height: 195,
-    borderRadius: 16,
-    backgroundColor: colors.ming,
-    padding: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(221,235,157,0.3)',
-  },
-  flashHighlightInner: {
-    alignItems: 'center',
-  },
-  flashHighlightTag: {
-    color: colors.mindaro,
-    fontSize: 8,
-    fontWeight: '900',
-    letterSpacing: 0.8,
-    marginBottom: 4,
-    textTransform: 'uppercase',
-  },
-  flashHighlightTitle: {
-    color: colors.white,
-    fontSize: 13,
-    fontWeight: '900',
-    textAlign: 'center',
-    lineHeight: 17,
-  },
-  flashHighlightBadge: {
-    backgroundColor: colors.mindaro,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-    marginTop: 12,
-  },
-  flashHighlightBadgeText: {
-    color: colors.indigoDye,
-    fontSize: 9,
-    fontWeight: '900',
-    letterSpacing: 0.3,
-  },
-  flashProductCard: {
-    width: 125,
-    backgroundColor: colors.white,
-    borderRadius: 14,
-    overflow: 'hidden',
-  },
-  flashProductImg: {
-    height: 100,
-    justifyContent: 'flex-start',
-  },
-  flashProductBody: {
-    padding: 8,
-  },
-  flashProductTitle: {
+  curationRatingText: {
     fontSize: 10,
     fontWeight: '700',
     color: colors.charcoal,
-  },
-  flashProductPrice: {
-    fontSize: 12,
-    fontWeight: '900',
-    color: colors.charcoal,
-    marginTop: 2,
-  },
-  stockMeterTrack: {
-    height: 4,
-    backgroundColor: colors.lightGray,
-    borderRadius: 2,
-    marginTop: 6,
-    overflow: 'hidden',
-  },
-  stockMeterFill: {
-    height: '100%',
-    backgroundColor: colors.pistachio,
-    borderRadius: 2,
-  },
-  stockMeterText: {
-    fontSize: 8,
-    color: colors.warmGray,
-    fontWeight: '700',
-    marginTop: 2,
-  },
-  buyNowBtn: {
-    backgroundColor: colors.pistachio,
-    borderRadius: 8,
-    paddingVertical: 5,
-    alignItems: 'center',
-    marginTop: 6,
-  },
-  buyNowBtnText: {
-    color: colors.indigoDye,
-    fontSize: 9,
-    fontWeight: '900',
   },
 
   // ─── Categories & Product Grid ──────────────────────────────────────────────
+  horizontalScrollWrap: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+    marginBottom: 6,
+  },
   categoryRow: {
     gap: 8,
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingBottom: 14,
   },
   chip: {
     borderRadius: 9999,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     backgroundColor: colors.white,
     borderWidth: 1.5,
     borderColor: colors.lightGray,
@@ -1533,10 +1265,13 @@ const styles = StyleSheet.create({
   productGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 16,
     paddingHorizontal: 16,
-    rowGap: 14,
-    marginBottom: 16,
+    marginBottom: 24,
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
   },
   // ─── Tailors ───────────────────────────────────────────────────────────────
   tailorRow: {
@@ -1545,7 +1280,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   tailorCard: {
-    width: 175,
+    width: 185,
     borderRadius: 18,
     overflow: 'hidden',
     backgroundColor: colors.white,
@@ -1554,7 +1289,7 @@ const styles = StyleSheet.create({
     ...shadows.sm,
   },
   tailorImage: {
-    height: 100,
+    height: 110,
     justifyContent: 'flex-end',
     padding: 8,
   },
@@ -1636,10 +1371,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: colors.ming,
     borderRadius: 18,
-    padding: 14,
+    padding: 16,
     marginHorizontal: 16,
-    marginBottom: 10,
-    marginTop: 4,
+    marginBottom: 20,
+    marginTop: 6,
+    maxWidth: 1200,
+    width: 'calc(100% - 32px)',
+    alignSelf: 'center',
     ...shadows.sm,
   },
   umkmBannerLeft: {

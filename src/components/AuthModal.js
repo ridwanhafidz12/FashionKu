@@ -268,6 +268,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 28,
     maxHeight: '90%',
     paddingBottom: 24,
+    maxWidth: 480,
+    width: '100%',
+    alignSelf: 'center',
     ...shadows.xl,
   },
   handleBar: {

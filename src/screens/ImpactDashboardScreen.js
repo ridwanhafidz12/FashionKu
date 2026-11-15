@@ -576,6 +576,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 14,
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
   },
   headerKicker: {
     color: 'rgba(221,235,157,0.75)',
@@ -610,6 +613,9 @@ const styles = StyleSheet.create({
     padding: 14,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.18)',
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
   },
   tierIcon: {
     width: 46,
@@ -664,6 +670,9 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 18,
     paddingTop: 20,
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
   },
 
   // ─── Section ───────────────────────────────────────────────────────────────

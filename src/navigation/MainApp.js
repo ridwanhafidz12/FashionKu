@@ -507,6 +507,7 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     alignItems: 'center',
+    pointerEvents: 'box-none',
   },
   toast: {
     flexDirection: 'row',
@@ -516,6 +517,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     borderRadius: 18,
     backgroundColor: colors.charcoal,
+    maxWidth: 480,
     width: '100%',
     ...shadows.xl,
   },

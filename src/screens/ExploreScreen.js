@@ -7,7 +7,7 @@
  */
 
 import React, { useMemo, useRef, useState } from 'react';
-import { Animated, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Animated, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import ProductCard from '../components/ProductCard';
@@ -17,6 +17,14 @@ import { layout } from '../styles/layout';
 import { colors, shadows } from '../theme/colors';
 
 export default function ExploreScreen({ onProductPress, onNavigate, onBack, wishlistOnly = false }) {
+  const { width: screenWidth } = useWindowDimensions();
+  const maxContentWidth = Math.min(screenWidth, 1200);
+  const numCols = screenWidth >= 1100 ? 4 : screenWidth >= 768 ? 3 : 2;
+  const gridGap = screenWidth < 500 ? 12 : 16;
+  const availableGridWidth = maxContentWidth - 40;
+  const cardWidth = Math.floor((availableGridWidth - (numCols - 1) * gridGap) / numCols);
+  const cardSlotStyle = { width: cardWidth };
+
   const [category, setCategory] = useState('Semua');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('Terbaru');
@@ -73,6 +81,7 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
+      <View style={styles.container}>
       {/* ─── Header ─────────────────────────────────────────────────────── */}
       <View style={styles.header}>
         <View style={styles.headerTitleRow}>
@@ -206,6 +215,7 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
               key={product.id}
               product={product}
               grid
+              slotStyle={cardSlotStyle}
               favorite={wishlist.includes(product.id)}
               onToggleFavorite={() => requireAuth(() => toggleWishlist(product.id), 'Masuk ke akun untuk menyimpan produk ke Wishlist.')}
               onPress={() => onProductPress(product)}
@@ -213,11 +223,17 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
           ))}
         </View>
       )}
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+  },
   // ─── Header ───────────────────────────────────────────────────────────────
   header: {
     flexDirection: 'row',
@@ -418,8 +434,8 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    rowGap: 16,
+    justifyContent: 'flex-start',
+    gap: 16,
   },
   // ─── Empty state ──────────────────────────────────────────────────────────
   emptyState: {

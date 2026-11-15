@@ -7,7 +7,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import * as NavigationBar from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -99,6 +99,13 @@ export default function App() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.ivory
-  }
+    backgroundColor: colors.ivory,
+    width: '100%',
+    height: '100%',
+    ...Platform.select({
+      web: {
+        minHeight: '100vh',
+      },
+    }),
+  },
 });

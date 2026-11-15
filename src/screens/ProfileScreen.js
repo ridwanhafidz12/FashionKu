@@ -97,54 +97,56 @@ export default function ProfileScreen({ onNavigate, onExchange }) {
         <View style={styles.heroOrb1} />
         <View style={styles.heroOrb2} />
 
-        <View style={styles.topRow}>
-          <Text style={styles.profileTitle}>Profil Saya</Text>
-          <IconButton name="bell" variant="inverted" size="md" onPress={() => setActivePanel('notifications')} />
-        </View>
-
-        {!isLoggedIn ? (
-          <View style={styles.guestHeroRow}>
-            <View style={styles.guestAvatar}>
-              <Feather name="user" size={32} color={colors.sand} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.userName}>Tamu / Pengunjung</Text>
-              <Text style={styles.userEmail}>Masuk untuk menikmati semua fitur</Text>
-              <AnimatedPressable
-                style={styles.guestLoginBtn}
-                onPress={() => openAuthModal('Masuk ke akun CIRCULAI kamu.')}
-                scaleDown={0.95}
-              >
-                <Text style={styles.guestLoginBtnText}>Masuk / Daftar Akun</Text>
-              </AnimatedPressable>
-            </View>
+        <View style={styles.heroInner}>
+          <View style={styles.topRow}>
+            <Text style={styles.profileTitle}>Profil Saya</Text>
+            <IconButton name="bell" variant="inverted" size="md" onPress={() => setActivePanel('notifications')} />
           </View>
-        ) : (
-          <View style={styles.userRow}>
-            <View style={styles.avatarRing}>
-              <ProfileAvatar
-                editable
-                light
-                name={userProfile.name}
-                photoUri={userProfile.photoUri}
-                size={62}
-                onPress={handlePhotoChange}
-              />
-            </View>
 
-            <Pressable style={styles.userInfo} onPress={() => setActivePanel('profile')}>
-              <Text style={styles.userName}>{userProfile.name}</Text>
-              <Text style={styles.userEmail}>{userProfile.email}</Text>
-              <View style={styles.memberBadge}>
-                <LeafMark color={colors.sand} size={14} />
-                <Text style={styles.memberBadgeText}>CIRCULAI Member</Text>
+          {!isLoggedIn ? (
+            <View style={styles.guestHeroRow}>
+              <View style={styles.guestAvatar}>
+                <Feather name="user" size={32} color={colors.sand} />
               </View>
-            </Pressable>
-            <Pressable style={styles.editProfile} onPress={() => setActivePanel('profile')}>
-              <Feather name="edit-2" size={13} color={colors.sand} />
-            </Pressable>
-          </View>
-        )}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.userName}>Tamu / Pengunjung</Text>
+                <Text style={styles.userEmail}>Masuk untuk menikmati semua fitur</Text>
+                <AnimatedPressable
+                  style={styles.guestLoginBtn}
+                  onPress={() => openAuthModal('Masuk ke akun CIRCULAI kamu.')}
+                  scaleDown={0.95}
+                >
+                  <Text style={styles.guestLoginBtnText}>Masuk / Daftar Akun</Text>
+                </AnimatedPressable>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.userRow}>
+              <View style={styles.avatarRing}>
+                <ProfileAvatar
+                  editable
+                  light
+                  name={userProfile.name}
+                  photoUri={userProfile.photoUri}
+                  size={62}
+                  onPress={handlePhotoChange}
+                />
+              </View>
+
+              <Pressable style={styles.userInfo} onPress={() => setActivePanel('profile')}>
+                <Text style={styles.userName}>{userProfile.name}</Text>
+                <Text style={styles.userEmail}>{userProfile.email}</Text>
+                <View style={styles.memberBadge}>
+                  <LeafMark color={colors.sand} size={14} />
+                  <Text style={styles.memberBadgeText}>CIRCULAI Member</Text>
+                </View>
+              </Pressable>
+              <Pressable style={styles.editProfile} onPress={() => setActivePanel('profile')}>
+                <Feather name="edit-2" size={13} color={colors.sand} />
+              </Pressable>
+            </View>
+          )}
+        </View>
       </View>
 
       {/* ─── Floating stats card ──────────────────────────────────────────── */}
@@ -360,6 +362,9 @@ const styles = StyleSheet.create({
     gap: 10,
     marginHorizontal: 20,
     marginBottom: 14,
+    maxWidth: 720,
+    width: 'auto',
+    alignSelf: 'center',
   },
   quickCard: {
     flex: 1,
@@ -397,6 +402,11 @@ const styles = StyleSheet.create({
     paddingBottom: 36,
     overflow: 'hidden',
     position: 'relative',
+  },
+  heroInner: {
+    maxWidth: 720,
+    width: '100%',
+    alignSelf: 'center',
   },
   heroOrb1: {
     position: 'absolute',
@@ -523,6 +533,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderWidth: 1,
     borderColor: colors.lightGray,
+    maxWidth: 720,
+    width: 'auto',
+    alignSelf: 'center',
     ...shadows.md,
   },
   statsDivider: {
@@ -542,6 +555,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 13,
     marginBottom: 12,
+    maxWidth: 720,
+    width: 'auto',
+    alignSelf: 'center',
     ...shadows.sm,
   },
   styleIconBg: {
@@ -573,6 +589,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.lightGray,
     marginBottom: 22,
+    maxWidth: 720,
+    width: 'auto',
+    alignSelf: 'center',
   },
   impactCardHeader: {
     flexDirection: 'row',
@@ -623,6 +642,9 @@ const styles = StyleSheet.create({
   menuGroup: {
     marginHorizontal: 20,
     marginBottom: 18,
+    maxWidth: 720,
+    width: 'auto',
+    alignSelf: 'center',
   },
   groupTitle: {
     color: colors.warmGrayLight,
@@ -697,6 +719,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(201,76,76,0.20)',
     marginBottom: 16,
+    maxWidth: 720,
+    width: 'auto',
+    alignSelf: 'center',
   },
   logoutIcon: {
     width: 30,

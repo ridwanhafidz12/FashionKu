@@ -1,19 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import {
   Animated,
-  Dimensions,
   Easing,
   Image,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
 
 const LOGO = require('../../assets/images/logo_app.png');
 
 export default function SplashScreen({ onDone }) {
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+
   // Logo
   const logoScale  = useRef(new Animated.Value(0.7)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
@@ -100,27 +100,26 @@ export default function SplashScreen({ onDone }) {
           Animated.timing(anim, {
             toValue: 1,
             duration: 350,
-            easing: Easing.inOut(Easing.ease),
             useNativeDriver: true,
           }),
           Animated.timing(anim, {
             toValue: 0.3,
             duration: 350,
-            easing: Easing.inOut(Easing.ease),
             useNativeDriver: true,
           }),
-          Animated.delay(700),
+          Animated.delay(400),
         ])
       );
 
-    const d1 = pulseDot(dot1, 900);
-    const d2 = pulseDot(dot2, 1100);
-    const d3 = pulseDot(dot3, 1300);
-    const d4 = pulseDot(dot4, 1500);
+    const d1 = pulseDot(dot1, 0);
+    const d2 = pulseDot(dot2, 180);
+    const d3 = pulseDot(dot3, 360);
+    const d4 = pulseDot(dot4, 540);
+
     d1.start(); d2.start(); d3.start(); d4.start();
 
     // ─── Auto-dismiss
-    const timer = setTimeout(onDone, 2800);
+    const timer = setTimeout(onDone, 2400);
     return () => {
       clearTimeout(timer);
       d1.stop(); d2.stop(); d3.stop(); d4.stop();
@@ -129,100 +128,103 @@ export default function SplashScreen({ onDone }) {
 
   return (
     <View style={styles.container}>
-      {/* ── Decorative ring (light circle behind logo) ── */}
-      <View style={styles.ringOuter} />
-      <View style={styles.ringInner} />
+      {/* ── Center Brand Stage ── */}
+      <View style={styles.brandStage}>
+        {/* Decorative rings */}
+        <View style={styles.ringOuter} />
+        <View style={styles.ringInner} />
 
-      {/* ── Floating leaves ── */}
-      <Animated.View
-        style={[
-          styles.leaf,
-          styles.leafL1,
-          {
-            opacity: leafL1,
-            transform: [
-              { translateY: Animated.multiply(leafL1, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-              { rotate: '-30deg' },
-            ],
-          },
-        ]}
-      >
-        <LeafSVG size={36} color="#A0C878" opacity={0.85} />
-      </Animated.View>
+        {/* Floating leaves */}
+        <Animated.View
+          style={[
+            styles.leaf,
+            styles.leafL1,
+            {
+              opacity: leafL1,
+              transform: [
+                { translateY: Animated.multiply(leafL1, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
+                { rotate: '-30deg' },
+              ],
+            },
+          ]}
+        >
+          <LeafSVG size={34} color="#A0C878" opacity={0.85} />
+        </Animated.View>
 
-      <Animated.View
-        style={[
-          styles.leaf,
-          styles.leafL2,
-          {
-            opacity: leafL2,
-            transform: [
-              { translateY: Animated.multiply(leafL2, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-              { rotate: '-15deg' },
-            ],
-          },
-        ]}
-      >
-        <LeafSVG size={24} color="#2C6842" opacity={0.65} />
-      </Animated.View>
+        <Animated.View
+          style={[
+            styles.leaf,
+            styles.leafL2,
+            {
+              opacity: leafL2,
+              transform: [
+                { translateY: Animated.multiply(leafL2, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
+                { rotate: '-15deg' },
+              ],
+            },
+          ]}
+        >
+          <LeafSVG size={22} color="#2C6842" opacity={0.65} />
+        </Animated.View>
 
-      <Animated.View
-        style={[
-          styles.leaf,
-          styles.leafR1,
-          {
-            opacity: leafR1,
-            transform: [
-              { translateY: Animated.multiply(leafR1, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-              { rotate: '20deg' },
-            ],
-          },
-        ]}
-      >
-        <LeafSVG size={28} color="#2C6842" opacity={0.7} />
-      </Animated.View>
+        <Animated.View
+          style={[
+            styles.leaf,
+            styles.leafR1,
+            {
+              opacity: leafR1,
+              transform: [
+                { translateY: Animated.multiply(leafR1, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
+                { rotate: '20deg' },
+              ],
+            },
+          ]}
+        >
+          <LeafSVG size={26} color="#2C6842" opacity={0.7} />
+        </Animated.View>
 
-      <Animated.View
-        style={[
-          styles.leaf,
-          styles.leafR2,
-          {
-            opacity: leafR2,
-            transform: [
-              { translateY: Animated.multiply(leafR2, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-              { rotate: '40deg' },
-            ],
-          },
-        ]}
-      >
-        <LeafSVG size={40} color="#A0C878" opacity={0.8} />
-      </Animated.View>
+        <Animated.View
+          style={[
+            styles.leaf,
+            styles.leafR2,
+            {
+              opacity: leafR2,
+              transform: [
+                { translateY: Animated.multiply(leafR2, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
+                { rotate: '40deg' },
+              ],
+            },
+          ]}
+        >
+          <LeafSVG size={38} color="#A0C878" opacity={0.8} />
+        </Animated.View>
 
-      {/* ── Logo image ── */}
-      <Animated.Image
-        source={LOGO}
-        style={[
-          styles.logo,
-          {
-            opacity: logoOpacity,
-            transform: [{ scale: logoScale }],
-          },
-        ]}
-        resizeMode="contain"
-      />
+        {/* Logo image */}
+        <Animated.Image
+          source={LOGO}
+          style={[
+            styles.logo,
+            {
+              opacity: logoOpacity,
+              transform: [{ scale: logoScale }],
+            },
+          ]}
+          resizeMode="contain"
+        />
 
-      {/* ── Loading dots + tagline ── */}
-      <Animated.View style={[styles.bottomContent, { opacity: textOpacity }]}>
-        <View style={styles.dotsRow}>
-          <Animated.View style={[styles.dot, styles.dotActive, { opacity: dot1 }]} />
-          <Animated.View style={[styles.dot, styles.dotMid,  { opacity: dot2 }]} />
-          <Animated.View style={[styles.dot, styles.dotMid,  { opacity: dot3 }]} />
-          <Animated.View style={[styles.dot, { opacity: dot4 }]} />
-        </View>
-        <Text style={styles.loadingText}>Memuat pengalaman terbaik...</Text>
-      </Animated.View>
+        {/* Loading dots + tagline */}
+        <Animated.View style={[styles.bottomContent, { opacity: textOpacity }]}>
+          <View style={styles.dotsRow}>
+            <Animated.View style={[styles.dot, styles.dotActive, { opacity: dot1 }]} />
+            <Animated.View style={[styles.dot, styles.dotMid,  { opacity: dot2 }]} />
+            <Animated.View style={[styles.dot, styles.dotMid,  { opacity: dot3 }]} />
+            <Animated.View style={[styles.dot, { opacity: dot4 }]} />
+          </View>
+          <Text style={styles.loadingText}>Memuat pengalaman terbaik...</Text>
+        </Animated.View>
+      </View>
 
-      {/* ── Wave bottom ── */}
+      {/* ── Wave bottom (Full screen edge-to-edge) ── */}
       <Animated.View
         style={[styles.waveContainer, { transform: [{ translateY: waveY }] }]}
         pointerEvents="none"
@@ -257,52 +259,65 @@ function LeafSVG({ size, color, opacity }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     backgroundColor: '#FAFBF6',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+
+  brandStage: {
+    width: 320,
+    height: 340,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    zIndex: 2,
   },
 
   // ── Decorative rings ──────────────────────────────────────────────────────
   ringOuter: {
     position: 'absolute',
-    width: width * 0.72,
-    height: width * 0.72,
-    borderRadius: width * 0.36,
+    width: 280,
+    height: 280,
+    borderRadius: 140,
     borderWidth: 1,
-    borderColor: 'rgba(160,200,120,0.18)',
+    borderColor: 'rgba(160,200,120,0.22)',
     borderStyle: 'dashed',
   },
   ringInner: {
     position: 'absolute',
-    width: width * 0.52,
-    height: width * 0.52,
-    borderRadius: width * 0.26,
+    width: 210,
+    height: 210,
+    borderRadius: 105,
     borderWidth: 1,
-    borderColor: 'rgba(160,200,120,0.12)',
+    borderColor: 'rgba(160,200,120,0.16)',
     borderStyle: 'dashed',
   },
 
   // ── Logo ──────────────────────────────────────────────────────────────────
   logo: {
-    width: width * 0.58,
-    height: width * 0.58,
-    marginBottom: 16,
+    width: 210,
+    height: 210,
+    marginBottom: 8,
   },
 
   // ── Leaves ────────────────────────────────────────────────────────────────
   leaf: {
     position: 'absolute',
   },
-  leafL1: { left: width * 0.06, top: height * 0.28 },
-  leafL2: { left: width * 0.10, top: height * 0.44 },
-  leafR1: { right: width * 0.08, top: height * 0.38 },
-  leafR2: { right: width * 0.04, top: height * 0.22 },
+  leafL1: { left: -16, top: 40 },
+  leafL2: { left: -10, top: 190 },
+  leafR1: { right: -12, top: 180 },
+  leafR2: { right: -20, top: 30 },
 
   // ── Bottom content ────────────────────────────────────────────────────────
   bottomContent: {
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 32,
+    gap: 8,
+    marginTop: 8,
   },
   dotsRow: {
     flexDirection: 'row',
@@ -310,14 +325,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dot: {
-    width: 8,
-    height: 8,
+    width: 7,
+    height: 7,
     borderRadius: 9999,
     backgroundColor: 'rgba(160,200,120,0.4)',
   },
   dotActive: {
-    width: 10,
-    height: 10,
+    width: 9,
+    height: 9,
     backgroundColor: '#2C6842',
   },
   dotMid: {
@@ -326,38 +341,41 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 13,
     color: '#6A7D87',
-    fontWeight: '400',
+    fontWeight: '500',
     letterSpacing: 0.2,
   },
 
-  // ── Wave ──────────────────────────────────────────────────────────────────
+  // ── Wave (Full-width edge-to-edge) ─────────────────────────────────────────
   waveContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: height * 0.18,
+    width: '100%',
+    height: 150,
+    overflow: 'hidden',
+    zIndex: 1,
   },
   waveGreen: {
     position: 'absolute',
     bottom: 0,
-    left: -width * 0.1,
-    right: -width * 0.1,
-    height: '75%',
+    left: '-8%',
+    right: '-8%',
+    height: 110,
     backgroundColor: '#A0C878',
-    borderTopLeftRadius: width * 0.7,
-    borderTopRightRadius: width * 0.5,
+    borderTopLeftRadius: 800,
+    borderTopRightRadius: 600,
     opacity: 0.55,
   },
   waveBlue: {
     position: 'absolute',
     bottom: 0,
-    left: -width * 0.05,
-    right: -width * 0.2,
-    height: '55%',
+    left: '-5%',
+    right: '-12%',
+    height: 80,
     backgroundColor: '#27667B',
-    borderTopLeftRadius: width * 0.6,
-    borderTopRightRadius: width * 0.8,
+    borderTopLeftRadius: 650,
+    borderTopRightRadius: 900,
     opacity: 0.45,
   },
 });

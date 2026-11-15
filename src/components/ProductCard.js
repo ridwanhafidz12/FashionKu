@@ -24,6 +24,7 @@ function ProductCard({
   favorite = false,
   onPress,
   onToggleFavorite,
+  slotStyle,
 }) {
   const ecoScore = computeEcoScore(product);
   const ecoTheme = getEcoColor(ecoScore);
@@ -32,7 +33,7 @@ function ProductCard({
     // ─── Compact Grid Card ─────────────────────────────────────────────
     return (
       <AnimatedPressable
-        containerStyle={styles.gridSlot}
+        containerStyle={[styles.gridSlot, slotStyle]}
         style={styles.gridCard}
         onPress={onPress}
         scaleDown={0.97}

@@ -316,7 +316,7 @@ function PrimaryButton({ label, icon, onPress }) {
 const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: colors.overlay },
   dismissArea: { flex: 1 },
-  sheet: { maxHeight: '84%', borderTopLeftRadius: 28, borderTopRightRadius: 28, backgroundColor: colors.ivory, overflow: 'hidden' },
+  sheet: { maxHeight: '84%', maxWidth: 480, width: '100%', alignSelf: 'center', borderTopLeftRadius: 28, borderTopRightRadius: 28, backgroundColor: colors.ivory, overflow: 'hidden' },
   handle: { alignSelf: 'center', width: 42, height: 4, borderRadius: 99, backgroundColor: colors.lightGrayDark, marginTop: 9 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 11, padding: 18, borderBottomWidth: 1, borderBottomColor: colors.lightGray },
   headerIcon: { width: 42, height: 42, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.sand },

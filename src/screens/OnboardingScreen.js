@@ -304,6 +304,9 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 22,
     overflow: 'hidden',
+    width: '100%',
+    maxWidth: 680,
+    alignSelf: 'center',
   },
   screenCompact: {
     paddingTop: 8,

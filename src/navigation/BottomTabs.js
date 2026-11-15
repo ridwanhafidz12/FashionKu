@@ -5,7 +5,7 @@
  */
 
 import React, { useRef } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { tabs } from '../data/appData';
@@ -31,6 +31,11 @@ const TAB_ICONS_ALT = {
 
 export default function BottomTabs({ active, onChange }) {
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
+  const isDesktop = screenWidth >= 768;
+  const desktopTabWidth = Math.min(560, screenWidth - 32);
+  const desktopLeft = Math.max(16, (screenWidth - desktopTabWidth) / 2);
+
   // Scale animations per tab
   const scales = useRef(
     Object.fromEntries(tabs.map((tab) => [tab.id, new Animated.Value(tab.id === 'home' ? 1 : 1)]))
@@ -65,14 +70,13 @@ export default function BottomTabs({ active, onChange }) {
     <View
       style={[
         styles.tabs,
-        {
-          height: 72 + insets.bottom,
-          paddingBottom: Math.max(insets.bottom, 8),
-        },
+        isDesktop
+          ? [styles.tabsDesktop, { left: desktopLeft, width: desktopTabWidth, bottom: 20 }]
+          : [styles.tabsMobile, { height: 72 + insets.bottom, paddingBottom: Math.max(insets.bottom, 8) }],
       ]}
     >
-      {/* Frosted top border */}
-      <View style={styles.topBorder} />
+      {/* Frosted top border only on mobile */}
+      {!isDesktop && <View style={styles.topBorder} />}
 
       {tabs.map((tab) => {
         const selected = active === tab.id;
@@ -143,16 +147,28 @@ export default function BottomTabs({ active, onChange }) {
 const styles = StyleSheet.create({
   tabs: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
     paddingTop: 10,
     paddingHorizontal: 8,
-    backgroundColor: colors.ivory,
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-around',
+    zIndex: 100,
+  },
+  tabsMobile: {
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.ivory,
     ...shadows.lg,
+  },
+  tabsDesktop: {
+    backgroundColor: colors.white,
+    borderRadius: 28,
+    borderWidth: 1,
+    borderColor: 'rgba(20,61,96,0.12)',
+    height: 70,
+    paddingBottom: 8,
+    ...shadows.xl,
   },
   topBorder: {
     position: 'absolute',

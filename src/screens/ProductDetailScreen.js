@@ -263,21 +263,23 @@ export default function ProductDetailScreen({ product, onBack, onCustomize, onCh
 
       {/* ─── Sticky CTA bar ─────────────────────────────────────────────── */}
       <View style={[styles.ctaBar, { paddingBottom: Math.max(insets.bottom, 12) }]}>
-        <AnimatedPressable
-          style={styles.chatButton}
-          onPress={handleChat}
-          scaleDown={0.92}
-        >
-          <Feather name="message-circle" size={20} color={colors.forest} />
-        </AnimatedPressable>
+        <View style={styles.ctaBarInner}>
+          <AnimatedPressable
+            style={styles.chatButton}
+            onPress={handleChat}
+            scaleDown={0.92}
+          >
+            <Feather name="message-circle" size={20} color={colors.forest} />
+          </AnimatedPressable>
 
-        <AnimatedPressable style={styles.orderButton} onPress={handleOrder} scaleDown={0.97}>
-          <View style={styles.orderButtonContent}>
-            <Text style={styles.orderButtonText} numberOfLines={1}>Kustomisasi & Pesan</Text>
-            <Text style={styles.orderButtonSub} numberOfLines={1}>Atur warna, ukuran, dan bahan</Text>
-          </View>
-          <Feather name="arrow-right" size={18} color={colors.white} />
-        </AnimatedPressable>
+          <AnimatedPressable style={styles.orderButton} onPress={handleOrder} scaleDown={0.97}>
+            <View style={styles.orderButtonContent}>
+              <Text style={styles.orderButtonText} numberOfLines={1}>Kustomisasi & Pesan</Text>
+              <Text style={styles.orderButtonSub} numberOfLines={1}>Atur warna, ukuran, dan bahan</Text>
+            </View>
+            <Feather name="arrow-right" size={18} color={colors.white} />
+          </AnimatedPressable>
+        </View>
       </View>
 
       {showPassport && (
@@ -312,7 +314,10 @@ const styles = StyleSheet.create({
   },
   // ─── Hero ─────────────────────────────────────────────────────────────────
   hero: {
-    height: 340,
+    height: 380,
+    maxWidth: 960,
+    width: '100%',
+    alignSelf: 'center',
     justifyContent: 'space-between',
     padding: 18,
   },
@@ -368,6 +373,9 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 24,
     backgroundColor: colors.ivory,
+    maxWidth: 960,
+    width: '100%',
+    alignSelf: 'center',
   },
   titleRow: {
     flexDirection: 'row',
@@ -706,15 +714,21 @@ const styles = StyleSheet.create({
   },
   // ─── Sticky CTA ───────────────────────────────────────────────────────────
   ctaBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
     paddingHorizontal: 20,
     paddingTop: 12,
     backgroundColor: 'rgba(250,247,240,0.97)',
     borderTopWidth: 1,
     borderTopColor: colors.lightGray,
+    width: '100%',
     ...shadows.xl,
+  },
+  ctaBarInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    maxWidth: 960,
+    width: '100%',
+    alignSelf: 'center',
   },
   chatButton: {
     width: 60,
