@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       web: {
         minHeight: '100vh',
+        overflowX: 'hidden',
       },
     }),
   },

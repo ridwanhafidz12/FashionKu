@@ -3,259 +3,162 @@ import {
   Animated,
   Easing,
   Image,
+  Platform,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const LOGO = require('../../assets/images/logo_app.png');
+// High-resolution 512x512 transparent icon without dead borders or squished text
+const ICON = require('../../assets/images/fashionku_icon_transparent.png');
 
 export default function SplashScreen({ onDone }) {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const isDesktop = screenWidth >= 768;
 
-  // Logo
-  const logoScale  = useRef(new Animated.Value(0.7)).current;
+  // Animations
+  const logoScale = useRef(new Animated.Value(0.9)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
-
-  // Tagline & dots
-  const textOpacity = useRef(new Animated.Value(0)).current;
-
-  // Decorative leaves
-  const leafL1 = useRef(new Animated.Value(0)).current;
-  const leafL2 = useRef(new Animated.Value(0)).current;
-  const leafR1 = useRef(new Animated.Value(0)).current;
-  const leafR2 = useRef(new Animated.Value(0)).current;
-
-  // Animated dots (3 dots pulsing in sequence)
-  const dot1 = useRef(new Animated.Value(0.3)).current;
-  const dot2 = useRef(new Animated.Value(0.3)).current;
-  const dot3 = useRef(new Animated.Value(0.3)).current;
-  const dot4 = useRef(new Animated.Value(0.1)).current;
-
-  // Wave Y position (slides up)
-  const waveY = useRef(new Animated.Value(60)).current;
+  const contentFade = useRef(new Animated.Value(0)).current;
+  const progressAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // ─── 1. Wave slides up
-    Animated.timing(waveY, {
-      toValue: 0,
-      duration: 700,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-
-    // ─── 2. Logo pop in
-    Animated.sequence([
-      Animated.delay(200),
-      Animated.parallel([
-        Animated.spring(logoScale, {
-          toValue: 1,
-          useNativeDriver: true,
-          speed: 7,
-          bounciness: 8,
-        }),
-        Animated.timing(logoOpacity, {
-          toValue: 1,
-          duration: 350,
-          useNativeDriver: true,
-        }),
-      ]),
-    ]).start();
-
-    // ─── 3. Leaves float in
-    const leafAnim = (anim, delay) =>
-      Animated.sequence([
-        Animated.delay(delay),
-        Animated.timing(anim, {
-          toValue: 1,
-          duration: 500,
-          easing: Easing.out(Easing.back(1.2)),
-          useNativeDriver: true,
-        }),
-      ]);
-
+    // 1. Logo entry (refined spring)
     Animated.parallel([
-      leafAnim(leafL1, 350),
-      leafAnim(leafR2, 450),
-      leafAnim(leafL2, 600),
-      leafAnim(leafR1, 700),
-    ]).start();
-
-    // ─── 4. Text fade in
-    Animated.sequence([
-      Animated.delay(750),
-      Animated.timing(textOpacity, {
+      Animated.timing(logoOpacity, {
         toValue: 1,
-        duration: 400,
+        duration: 450,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.spring(logoScale, {
+        toValue: 1,
+        friction: 8,
+        tension: 40,
         useNativeDriver: true,
       }),
     ]).start();
 
-    // ─── 5. Dots pulse loop
-    const pulseDot = (anim, delay) =>
-      Animated.loop(
-        Animated.sequence([
-          Animated.delay(delay),
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 350,
-            useNativeDriver: true,
-          }),
-          Animated.timing(anim, {
-            toValue: 0.3,
-            duration: 350,
-            useNativeDriver: true,
-          }),
-          Animated.delay(400),
-        ])
-      );
+    // 2. Content fade in
+    Animated.timing(contentFade, {
+      toValue: 1,
+      duration: 500,
+      delay: 180,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
 
-    const d1 = pulseDot(dot1, 0);
-    const d2 = pulseDot(dot2, 180);
-    const d3 = pulseDot(dot3, 360);
-    const d4 = pulseDot(dot4, 540);
+    // 3. Progress bar fill
+    Animated.timing(progressAnim, {
+      toValue: 1,
+      duration: 1700,
+      delay: 250,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      useNativeDriver: false,
+    }).start();
 
-    d1.start(); d2.start(); d3.start(); d4.start();
+    // 4. Auto dismiss
+    const timer = setTimeout(() => {
+      if (onDone) onDone();
+    }, 2300);
 
-    // ─── Auto-dismiss
-    const timer = setTimeout(onDone, 2400);
-    return () => {
-      clearTimeout(timer);
-      d1.stop(); d2.stop(); d3.stop(); d4.stop();
-    };
-  }, [onDone]);
+    return () => clearTimeout(timer);
+  }, [onDone, logoOpacity, logoScale, contentFade, progressAnim]);
+
+  const progressWidth = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '100%'],
+  });
 
   return (
     <View style={styles.container}>
-      {/* ── Center Brand Stage ── */}
-      <View style={styles.brandStage}>
-        {/* Decorative rings */}
-        <View style={styles.ringOuter} />
-        <View style={styles.ringInner} />
+      {/* Subtle modern ambient background glow */}
+      <View style={[styles.ambientGlow, isDesktop && styles.ambientGlowDesktop]} />
 
-        {/* Floating leaves */}
+      {/* Main Center Stage */}
+      <View style={[styles.centerStage, isDesktop && styles.centerStageDesktop]}>
+        {/* Crisp Squircle App Icon Container */}
         <Animated.View
           style={[
-            styles.leaf,
-            styles.leafL1,
-            {
-              opacity: leafL1,
-              transform: [
-                { translateY: Animated.multiply(leafL1, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-                { rotate: '-30deg' },
-              ],
-            },
-          ]}
-        >
-          <LeafSVG size={34} color="#A0C878" opacity={0.85} />
-        </Animated.View>
-
-        <Animated.View
-          style={[
-            styles.leaf,
-            styles.leafL2,
-            {
-              opacity: leafL2,
-              transform: [
-                { translateY: Animated.multiply(leafL2, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-                { rotate: '-15deg' },
-              ],
-            },
-          ]}
-        >
-          <LeafSVG size={22} color="#2C6842" opacity={0.65} />
-        </Animated.View>
-
-        <Animated.View
-          style={[
-            styles.leaf,
-            styles.leafR1,
-            {
-              opacity: leafR1,
-              transform: [
-                { translateY: Animated.multiply(leafR1, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-                { rotate: '20deg' },
-              ],
-            },
-          ]}
-        >
-          <LeafSVG size={26} color="#2C6842" opacity={0.7} />
-        </Animated.View>
-
-        <Animated.View
-          style={[
-            styles.leaf,
-            styles.leafR2,
-            {
-              opacity: leafR2,
-              transform: [
-                { translateY: Animated.multiply(leafR2, -1).interpolate({ inputRange: [-1, 0], outputRange: [20, 0] }) },
-                { rotate: '40deg' },
-              ],
-            },
-          ]}
-        >
-          <LeafSVG size={38} color="#A0C878" opacity={0.8} />
-        </Animated.View>
-
-        {/* Logo image */}
-        <Animated.Image
-          source={LOGO}
-          style={[
-            styles.logo,
+            styles.iconWrapper,
+            isDesktop && styles.iconWrapperDesktop,
             {
               opacity: logoOpacity,
               transform: [{ scale: logoScale }],
             },
           ]}
-          resizeMode="contain"
-        />
+        >
+          <Image
+            source={ICON}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+        </Animated.View>
 
-        {/* Loading dots + tagline */}
-        <Animated.View style={[styles.bottomContent, { opacity: textOpacity }]}>
-          <View style={styles.dotsRow}>
-            <Animated.View style={[styles.dot, styles.dotActive, { opacity: dot1 }]} />
-            <Animated.View style={[styles.dot, styles.dotMid,  { opacity: dot2 }]} />
-            <Animated.View style={[styles.dot, styles.dotMid,  { opacity: dot3 }]} />
-            <Animated.View style={[styles.dot, { opacity: dot4 }]} />
+        {/* Brand Information */}
+        <Animated.View
+          style={[
+            styles.brandBlock,
+            {
+              opacity: contentFade,
+              transform: [
+                {
+                  translateY: contentFade.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [14, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          {/* Category Pill */}
+          <View style={styles.categoryBadge}>
+            <MaterialCommunityIcons name="leaf" size={13} color="#20603D" />
+            <Text style={styles.categoryBadgeText}>CIRCULAR FASHION & BESPOKE</Text>
           </View>
-          <Text style={styles.loadingText}>Memuat pengalaman terbaik...</Text>
+
+          {/* High-DPI Vector Brand Title */}
+          <Text style={[styles.brandTitle, isDesktop && styles.brandTitleDesktop]}>
+            FashionKu
+          </Text>
+          <Text style={[styles.brandSubtitle, isDesktop && styles.brandSubtitleDesktop]}>
+            Pilihan Busana Berkelanjutan & Penjahit Lokal
+          </Text>
+
+          {/* High-Tech Capsule Progress Track */}
+          <View style={[styles.progressContainer, isDesktop && styles.progressContainerDesktop]}>
+            <View style={styles.progressTrack}>
+              <Animated.View
+                style={[
+                  styles.progressBar,
+                  {
+                    width: progressWidth,
+                  },
+                ]}
+              />
+            </View>
+            <Text style={styles.progressCaption}>Memuat pengalaman terbaik...</Text>
+          </View>
         </Animated.View>
       </View>
 
-      {/* ── Wave bottom (Full screen edge-to-edge) ── */}
-      <Animated.View
-        style={[styles.waveContainer, { transform: [{ translateY: waveY }] }]}
-        pointerEvents="none"
-      >
-        <View style={styles.waveGreen} />
-        <View style={styles.waveBlue} />
-      </Animated.View>
+      {/* Trust & Eco Badge Footer */}
+      <View style={styles.footer}>
+        <View style={styles.footerBadge}>
+          <MaterialCommunityIcons name="shield-check" size={14} color="#64748B" />
+          <Text style={styles.footerText}>TERVERIFIKASI & RAMAH LINGKUNGAN</Text>
+        </View>
+        <Text style={styles.footerCopyright}>
+          Didukung oleh Komunitas Penjahit & UMKM Indonesia
+        </Text>
+      </View>
     </View>
   );
 }
 
-// ─── Leaf SVG (simple leaf shape drawn with border-radius) ────────────────────
-function LeafSVG({ size, color, opacity }) {
-  return (
-    <View
-      style={{
-        width: size,
-        height: size * 1.3,
-        backgroundColor: color,
-        borderTopLeftRadius: size * 0.9,
-        borderTopRightRadius: size * 0.1,
-        borderBottomLeftRadius: size * 0.1,
-        borderBottomRightRadius: size * 0.9,
-        opacity,
-        transform: [{ rotate: '45deg' }],
-      }}
-    />
-  );
-}
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -266,116 +169,181 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     overflow: 'hidden',
+    ...Platform.select({
+      web: {
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+      },
+    }),
   },
-
-  brandStage: {
-    width: 320,
-    height: 340,
+  ambientGlow: {
+    position: 'absolute',
+    width: 480,
+    height: 480,
+    borderRadius: 240,
+    backgroundColor: 'rgba(32, 96, 61, 0.05)',
+    alignSelf: 'center',
+    ...Platform.select({
+      web: {
+        filter: 'blur(60px)',
+      },
+    }),
+  },
+  ambientGlowDesktop: {
+    width: 700,
+    height: 700,
+    borderRadius: 350,
+  },
+  centerStage: {
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
+    paddingHorizontal: 24,
     zIndex: 2,
+    maxWidth: 420,
+    width: '100%',
   },
-
-  // ── Decorative rings ──────────────────────────────────────────────────────
-  ringOuter: {
-    position: 'absolute',
-    width: 280,
-    height: 280,
-    borderRadius: 140,
+  centerStageDesktop: {
+    maxWidth: 540,
+  },
+  iconWrapper: {
+    width: 110,
+    height: 110,
+    borderRadius: 26,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    ...Platform.select({
+      web: {
+        filter: 'drop-shadow(0 16px 24px rgba(22, 60, 38, 0.22))',
+      },
+      default: {
+        shadowColor: '#103B23',
+        shadowOffset: { width: 0, height: 12 },
+        shadowOpacity: 0.22,
+        shadowRadius: 18,
+        elevation: 8,
+      },
+    }),
+  },
+  iconWrapperDesktop: {
+    width: 140,
+    height: 140,
+    borderRadius: 32,
+    marginBottom: 24,
+  },
+  logoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  brandBlock: {
+    alignItems: 'center',
+    width: '100%',
+  },
+  categoryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EFF7F1',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 9999,
     borderWidth: 1,
-    borderColor: 'rgba(160,200,120,0.22)',
-    borderStyle: 'dashed',
+    borderColor: 'rgba(32, 96, 61, 0.18)',
+    marginBottom: 10,
   },
-  ringInner: {
-    position: 'absolute',
-    width: 210,
-    height: 210,
-    borderRadius: 105,
-    borderWidth: 1,
-    borderColor: 'rgba(160,200,120,0.16)',
-    borderStyle: 'dashed',
+  categoryBadgeText: {
+    color: '#20603D',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.6,
   },
-
-  // ── Logo ──────────────────────────────────────────────────────────────────
-  logo: {
-    width: 210,
-    height: 210,
+  brandTitle: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#14261C',
+    letterSpacing: -0.8,
+    marginBottom: 6,
+    textAlign: 'center',
+    ...Platform.select({
+      web: {
+        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      },
+    }),
+  },
+  brandTitleDesktop: {
+    fontSize: 40,
+    letterSpacing: -1.2,
     marginBottom: 8,
   },
-
-  // ── Leaves ────────────────────────────────────────────────────────────────
-  leaf: {
-    position: 'absolute',
-  },
-  leafL1: { left: -16, top: 40 },
-  leafL2: { left: -10, top: 190 },
-  leafR1: { right: -12, top: 180 },
-  leafR2: { right: -20, top: 30 },
-
-  // ── Bottom content ────────────────────────────────────────────────────────
-  bottomContent: {
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 8,
-  },
-  dotsRow: {
-    flexDirection: 'row',
-    gap: 7,
-    alignItems: 'center',
-  },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 9999,
-    backgroundColor: 'rgba(160,200,120,0.4)',
-  },
-  dotActive: {
-    width: 9,
-    height: 9,
-    backgroundColor: '#2C6842',
-  },
-  dotMid: {
-    backgroundColor: '#A0C878',
-  },
-  loadingText: {
-    fontSize: 13,
-    color: '#6A7D87',
+  brandSubtitle: {
+    fontSize: 14,
+    color: '#64748B',
     fontWeight: '500',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 28,
+    maxWidth: 320,
+    ...Platform.select({
+      web: {
+        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      },
+    }),
+  },
+  brandSubtitleDesktop: {
+    fontSize: 16,
+    lineHeight: 24,
+    maxWidth: 420,
+    marginBottom: 32,
+  },
+  progressContainer: {
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 220,
+  },
+  progressContainerDesktop: {
+    maxWidth: 280,
+  },
+  progressTrack: {
+    width: '100%',
+    height: 4,
+    backgroundColor: '#E2E8F0',
+    borderRadius: 9999,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: '#20603D',
+    borderRadius: 9999,
+  },
+  progressCaption: {
+    fontSize: 12,
+    color: '#94A3B8',
+    fontWeight: '600',
     letterSpacing: 0.2,
   },
-
-  // ── Wave (Full-width edge-to-edge) ─────────────────────────────────────────
-  waveContainer: {
+  footer: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    width: '100%',
-    height: 150,
-    overflow: 'hidden',
-    zIndex: 1,
+    bottom: 28,
+    alignItems: 'center',
+    paddingHorizontal: 16,
   },
-  waveGreen: {
-    position: 'absolute',
-    bottom: 0,
-    left: '-8%',
-    right: '-8%',
-    height: 110,
-    backgroundColor: '#A0C878',
-    borderTopLeftRadius: 800,
-    borderTopRightRadius: 600,
-    opacity: 0.55,
+  footerBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginBottom: 4,
   },
-  waveBlue: {
-    position: 'absolute',
-    bottom: 0,
-    left: '-5%',
-    right: '-12%',
-    height: 80,
-    backgroundColor: '#27667B',
-    borderTopLeftRadius: 650,
-    borderTopRightRadius: 900,
-    opacity: 0.45,
+  footerText: {
+    fontSize: 10.5,
+    color: '#64748B',
+    fontWeight: '700',
+    letterSpacing: 0.8,
+  },
+  footerCopyright: {
+    fontSize: 11,
+    color: '#94A3B8',
+    fontWeight: '500',
   },
 });

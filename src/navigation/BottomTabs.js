@@ -15,7 +15,7 @@ import { colors, shadows } from '../theme/colors';
 function triggerHapticFeedback() {
   try {
     const Haptics = require('expo-haptics');
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
   } catch {
     // expo-haptics not installed or not supported on platform — ignore safely
   }
@@ -33,8 +33,11 @@ export default function BottomTabs({ active, onChange }) {
   const insets = useSafeAreaInsets();
   const { width: screenWidth } = useWindowDimensions();
   const isDesktop = screenWidth >= 768;
-  const desktopTabWidth = Math.min(560, screenWidth - 32);
-  const desktopLeft = Math.max(16, (screenWidth - desktopTabWidth) / 2);
+
+  // On desktop web, navigation is handled in the professional Top Navigation Bar (like Shopee / Tokopedia)
+  if (isDesktop) {
+    return null;
+  }
 
   // Scale animations per tab
   const scales = useRef(
@@ -118,7 +121,11 @@ export default function BottomTabs({ active, onChange }) {
                     { transform: [{ scale: scales[tab.id] }] },
                   ]}
                 >
-                  <Feather name={tab.icon} size={20} color={iconColor} />
+                  {tab.id === 'impact' ? (
+                    <MaterialCommunityIcons name="leaf" size={20} color={iconColor} />
+                  ) : (
+                    <Feather name={tab.icon} size={20} color={iconColor} />
+                  )}
                 </Animated.View>
                 <Text
                   style={[

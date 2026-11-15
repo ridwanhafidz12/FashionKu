@@ -85,9 +85,12 @@ function ProductCard({
             {product.name}
           </Text>
 
-          <Text style={styles.gridTailor} numberOfLines={1}>
-            {product.tailor}
-          </Text>
+          <View style={styles.gridLocationRow}>
+            <Feather name="map-pin" size={9.5} color={colors.warmGray} />
+            <Text style={styles.gridTailor} numberOfLines={1}>
+              {product.tailorCity || product.tailor || 'Indonesia'}
+            </Text>
+          </View>
 
           <View style={styles.gridBottom}>
             <Text style={styles.gridPrice}>
@@ -98,6 +101,10 @@ function ProductCard({
               <Text style={styles.ratingText}>{product.rating}</Text>
             </View>
           </View>
+
+          <Text style={styles.gridSoldText}>
+            Terjual {product.stock ? (15 - product.stock) * 12 + 28 : 50}+
+          </Text>
         </View>
       </AnimatedPressable>
     );
@@ -247,66 +254,78 @@ const styles = StyleSheet.create({
   // ─── Grid card ────────────────────────────────────────────────────────────
   gridCard: {
     width: '100%',
-    borderRadius: 18,
-    backgroundColor: colors.white,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.lightGray,
+    borderColor: '#E2E8F0',
     ...shadows.sm,
   },
   gridImage: {
-    height: 170,
+    width: '100%',
+    aspectRatio: 1,
     justifyContent: 'space-between',
     flexDirection: 'column',
   },
   gridInfo: {
     padding: 10,
-    paddingTop: 9,
     gap: 3,
   },
   gridBadge: {
     alignSelf: 'flex-start',
-    borderRadius: 9999,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    backgroundColor: 'rgba(47,79,58,0.09)',
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    backgroundColor: '#EDF7EE',
+    borderWidth: 0.5,
+    borderColor: '#C6E7CE',
     maxWidth: '100%',
   },
   gridBadgeText: {
-    color: colors.forest,
+    color: '#2C6842',
     fontSize: 9,
     fontWeight: '800',
     letterSpacing: 0.2,
   },
   gridTitle: {
-    color: colors.charcoal,
+    color: '#1E293B',
     fontSize: 13,
-    fontWeight: '800',
-    lineHeight: 17,
-    marginTop: 1,
-    flexShrink: 1,
+    fontWeight: '700',
+    lineHeight: 18,
+    marginTop: 2,
+  },
+  gridLocationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    marginTop: 2,
   },
   gridTailor: {
-    color: colors.warmGray,
-    fontSize: 10,
+    color: '#64748B',
+    fontSize: 10.5,
     fontWeight: '500',
   },
   gridBottom: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 7,
+    marginTop: 6,
     gap: 4,
   },
   gridSlot: {
-    width: '48%',
     alignSelf: 'flex-start',
   },
   gridPrice: {
-    color: colors.forest,
-    fontSize: 13,
+    color: '#2C6842',
+    fontSize: 14,
     fontWeight: '900',
     flex: 1,
+  },
+  gridSoldText: {
+    fontSize: 10,
+    color: '#94A3B8',
+    fontWeight: '500',
+    marginTop: 2,
   },
   // ─── Shared ───────────────────────────────────────────────────────────────
   imageStyle: {

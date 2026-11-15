@@ -21,17 +21,17 @@ export const colors = {
   terracotta: '#27667B',   // Harmonized accent — Ming
   terracottaLight: '#39849E',
 
-  // Neutrals
-  ivory: '#FAFBF6',
-  ivoryDark: '#F0F4E8',
-  charcoal: '#143D60',     // Deep Indigo text for crisp contrast
-  charcoalMid: '#27667B',  // Ming text accent
-  warmGray: '#6A7D87',
-  warmGrayLight: '#A3B4BD',
-  lightGray: '#E5EFE4',
-  lightGrayDark: '#CBDBC9',
+  // Neutrals - Ultra Clean Modern E-Commerce Backgrounds
+  ivory: '#F5F6F8',        // Clean neutral light gray (Tokopedia/Shopee/Blibli benchmark)
+  ivoryDark: '#EBF0EB',    // Subtle soft tint
+  charcoal: '#111827',     // Deep crisp black-gray for maximum HD text readability
+  charcoalMid: '#1E293B',  // Slate 800
+  warmGray: '#64748B',     // Slate 500 for secondary text
+  warmGrayLight: '#94A3B8',// Slate 400
+  lightGray: '#E2E8F0',    // Slate 200 for clean razor-thin borders
+  lightGrayDark: '#CBD5E1',// Slate 300
   white: '#FFFFFF',
-  offWhite: '#FDFCF9',
+  offWhite: '#FAFAFA',
 
   // Semantic
   success: '#2C6842',

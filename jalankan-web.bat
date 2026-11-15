@@ -7,6 +7,14 @@ echo ========================================================
 echo.
 cd /d "%~dp0"
 
+if not exist "node_modules\" (
+    echo [INFO] Folder node_modules belum ditemukan.
+    echo Mengunduh dan menginstall dependencies terlebih dahulu...
+    echo.
+    call npm install
+    echo.
+)
+
 echo Membuka Expo Web...
 echo Tunggu beberapa detik, browser akan terbuka otomatis.
 echo.

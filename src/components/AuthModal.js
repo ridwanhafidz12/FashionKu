@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -11,15 +12,20 @@ import {
   Text,
   TextInput,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import AnimatedPressable from './AnimatedPressable';
-import LeafMark from './LeafMark';
 import { colors, shadows } from '../theme/colors';
 import { useAppState } from '../state/AppContext';
 
+const LOGO = require('../../assets/images/fashionku_icon_transparent.png');
+
 export default function AuthModal({ visible, onClose, onSuccess, initialMode = 'login', message }) {
+  const { width: screenWidth } = useWindowDimensions();
+  const isDesktop = screenWidth >= 768;
+
   const [mode, setMode] = useState(initialMode); // 'login' | 'register'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -95,28 +101,30 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType={isDesktop ? 'fade' : 'slide'}
       transparent
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.overlay}
+        style={[styles.overlay, isDesktop && styles.overlayDesktop]}
       >
         <Pressable style={styles.backdrop} onPress={onClose} />
 
-        <View style={styles.sheet}>
-          <View style={styles.handleBar} />
+        <View style={[styles.sheet, isDesktop && styles.sheetDesktop]}>
+          {!isDesktop && <View style={styles.handleBar} />}
 
+          {/* Modal Header */}
           <View style={styles.header}>
             <View style={styles.brandRow}>
-              <View style={styles.logoBadge}>
-                <LeafMark size={18} color={colors.sand} />
+              <Image source={LOGO} style={styles.brandLogo} resizeMode="contain" />
+              <View>
+                <Text style={styles.brandTitle}>FashionKu</Text>
+                <Text style={styles.brandSubtitle}>Sirkular Fashion & Bespoke</Text>
               </View>
-              <Text style={styles.brandTitle}>CIRCULAI</Text>
             </View>
-            <Pressable style={styles.closeBtn} onPress={onClose}>
-              <Feather name="x" size={18} color={colors.warmGray} />
+            <Pressable style={styles.closeBtn} onPress={onClose} hitSlop={8}>
+              <Feather name="x" size={18} color="#64748B" />
             </Pressable>
           </View>
 
@@ -125,13 +133,15 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
             contentContainerStyle={styles.scrollBody}
             keyboardShouldPersistTaps="handled"
           >
+            {/* Context Notice Alert */}
             {!!message && (
               <View style={styles.messageBox}>
-                <Feather name="lock" size={15} color={colors.forest} />
+                <Feather name="lock" size={14} color="#2C6842" style={{ marginTop: 1 }} />
                 <Text style={styles.messageText}>{message}</Text>
               </View>
             )}
 
+            {/* Segmented Mode Tabs (Laprakin Style) */}
             <View style={styles.tabContainer}>
               <Pressable
                 style={[styles.tab, mode === 'login' && styles.tabActive]}
@@ -151,24 +161,26 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
               </Pressable>
             </View>
 
+            {/* Form Title & Subtitle */}
             <Text style={styles.formTitle}>
-              {mode === 'login' ? 'Selamat Datang Kembali!' : 'Buat Akun CIRCULAI'}
+              {mode === 'login' ? 'Selamat Datang Kembali!' : 'Mulai Bersama FashionKu'}
             </Text>
             <Text style={styles.formSubtitle}>
               {mode === 'login'
-                ? 'Masuk untuk memproses pesanan, melacak status MTO, dan menukar poin.'
-                : 'Dapatkan 100 Impact Points gratis saat pertama kali mendaftar.'}
+                ? 'Masuk untuk memproses pesanan kustom, melacak paspor DPP, dan menukar poin sirkular.'
+                : 'Daftar akun sekarang dan dapatkan 100 Poin Sirkular gratis untuk pesanan pertamamu.'}
             </Text>
 
+            {/* Input Nama Lengkap (Register only) */}
             {mode === 'register' && (
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Nama Lengkap</Text>
                 <View style={styles.inputWrapper}>
-                  <Feather name="user" size={16} color={colors.warmGray} />
+                  <Feather name="user" size={16} color="#64748B" />
                   <TextInput
                     style={styles.input}
                     placeholder="Contoh: Adi Arwan Syah"
-                    placeholderTextColor={colors.warmGrayLight}
+                    placeholderTextColor="#94A3B8"
                     value={name}
                     onChangeText={setName}
                   />
@@ -176,14 +188,15 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
               </View>
             )}
 
+            {/* Input Email */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Email</Text>
+              <Text style={styles.inputLabel}>Alamat Email</Text>
               <View style={styles.inputWrapper}>
-                <Feather name="mail" size={16} color={colors.warmGray} />
+                <Feather name="mail" size={16} color="#64748B" />
                 <TextInput
                   style={styles.input}
-                  placeholder="email@domain.com"
-                  placeholderTextColor={colors.warmGrayLight}
+                  placeholder="nama@email.com"
+                  placeholderTextColor="#94A3B8"
                   keyboardType="email-address"
                   autoCapitalize="none"
                   value={email}
@@ -192,28 +205,37 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
               </View>
             </View>
 
+            {/* Input Password */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Password</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.inputLabel}>Password</Text>
+                {mode === 'login' && (
+                  <Pressable onPress={() => Alert.alert('Lupa Password', 'Silakan gunakan login cepat demo atau hubungi tim bantuan FashionKu.')}>
+                    <Text style={styles.forgotLink}>Lupa password?</Text>
+                  </Pressable>
+                )}
+              </View>
               <View style={styles.inputWrapper}>
-                <Feather name="lock" size={16} color={colors.warmGray} />
+                <Feather name="lock" size={16} color="#64748B" />
                 <TextInput
                   style={styles.input}
-                  placeholder="Masukkan password"
-                  placeholderTextColor={colors.warmGrayLight}
+                  placeholder="Minimal 6 karakter"
+                  placeholderTextColor="#94A3B8"
                   secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={setPassword}
                 />
-                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                <Pressable onPress={() => setShowPassword(!showPassword)} hitSlop={8}>
                   <Feather
                     name={showPassword ? 'eye-off' : 'eye'}
                     size={16}
-                    color={colors.warmGray}
+                    color="#64748B"
                   />
                 </Pressable>
               </View>
             </View>
 
+            {/* Primary Submit Button */}
             <AnimatedPressable
               style={[styles.submitBtn, loading && { opacity: 0.7 }]}
               onPress={handleLoginSubmit}
@@ -221,31 +243,45 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
               scaleDown={0.98}
             >
               {loading ? (
-                <ActivityIndicator color={colors.white} size="small" />
+                <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
                 <>
                   <Text style={styles.submitBtnText}>
                     {mode === 'login' ? 'Masuk Sekarang' : 'Daftar Akun'}
                   </Text>
-                  <Feather name="arrow-right" size={16} color={colors.white} />
+                  <Feather name="arrow-right" size={16} color="#FFFFFF" />
                 </>
               )}
             </AnimatedPressable>
 
+            {/* Divider */}
             <View style={styles.dividerRow}>
               <View style={styles.dividerLine} />
               <Text style={styles.dividerText}>atau</Text>
               <View style={styles.dividerLine} />
             </View>
 
+            {/* Quick Demo Access (Laprakin Style) */}
             <AnimatedPressable
               style={styles.demoBtn}
               onPress={handleQuickDemoLogin}
+              disabled={loading}
               scaleDown={0.98}
             >
-              <MaterialCommunityIcons name="lightning-bolt" size={18} color={colors.forest} />
-              <Text style={styles.demoBtnText}>Masuk Cepat Demo (1-Klik)</Text>
+              <MaterialCommunityIcons name="lightning-bolt" size={18} color="#2C6842" />
+              <Text style={styles.demoBtnText}>Akses Cepat Demo (1-Klik)</Text>
             </AnimatedPressable>
+
+            {/* Security & Privacy Trust Footer */}
+            <View style={styles.authFooter}>
+              <View style={styles.securityRow}>
+                <Feather name="shield" size={12} color="#16A34A" />
+                <Text style={styles.securityText}>Enkripsi SSL 256-Bit • Data Terlindungi</Text>
+              </View>
+              <Text style={styles.legalNotice}>
+                Dengan masuk, kamu menyetujui Ketentuan Layanan & Kebijakan Privasi FashionKu.
+              </Text>
+            </View>
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
@@ -257,198 +293,249 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(31,36,33,0.55)',
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+  },
+  overlayDesktop: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
   },
   sheet: {
-    backgroundColor: colors.white,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    maxHeight: '90%',
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '92%',
     paddingBottom: 24,
-    maxWidth: 480,
+    maxWidth: 460,
     width: '100%',
     alignSelf: 'center',
     ...shadows.xl,
   },
+  sheetDesktop: {
+    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '88%',
+    paddingBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
   handleBar: {
-    width: 38,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: colors.lightGrayDark,
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#CBD5E1',
     alignSelf: 'center',
     marginTop: 10,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: colors.lightGray,
+    borderBottomColor: '#F1F5F9',
   },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
-  logoBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: colors.forest,
-    alignItems: 'center',
-    justifyContent: 'center',
+  brandLogo: {
+    width: 34,
+    height: 34,
+    borderRadius: 9,
   },
   brandTitle: {
     fontSize: 16,
     fontWeight: '900',
-    color: colors.forest,
-    letterSpacing: 1,
+    color: '#2C6842',
+    letterSpacing: -0.4,
+  },
+  brandSubtitle: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#64748B',
   },
   closeBtn: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: colors.ivory,
+    backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
   },
   scrollBody: {
-    padding: 20,
+    paddingHorizontal: 22,
+    paddingTop: 16,
+    paddingBottom: 20,
   },
   messageBox: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    backgroundColor: colors.forestAlpha9,
-    padding: 12,
-    borderRadius: 14,
+    alignItems: 'flex-start',
+    gap: 8,
+    backgroundColor: '#EDF7EE',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: colors.forestAlpha20,
+    borderColor: '#C6E7CE',
   },
   messageText: {
     flex: 1,
-    color: colors.forest,
+    color: '#20603D',
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
     lineHeight: 16,
   },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.ivory,
-    borderRadius: 14,
-    padding: 4,
-    marginBottom: 18,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 10,
+    padding: 3,
+    marginBottom: 16,
   },
   tab: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 9,
     alignItems: 'center',
-    borderRadius: 11,
+    borderRadius: 8,
   },
   tabActive: {
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
     ...shadows.sm,
   },
   tabText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.warmGray,
+    fontSize: 12.5,
+    fontWeight: '600',
+    color: '#64748B',
   },
   tabTextActive: {
-    color: colors.forest,
+    color: '#2C6842',
+    fontWeight: '800',
   },
   formTitle: {
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: '900',
-    color: colors.charcoal,
+    color: '#0F172A',
     letterSpacing: -0.3,
   },
   formSubtitle: {
     fontSize: 12,
-    color: colors.warmGray,
+    color: '#64748B',
     lineHeight: 17,
     marginTop: 4,
-    marginBottom: 20,
+    marginBottom: 18,
   },
   inputGroup: {
     marginBottom: 14,
   },
+  labelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
   inputLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: colors.charcoal,
-    marginBottom: 6,
+    color: '#1E293B',
+  },
+  forgotLink: {
+    fontSize: 11.5,
+    fontWeight: '600',
+    color: '#2C6842',
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: '#F8FAFC',
     borderWidth: 1.5,
-    borderColor: colors.lightGray,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    height: 48,
+    borderColor: '#E2E8F0',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    height: 46,
     gap: 10,
   },
   input: {
     flex: 1,
-    color: colors.charcoal,
+    color: '#0F172A',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   submitBtn: {
-    backgroundColor: colors.forest,
-    height: 50,
-    borderRadius: 16,
+    backgroundColor: '#2C6842',
+    height: 48,
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginTop: 10,
-    ...shadows.forest,
+    marginTop: 8,
+    ...shadows.sm,
   },
   submitBtnText: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: '900',
+    color: '#FFFFFF',
+    fontSize: 13.5,
+    fontWeight: '800',
   },
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    marginVertical: 18,
+    marginVertical: 14,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: colors.lightGray,
+    backgroundColor: '#E2E8F0',
   },
   dividerText: {
     fontSize: 11,
-    color: colors.warmGrayLight,
-    fontWeight: '600',
+    color: '#94A3B8',
+    fontWeight: '500',
   },
   demoBtn: {
-    backgroundColor: colors.sandLight,
-    borderWidth: 1.5,
-    borderColor: colors.sandDark,
-    height: 48,
-    borderRadius: 16,
+    backgroundColor: '#EDF7EE',
+    borderWidth: 1,
+    borderColor: '#C6E7CE',
+    height: 44,
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 6,
   },
   demoBtnText: {
-    color: colors.forest,
-    fontSize: 13,
+    color: '#2C6842',
+    fontSize: 12.5,
     fontWeight: '800',
+  },
+  authFooter: {
+    marginTop: 18,
+    alignItems: 'center',
+    gap: 6,
+  },
+  securityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  securityText: {
+    fontSize: 10.5,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  legalNotice: {
+    fontSize: 10,
+    color: '#94A3B8',
+    textAlign: 'center',
+    lineHeight: 14,
   },
 });
