@@ -43,6 +43,18 @@ export const colors = {
   info: '#27667B',
   infoLight: '#E6F0F4',
 
+  // Shopee Signature Design System Tokens
+  shopeeOrange: '#EE4D2D',      // Iconic Shopee Orange
+  shopeeOrangeLight: '#FF5722',
+  shopeeOrangeDark: '#D73211',
+  shopeeOrangeBg: '#FFF5F1',
+  shopeeYellow: '#FFE97D',      // Discount sticker yellow
+  shopeeRed: '#D0011B',         // Shopee Mall red
+  shopeeBg: '#F5F5F5',          // Authentic Shopee desktop & app canvas background
+  shopeeBorder: '#E8E8E8',
+  shopeeGreen: '#00BFA5',       // Gratis Ongkir XTRA turquoise
+  shopeeBlue: '#0088FF',
+
   // Overlay
   overlay: 'rgba(20,61,96,0.48)',
   overlayLight: 'rgba(20,61,96,0.20)',

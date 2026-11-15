@@ -269,13 +269,13 @@ export default function ProductDetailScreen({ product, onBack, onCustomize, onCh
             onPress={handleChat}
             scaleDown={0.92}
           >
-            <Feather name="message-circle" size={20} color={colors.forest} />
+            <Feather name="message-circle" size={20} color="#EE4D2D" />
           </AnimatedPressable>
 
           <AnimatedPressable style={styles.orderButton} onPress={handleOrder} scaleDown={0.97}>
             <View style={styles.orderButtonContent}>
-              <Text style={styles.orderButtonText} numberOfLines={1}>Kustomisasi & Pesan</Text>
-              <Text style={styles.orderButtonSub} numberOfLines={1}>Atur warna, ukuran, dan bahan</Text>
+              <Text style={styles.orderButtonText} numberOfLines={1}>Kustomisasi & Pesan Sekarang</Text>
+              <Text style={styles.orderButtonSub} numberOfLines={1}>Bebas atur warna, ukuran, & bahan MTO</Text>
             </View>
             <Feather name="arrow-right" size={18} color={colors.white} />
           </AnimatedPressable>
@@ -435,8 +435,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   price: {
-    color: colors.forest,
-    fontSize: 24,
+    color: '#EE4D2D',
+    fontSize: 26,
     fontWeight: '900',
     marginBottom: 8,
     letterSpacing: -0.5,
@@ -581,8 +581,8 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGray,
   },
   sizeCircleActive: {
-    backgroundColor: colors.forest,
-    borderColor: colors.forest,
+    backgroundColor: '#EE4D2D',
+    borderColor: '#EE4D2D',
     ...shadows.sm,
   },
   sizeCircleText: {
@@ -607,9 +607,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   customSizePillActive: {
-    backgroundColor: colors.forest,
-    borderColor: colors.forest,
-    ...shadows.forest,
+    backgroundColor: '#EE4D2D',
+    borderColor: '#EE4D2D',
   },
   customSizeText: {
     color: colors.forest,
@@ -731,25 +730,25 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   chatButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 18,
+    width: 52,
+    height: 52,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.sandLight,
+    backgroundColor: '#FFF0ED',
     borderWidth: 1.5,
-    borderColor: colors.lightGray,
+    borderColor: '#EE4D2D',
   },
   orderButton: {
     flex: 1,
-    minHeight: 60,
-    borderRadius: 18,
+    minHeight: 52,
+    borderRadius: 4,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    backgroundColor: colors.forest,
-    ...shadows.forest,
+    paddingHorizontal: 16,
+    backgroundColor: '#EE4D2D',
+    ...shadows.sm,
   },
   orderButtonContent: {
     flex: 1,

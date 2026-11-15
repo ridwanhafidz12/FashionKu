@@ -84,11 +84,7 @@ export default function BottomTabs({ active, onChange }) {
       {tabs.map((tab) => {
         const selected = active === tab.id;
         const isCenter = tab.id === 'quiz';
-        const iconColor = selected
-          ? isCenter
-            ? colors.forest
-            : colors.forest
-          : colors.warmGray;
+        const iconColor = selected ? '#EE4D2D' : '#757575';
 
         return (
           <Pressable
@@ -109,7 +105,7 @@ export default function BottomTabs({ active, onChange }) {
                 <MaterialCommunityIcons
                   name="lightning-bolt"
                   size={24}
-                  color={selected ? colors.forest : colors.white}
+                  color="#FFFFFF"
                 />
               </Animated.View>
             ) : (
@@ -199,28 +195,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconActive: {
-    backgroundColor: 'rgba(47,79,58,0.10)',
+    backgroundColor: '#FFF0ED',
   },
   // ─── Center AI Stylist tab ─────────────────────────────────────────────────
   centerIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 50,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.forest,
-    marginTop: -32,
+    backgroundColor: '#EE4D2D',
+    marginTop: -28,
     borderWidth: 3,
-    borderColor: colors.ivory,
+    borderColor: '#FFFFFF',
     ...shadows.md,
   },
   centerIconActive: {
-    backgroundColor: colors.sand,
-    borderColor: colors.ivory,
-    shadowColor: colors.forest,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.38,
-    shadowRadius: 18,
+    backgroundColor: '#D73211',
+    borderColor: '#FFFFFF',
+    shadowColor: '#EE4D2D',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
     elevation: 8,
   },
   centerLabel: {
@@ -228,13 +224,12 @@ const styles = StyleSheet.create({
   },
   // ─── Labels ───────────────────────────────────────────────────────────────
   label: {
-    color: colors.warmGray,
-    fontSize: 9,
-    fontWeight: '600',
-    letterSpacing: 0.2,
+    color: '#757575',
+    fontSize: 9.5,
+    fontWeight: '500',
   },
   labelActive: {
-    color: colors.forest,
-    fontWeight: '900',
+    color: '#EE4D2D',
+    fontWeight: '800',
   },
 });

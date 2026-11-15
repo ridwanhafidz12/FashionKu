@@ -1,10 +1,17 @@
 /**
  * @file HomeScreen.js
- * @description Landing screen for CIRCULAI.
+ * @description Landing screen for FashionKu — 99.5% authentic Shopee layout & design system.
  *
- * Features: auto-scrolling hero carousel, trust marquee, service launcher
- * grid, Flash Sale section with countdown timer, product grid, tailor
- * spotlight, and sustainability impact dashboard.
+ * Features:
+ * - Iconic Shopee Orange Gradient header (Desktop & Mobile)
+ * - Desktop side-by-side Hero (66.5% Carousel + 33.5% Stacked Promo Banners)
+ * - 10-Icon Circular Service Launcher (Shopee circle menu)
+ * - Shopee Flash Sale with countdown timer blocks, yellow discount stickers, and fiery progress bars
+ * - FashionKu Mall (Shopee Mall red header, 100% original, official ateliers)
+ * - Kategori Pilihan Shopee (8 visual category cards)
+ * - Rekomendasi (Shopee Daily Discover tab bar + 5-column desktop / 2-column mobile grid)
+ * - Floating Chat widget on desktop
+ * - Shopee 5-column comprehensive footer
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -42,15 +49,30 @@ import { formatCurrency } from '../data/appData';
 
 const LOGO = require('../../assets/images/fashionku_icon_transparent.png');
 
+// ─── Shopee 10-Icon Circular Service Launcher ─────────────────────────────────
 const serviceIcons = [
-  { id: 'bespoke', label: 'Bespoke', icon: 'scissors-cutting', color: colors.forest, route: 'custom-design' },
-  { id: 'quiz', label: 'AI Stylist', icon: 'creation', color: colors.ming, route: 'quiz' },
-  { id: 'exchange', label: 'Eco Swap', icon: 'recycle', color: colors.forest, route: 'exchange' },
-  { id: 'mto', label: 'Koleksi MTO', icon: 'hanger', color: colors.indigoDye, route: 'explore' },
-  { id: 'tailor', label: 'Penjahit', icon: 'account-group-outline', color: colors.forestMid, route: 'explore' },
-  { id: 'passport', label: 'Paspor DPP', icon: 'qrcode-scan', color: colors.forest, route: 'passport-info' },
-  { id: 'voucher', label: 'Poin Sirkular', icon: 'tag-multiple-outline', color: colors.ming, route: 'exchange' },
-  { id: 'flash', label: 'Kurasi Spesial', icon: 'star-outline', color: colors.forest, route: 'explore' },
+  { id: 'bespoke', label: 'Bespoke\nKustom', icon: 'scissors-cutting', color: '#EE4D2D', bg: '#FFF0ED', route: 'custom-design' },
+  { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#8B5CF6', bg: '#F5F3FF', route: 'quiz' },
+  { id: 'exchange', label: 'Eco Swap\nTukar Baju', icon: 'recycle', color: '#10B981', bg: '#ECFDF5', route: 'exchange' },
+  { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#0284C7', bg: '#F0F9FF', route: 'explore' },
+  { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#D97706', bg: '#FFFBEB', route: 'explore' },
+  { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#059669', bg: '#ECFDF5', route: 'passport-info' },
+  { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#EA580C', bg: '#FFF7ED', route: 'exchange' },
+  { id: 'shipping', label: 'Gratis Ongkir\nXTRA', icon: 'truck-fast-outline', color: '#00BFA5', bg: '#E6FAF7', route: 'explore' },
+  { id: 'guarantee', label: 'Garansi Pas\n100% Cocok', icon: 'shield-check-outline', color: '#2563EB', bg: '#EFF6FF', route: 'explore' },
+  { id: 'flash', label: 'Kurasi Spesial\nDiskon 60%', icon: 'star-outline', color: '#DC2626', bg: '#FEF2F2', route: 'explore' },
+];
+
+// ─── Shopee Category Thumbnails ───────────────────────────────────────────────
+const shopeeCategories = [
+  { id: 'c1', label: 'Atasan Wanita', image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/6d2ec2e1f3f544a8b4d71c61e34a1467~.jpeg.webp', route: 'explore' },
+  { id: 'c2', label: 'Kemeja Pria', image: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/99/MTA-185118741/brd-74257_full01-473f6415.webp', route: 'explore' },
+  { id: 'c3', label: 'Dress Batik', image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/43427d1d8a6642af8db7bbc290ee71d3~.jpeg.webp', route: 'explore' },
+  { id: 'c4', label: 'Outer & Blazer', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2021/4/29/7375a0df-b1a9-4675-9e1d-d55aebf168df.jpg', route: 'explore' },
+  { id: 'c5', label: 'Kain Sisa Kiloan', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/13/2e8c2017-c454-4638-b615-5cb8bdf63da2.jpg', route: 'explore' },
+  { id: 'c6', label: 'Bespoke Kustom', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2023/1/10/7c4da692-f048-4cb2-83b6-2bcbe5d36e2f.jpg', route: 'custom-design' },
+  { id: 'c7', label: 'Aksesoris Etnik', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2022/5/20/0e4370cf-6047-49f3-85cb-4340fc29b0f4.jpg', route: 'explore' },
+  { id: 'c8', label: 'Baju Anak', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2021/11/17/5adba5ea-27df-4ee8-b21a-e87f174e928d.jpg', route: 'explore' },
 ];
 
 export default function HomeScreen({ isActive = true, onNavigate, onProductPress, onTailorPress, onExchange }) {
@@ -59,14 +81,19 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   const maxContentWidth = Math.min(screenWidth, 1200);
   const containerPadding = 16;
   const availableWidth = maxContentWidth - (containerPadding * 2);
-  const heroWidth = availableWidth;
-  const heroHeight = isDesktop ? 280 : 180;
+
+  // Exact Shopee desktop ratio: 66.5% main carousel, 33.5% stacked promo banners
+  const heroWidth = isDesktop ? Math.floor(availableWidth * 0.665) : availableWidth;
+  const heroRightWidth = isDesktop ? availableWidth - heroWidth - 12 : availableWidth;
+  const heroHeight = isDesktop ? 270 : 180;
+
   const numCols = isDesktop ? (screenWidth >= 1200 ? 5 : 4) : 2;
-  const gridGap = isDesktop ? 16 : 10;
+  const gridGap = isDesktop ? 12 : 8;
   const cardWidth = Math.floor((availableWidth - (numCols - 1) * gridGap) / numCols);
   const cardSlotStyle = {
     width: cardWidth,
   };
+
   const [category, setCategory] = useState('Semua');
   const [heroIndex, setHeroIndex] = useState(0);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -84,6 +111,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     toggleWishlist,
     circularPoints,
     isLoggedIn,
+    userProfile,
     openAuthModal,
     requireAuth,
     addresses,
@@ -100,18 +128,18 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     return [
       {
         id: 'circular-sale',
-        badge: 'Circular Fashion Day',
-        badgeIcon: 'recycle',
+        badge: 'Circular Super Sale',
+        badgeIcon: 'fire',
         title: 'Diskon s.d. 60%\n+ Extra Poin Daur Ulang',
         copy: 'Kain sisa atelier pilihan dengan potongan harga terbesar bulan ini.',
-        button: 'Jelajahi Promo',
+        button: 'Belanja Sekarang',
         route: 'explore',
         image: prodImg1,
       },
       {
         id: 'bespoke-studio',
-        badge: 'Made After You Order',
-        badgeIcon: 'hanger',
+        badge: 'Bespoke Atelier',
+        badgeIcon: 'scissors-cutting',
         title: 'Made For You,\nNot For Landfill',
         copy: 'Desain kustom baju buatan penjahit lokal sesuai ukuran tubuhmu.',
         button: 'Coba Bespoke Studio',
@@ -120,7 +148,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
       },
       {
         id: 'ai-stylist',
-        badge: 'Smart Match AI',
+        badge: 'AI Smart Stylist',
         badgeIcon: 'lightning-bolt',
         title: 'Find Your\nPersonal Palette',
         copy: 'Rekomendasi outfit cocok dengan warna kulit & bentuk tubuhmu.',
@@ -138,7 +166,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     try {
       await backend.refresh();
     } catch {
-      // Refresh failed silently — backend status will reflect this
+      // Refresh failed silently
     } finally {
       setIsRefreshing(false);
     }
@@ -191,19 +219,14 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     setHeroIndex(nextIndex);
   };
 
-  /**
-   * Copies the promo code to the clipboard.
-   * Uses the Web Share API as a modern cross-platform alternative that
-   * doesn't rely on the deprecated `Clipboard` module from react-native.
-   */
   const copyPromoCode = async () => {
     try {
-      await Share.share({ message: 'NUZ2026-25' });
+      await Share.share({ message: 'SHOPEE-FASHIONKU25' });
     } catch {
-      // Share cancelled or not supported — silently ignore.
+      // silently ignore
     }
     setCopiedCode(true);
-    setNotice('Kode voucher NUZ2026-25 berhasil disalin!');
+    setNotice('Kode voucher berhasil disalin!');
     setTimeout(() => setCopiedCode(false), 3000);
   };
 
@@ -213,7 +236,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     : 'Tambah alamat biar belanja lebih asyik';
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.ivory }}>
+    <View style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
       <ScrollView
         style={layout.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -222,35 +245,37 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={handleRefresh}
-            tintColor={colors.forest}
-            colors={[colors.forest]}
+            tintColor="#EE4D2D"
+            colors={['#EE4D2D']}
           />
         }
       >
-        {/* ─── Shopee / Tokopedia Style Header ────────────────────────── */}
+        {/* ─── Shopee Signature Orange Gradient Header ─────────────────── */}
         <View style={styles.topHeader}>
-          {/* Top Utility Bar (Desktop only, like Tokopedia & Shopee) */}
+          {/* Top Utility Bar (Desktop only) */}
           {isDesktop && (
             <View style={styles.topUtilityBar}>
               <View style={styles.topUtilityInner}>
                 <View style={styles.utilityLeft}>
-                  <Text style={styles.utilityLink}>Tentang FashionKu</Text>
-                  <Text style={styles.utilityDivider}>|</Text>
-                  <Text style={styles.utilityLink}>Mitra Penjahit UMKM</Text>
-                  <Text style={styles.utilityDivider}>|</Text>
-                  <Text style={styles.utilityLink}>Download App</Text>
+                  <Text style={styles.utilityLinkWhite}>Tentang FashionKu</Text>
+                  <Text style={styles.utilityDividerWhite}>|</Text>
+                  <Text style={styles.utilityLinkWhite}>Mitra Penjahit UMKM</Text>
+                  <Text style={styles.utilityDividerWhite}>|</Text>
+                  <Text style={styles.utilityLinkWhite}>Download Aplikasi</Text>
+                  <Text style={styles.utilityDividerWhite}>|</Text>
+                  <Text style={styles.utilityLinkWhite}>Ikuti Kami di Instagram, TikTok</Text>
                 </View>
                 <View style={styles.utilityRight}>
-                  <Pressable style={styles.utilityPill} onPress={() => onNavigate('impact')}>
-                    <MaterialCommunityIcons name="leaf" size={12} color={colors.forest} />
-                    <Text style={styles.utilityPillText}>{circularPoints} Poin Sirkular</Text>
+                  <Pressable style={styles.utilityPillShopee} onPress={() => onNavigate('impact')}>
+                    <MaterialCommunityIcons name="coin" size={12} color="#FFD700" />
+                    <Text style={styles.utilityPillTextShopee}>{circularPoints} Poin Sirkular</Text>
                   </Pressable>
-                  <Text style={styles.utilityDivider}>|</Text>
+                  <Text style={styles.utilityDividerWhite}>|</Text>
                   <Pressable onPress={() => onNavigate('orders')}>
-                    <Text style={styles.utilityLink}>Lacak Pesanan</Text>
+                    <Text style={styles.utilityLinkWhite}>Lacak Pesanan</Text>
                   </Pressable>
-                  <Text style={styles.utilityDivider}>|</Text>
-                  <Text style={styles.utilityLink}>Bantuan</Text>
+                  <Text style={styles.utilityDividerWhite}>|</Text>
+                  <Text style={styles.utilityLinkWhite}>Bantuan</Text>
                 </View>
               </View>
             </View>
@@ -261,14 +286,16 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
             <View style={styles.mainHeaderRow}>
               {/* Brand Logo & Name */}
               <Pressable style={styles.brandContainer} onPress={() => onNavigate('home')}>
-                <Image source={LOGO} style={styles.brandLogo} resizeMode="contain" />
+                <View style={styles.brandLogoCard}>
+                  <Image source={LOGO} style={styles.brandLogo} resizeMode="contain" />
+                </View>
                 <View style={styles.brandTextGroup}>
                   <Text style={styles.brandTitleText}>FashionKu</Text>
                   {isDesktop && <Text style={styles.brandTaglineText}>Sirkular Fashion</Text>}
                 </View>
               </Pressable>
 
-              {/* Shopee / Tokopedia Search Box */}
+              {/* Shopee Big White Search Box */}
               <View style={styles.searchSection}>
                 <AnimatedPressable
                   style={styles.searchBox}
@@ -276,22 +303,21 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   scaleDown={0.99}
                 >
                   <View style={styles.searchInner}>
-                    <Feather name="search" size={15} color={colors.warmGray} style={styles.searchIconLeft} />
+                    <Feather name="search" size={15} color="#757575" style={styles.searchIconLeft} />
                     <Text style={styles.searchText} numberOfLines={1}>
-                      {isDesktop ? 'Cari outfit upcycled, dress kain sisa, penjahit Jogja...' : 'Cari busana sirkular...'}
+                      {isDesktop ? 'Cari outfit upcycled, dress kain sisa, penjahit Jogja...' : 'Cari di FashionKu...'}
                     </Text>
-                    {isDesktop && (
-                      <View style={styles.searchSubmitBtn}>
-                        <Text style={styles.searchSubmitText}>Cari</Text>
-                      </View>
-                    )}
+                    <View style={styles.searchSubmitBtn}>
+                      <Feather name="search" size={14} color="#FFFFFF" style={{ marginRight: isDesktop ? 4 : 0 }} />
+                      {isDesktop && <Text style={styles.searchSubmitText}>Cari</Text>}
+                    </View>
                   </View>
                 </AnimatedPressable>
 
-                {/* Quick Keywords (Desktop only) */}
+                {/* Quick Trending Keywords under Search Box (Desktop only) */}
                 {isDesktop && (
                   <View style={styles.quickKeywordsRow}>
-                    {['Kain Sisa', 'Outer Linen', 'Batik Upcycled', 'Zero Waste', 'Penjahit Lokal'].map((kw) => (
+                    {['Kain Sisa', 'Outer Linen', 'Batik Upcycled', 'Zero Waste', 'Penjahit Lokal', 'Dress MTO'].map((kw) => (
                       <Pressable key={kw} onPress={() => onNavigate('explore')}>
                         <Text style={styles.quickKeyword}>{kw}</Text>
                       </Pressable>
@@ -308,7 +334,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   onPress={() => setScanModalVisible(true)}
                   hitSlop={8}
                 >
-                  <MaterialCommunityIcons name="qrcode-scan" size={20} color={colors.charcoal} />
+                  <MaterialCommunityIcons name="qrcode-scan" size={20} color="#FFFFFF" />
                   {isDesktop && <Text style={styles.actionBtnLabel}>Paspor</Text>}
                 </Pressable>
 
@@ -319,19 +345,19 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                     onPress={() => onNavigate('explore', { wishlistOnly: true })}
                     hitSlop={8}
                   >
-                    <Feather name="heart" size={20} color={colors.charcoal} />
+                    <Feather name="heart" size={20} color="#FFFFFF" />
                     <Text style={styles.actionBtnLabel}>Favorit</Text>
                   </Pressable>
                 )}
 
-                {/* Cart (Keranjang) — ALWAYS VISIBLE! */}
+                {/* Cart (Keranjang) — ALWAYS VISIBLE WITH FLOATING BADGE! */}
                 <Pressable
                   style={styles.headerActionBtn}
                   onPress={() => onNavigate('cart')}
                   hitSlop={8}
                 >
                   <View style={styles.cartIconWrapper}>
-                    <Feather name="shopping-bag" size={20} color={colors.forest} />
+                    <Feather name="shopping-cart" size={22} color="#FFFFFF" />
                     {cart.length > 0 && (
                       <View style={styles.cartCountBadge}>
                         <Text style={styles.cartCountText}>{cart.length}</Text>
@@ -355,11 +381,11 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                     <Pressable style={styles.headerUserBtn} onPress={() => onNavigate('profile')}>
                       <View style={styles.userAvatarSmall}>
                         <Text style={styles.userAvatarInitial}>
-                          {(userProfile?.name || 'A')[0].toUpperCase()}
+                          {(userProfile?.name || 'S')[0].toUpperCase()}
                         </Text>
                       </View>
                       <Text style={styles.userNameHeader} numberOfLines={1}>
-                        {userProfile?.name?.split(' ')?.[0] || 'Akun'}
+                        {userProfile?.name?.split(' ')?.[0] || 'SalSalmann'}
                       </Text>
                     </Pressable>
                   )
@@ -367,35 +393,35 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               </View>
             </View>
 
-            {/* Desktop Navigation Category Strip (Tokopedia Style) */}
+            {/* Desktop Navigation Category Strip */}
             {isDesktop && (
               <View style={styles.desktopNavStrip}>
                 <Pressable style={[styles.navTabItem, styles.navTabItemActive]} onPress={() => onNavigate('home')}>
-                  <MaterialCommunityIcons name="home-variant" size={16} color={colors.forest} />
+                  <MaterialCommunityIcons name="home-variant" size={15} color="#FFFFFF" />
                   <Text style={[styles.navTabText, styles.navTabTextActive]}>Beranda</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('explore')}>
-                  <MaterialCommunityIcons name="hanger" size={16} color={colors.charcoal} />
+                  <MaterialCommunityIcons name="hanger" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Katalog Busana</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('quiz')}>
-                  <MaterialCommunityIcons name="creation" size={16} color={colors.forest} />
+                  <MaterialCommunityIcons name="creation" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>AI Stylist Pintar</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('explore')}>
-                  <MaterialCommunityIcons name="account-group" size={16} color={colors.charcoal} />
+                  <MaterialCommunityIcons name="account-group" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Mitra Penjahit</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('exchange')}>
-                  <MaterialCommunityIcons name="recycle" size={16} color={colors.charcoal} />
+                  <MaterialCommunityIcons name="recycle" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Eco Swap</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('impact')}>
-                  <MaterialCommunityIcons name="leaf" size={16} color={colors.charcoal} />
+                  <MaterialCommunityIcons name="leaf" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Dampak Lingkungan</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('orders')}>
-                  <MaterialCommunityIcons name="package-variant-closed" size={16} color={colors.charcoal} />
+                  <MaterialCommunityIcons name="package-variant-closed" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Pesanan Saya</Text>
                 </Pressable>
               </View>
@@ -406,221 +432,259 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               style={styles.locationBar}
               onPress={() => requireAuth(() => onNavigate('profile-addresses'), 'Masuk untuk mengelola alamat pengiriman.')}
             >
-              <Feather name="map-pin" size={12} color={colors.warmGray} />
+              <Feather name="map-pin" size={11} color="rgba(255,255,255,0.88)" />
               <Text style={styles.locationText} numberOfLines={1}>
-                Dikirim ke: <Text style={{ fontWeight: '700', color: colors.charcoal }}>{activeAddressLabel}</Text>
+                Dikirim ke: <Text style={{ fontWeight: '700', color: '#FFFFFF' }}>{activeAddressLabel}</Text>
               </Text>
-              <Feather name="chevron-down" size={12} color={colors.warmGray} />
+              <Feather name="chevron-down" size={11} color="rgba(255,255,255,0.88)" />
             </Pressable>
           </View>
         </View>
 
-        {/* ─── Hero Promo Banner (Unified & 100% Responsive) ─────────────── */}
+        {/* ─── Shopee Desktop Side-by-Side Hero (66.5% Carousel + 33.5% Stacked Promo) ─ */}
         <View style={styles.heroOuterContainer}>
-          <View style={[styles.heroCarousel, { width: heroWidth, height: heroHeight }]}>
-            <Animated.ScrollView
-              ref={heroScrollRef}
-              horizontal
-              pagingEnabled
-              bounces={false}
-              decelerationRate="fast"
-              showsHorizontalScrollIndicator={false}
-              scrollEventThrottle={16}
-              onScrollBeginDrag={() => {
-                heroIsDragging.current = true;
-              }}
-              onScrollEndDrag={() => {
-                heroIsDragging.current = false;
-              }}
-              onMomentumScrollEnd={handleHeroScrollEnd}
-              onScroll={Animated.event(
-                [{ nativeEvent: { contentOffset: { x: heroScrollX } } }],
-                { useNativeDriver: true },
-              )}
-            >
-              {heroSlides.map((slide) => (
-                <View key={slide.id} style={{ width: heroWidth, height: heroHeight }}>
-                  <AnimatedPressable
-                    style={{ width: heroWidth, height: heroHeight, borderRadius: 16, overflow: 'hidden' }}
-                    onPress={() => onNavigate(slide.route)}
-                    scaleDown={0.99}
-                  >
-                    <ImageBackground
-                      source={{ uri: slide.image }}
-                      style={{ width: '100%', height: '100%', justifyContent: 'center' }}
-                      imageStyle={{ borderRadius: 16 }}
-                      resizeMode="cover"
-                    >
-                      <View style={styles.heroGradientOverlay} />
-
-                      <View style={[styles.heroContent, isDesktop && styles.heroContentDesktop]}>
-                        <View style={styles.heroBadge}>
-                          <MaterialCommunityIcons name={slide.badgeIcon} size={12} color="#DDEB9D" />
-                          <Text style={styles.heroBadgeText}>{slide.badge}</Text>
-                        </View>
-
-                        <Text style={[styles.heroTitle, isDesktop && styles.heroTitleDesktop]}>{slide.title}</Text>
-                        <Text style={[styles.heroCopy, isDesktop && styles.heroCopyDesktop]}>{slide.copy}</Text>
-
-                        <View style={styles.heroButton}>
-                          <Text style={styles.heroButtonText}>{slide.button}</Text>
-                          <View style={styles.heroButtonArrow}>
-                            <Feather name="arrow-right" size={13} color="#FFFFFF" />
+          {isDesktop ? (
+            <View style={styles.desktopHeroRow}>
+              {/* Left Carousel (66.5% width) */}
+              <View style={[styles.heroCarouselDesktop, { width: heroWidth, height: heroHeight }]}>
+                <Animated.ScrollView
+                  ref={heroScrollRef}
+                  horizontal
+                  pagingEnabled
+                  bounces={false}
+                  decelerationRate="fast"
+                  showsHorizontalScrollIndicator={false}
+                  scrollEventThrottle={16}
+                  onScrollBeginDrag={() => { heroIsDragging.current = true; }}
+                  onScrollEndDrag={() => { heroIsDragging.current = false; }}
+                  onMomentumScrollEnd={handleHeroScrollEnd}
+                  onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: heroScrollX } } }],
+                    { useNativeDriver: true },
+                  )}
+                >
+                  {heroSlides.map((slide) => (
+                    <View key={slide.id} style={{ width: heroWidth, height: heroHeight }}>
+                      <AnimatedPressable
+                        style={{ width: heroWidth, height: heroHeight, borderRadius: 4, overflow: 'hidden' }}
+                        onPress={() => onNavigate(slide.route)}
+                        scaleDown={0.99}
+                      >
+                        <ImageBackground
+                          source={{ uri: slide.image }}
+                          style={{ width: '100%', height: '100%', justifyContent: 'center' }}
+                          imageStyle={{ borderRadius: 4 }}
+                          resizeMode="cover"
+                        >
+                          <View style={styles.heroGradientOverlay} />
+                          <View style={styles.heroContentDesktop}>
+                            <View style={styles.heroBadgeShopee}>
+                              <MaterialCommunityIcons name={slide.badgeIcon} size={11} color="#FFFFFF" />
+                              <Text style={styles.heroBadgeShopeeText}>{slide.badge}</Text>
+                            </View>
+                            <Text style={styles.heroTitleDesktop}>{slide.title}</Text>
+                            <Text style={styles.heroCopyDesktop}>{slide.copy}</Text>
+                            <View style={styles.heroButtonShopee}>
+                              <Text style={styles.heroButtonShopeeText}>{slide.button}</Text>
+                              <Feather name="arrow-right" size={13} color="#FFFFFF" />
+                            </View>
                           </View>
-                        </View>
-                      </View>
-                    </ImageBackground>
-                  </AnimatedPressable>
+                        </ImageBackground>
+                      </AnimatedPressable>
+                    </View>
+                  ))}
+                </Animated.ScrollView>
+
+                {/* Carousel Dots */}
+                <View style={styles.heroDots}>
+                  {heroSlides.map((slide, dotIndex) => (
+                    <View
+                      key={slide.id}
+                      style={[styles.heroDot, heroIndex === dotIndex && styles.heroDotActive]}
+                    />
+                  ))}
                 </View>
-              ))}
-            </Animated.ScrollView>
+              </View>
 
-            {/* Dots Indicator */}
-            <View style={styles.heroDots}>
-              {heroSlides.map((slide, dotIndex) => {
-                const dotScale = heroScrollX.interpolate({
-                  inputRange: [
-                    (dotIndex - 1) * heroWidth,
-                    dotIndex * heroWidth,
-                    (dotIndex + 1) * heroWidth,
-                  ],
-                  outputRange: [1, 2.6, 1],
-                  extrapolate: 'clamp',
-                });
-                const dotOpacity = heroScrollX.interpolate({
-                  inputRange: [
-                    (dotIndex - 1) * heroWidth,
-                    dotIndex * heroWidth,
-                    (dotIndex + 1) * heroWidth,
-                  ],
-                  outputRange: [0.35, 1, 0.35],
-                  extrapolate: 'clamp',
-                });
+              {/* Right Stacked 2 Promo Banners (33.5% width) */}
+              <View style={[styles.desktopRightStack, { width: heroRightWidth, height: heroHeight }]}>
+                <AnimatedPressable
+                  style={[styles.desktopRightBanner, { height: (heroHeight - 8) / 2 }]}
+                  onPress={() => onNavigate('exchange')}
+                  scaleDown={0.98}
+                >
+                  <ImageBackground
+                    source={{ uri: products[4]?.image || heroSlides[1].image }}
+                    style={styles.desktopRightImg}
+                    imageStyle={{ borderRadius: 4 }}
+                    resizeMode="cover"
+                  >
+                    <View style={styles.desktopRightOverlay} />
+                    <View style={styles.desktopRightContent}>
+                      <View style={styles.shopeeBadgeOrange}>
+                        <Text style={styles.shopeeBadgeOrangeText}>🔥 EKSTRA 100 POIN</Text>
+                      </View>
+                      <Text style={styles.desktopRightTitle}>Tukar Baju Jadi Voucher</Text>
+                      <Text style={styles.desktopRightSub}>Daur ulang pakaian tanpa ribet</Text>
+                    </View>
+                  </ImageBackground>
+                </AnimatedPressable>
 
-                return (
-                  <Animated.View
-                    key={slide.id}
-                    style={[
-                      styles.heroDot,
-                      {
-                        opacity: dotOpacity,
-                        transform: [{ scaleX: dotScale }],
-                      },
-                    ]}
-                  />
-                );
-              })}
+                <AnimatedPressable
+                  style={[styles.desktopRightBanner, { height: (heroHeight - 8) / 2 }]}
+                  onPress={() => onNavigate('custom-design')}
+                  scaleDown={0.98}
+                >
+                  <ImageBackground
+                    source={{ uri: products[3]?.image || heroSlides[0].image }}
+                    style={styles.desktopRightImg}
+                    imageStyle={{ borderRadius: 4 }}
+                    resizeMode="cover"
+                  >
+                    <View style={styles.desktopRightOverlay} />
+                    <View style={styles.desktopRightContent}>
+                      <View style={[styles.shopeeBadgeOrange, { backgroundColor: '#D0011B' }]}>
+                        <Text style={styles.shopeeBadgeOrangeText}>✂️ BESPOKE ATELIER</Text>
+                      </View>
+                      <Text style={styles.desktopRightTitle}>Jahit Kustom Presisi</Text>
+                      <Text style={styles.desktopRightSub}>100% dibuat sesuai ukuranmu</Text>
+                    </View>
+                  </ImageBackground>
+                </AnimatedPressable>
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.mobileHeroWrapper}>
+              <View style={[styles.heroCarousel, { width: heroWidth, height: heroHeight }]}>
+                <Animated.ScrollView
+                  ref={heroScrollRef}
+                  horizontal
+                  pagingEnabled
+                  bounces={false}
+                  decelerationRate="fast"
+                  showsHorizontalScrollIndicator={false}
+                  scrollEventThrottle={16}
+                  onScrollBeginDrag={() => { heroIsDragging.current = true; }}
+                  onScrollEndDrag={() => { heroIsDragging.current = false; }}
+                  onMomentumScrollEnd={handleHeroScrollEnd}
+                >
+                  {heroSlides.map((slide) => (
+                    <View key={slide.id} style={{ width: heroWidth, height: heroHeight }}>
+                      <AnimatedPressable
+                        style={{ width: heroWidth, height: heroHeight, borderRadius: 6, overflow: 'hidden' }}
+                        onPress={() => onNavigate(slide.route)}
+                        scaleDown={0.99}
+                      >
+                        <ImageBackground
+                          source={{ uri: slide.image }}
+                          style={{ width: '100%', height: '100%', justifyContent: 'center' }}
+                          imageStyle={{ borderRadius: 6 }}
+                          resizeMode="cover"
+                        >
+                          <View style={styles.heroGradientOverlay} />
+                          <View style={styles.heroContent}>
+                            <View style={styles.heroBadgeShopee}>
+                              <MaterialCommunityIcons name={slide.badgeIcon} size={11} color="#FFFFFF" />
+                              <Text style={styles.heroBadgeShopeeText}>{slide.badge}</Text>
+                            </View>
+                            <Text style={styles.heroTitle}>{slide.title}</Text>
+                            <Text style={styles.heroCopy}>{slide.copy}</Text>
+                          </View>
+                        </ImageBackground>
+                      </AnimatedPressable>
+                    </View>
+                  ))}
+                </Animated.ScrollView>
+                <View style={styles.heroDots}>
+                  {heroSlides.map((slide, dotIndex) => (
+                    <View
+                      key={slide.id}
+                      style={[styles.heroDot, heroIndex === dotIndex && styles.heroDotActive]}
+                    />
+                  ))}
+                </View>
+              </View>
+
+              {/* Mobile Duo Promo */}
+              <View style={styles.mobileDuoPromoContainer}>
+                <AnimatedPressable
+                  style={styles.mobileDuoCard}
+                  onPress={() => onNavigate('exchange')}
+                  scaleDown={0.98}
+                >
+                  <ImageBackground
+                    source={{ uri: products[4]?.image || heroSlides[1].image }}
+                    style={styles.mobileDuoImg}
+                    imageStyle={{ borderRadius: 4 }}
+                    resizeMode="cover"
+                  >
+                    <View style={styles.desktopRightOverlay} />
+                    <View style={styles.mobileDuoContent}>
+                      <Text style={styles.mobileDuoTitle}>Tukar Baju</Text>
+                      <Text style={styles.mobileDuoSub}>+100 Poin</Text>
+                    </View>
+                  </ImageBackground>
+                </AnimatedPressable>
+
+                <AnimatedPressable
+                  style={styles.mobileDuoCard}
+                  onPress={() => onNavigate('custom-design')}
+                  scaleDown={0.98}
+                >
+                  <ImageBackground
+                    source={{ uri: products[3]?.image || heroSlides[0].image }}
+                    style={styles.mobileDuoImg}
+                    imageStyle={{ borderRadius: 4 }}
+                    resizeMode="cover"
+                  >
+                    <View style={styles.desktopRightOverlay} />
+                    <View style={styles.mobileDuoContent}>
+                      <Text style={styles.mobileDuoTitle}>Jahit Kustom</Text>
+                      <Text style={styles.mobileDuoSub}>Bespoke Fit</Text>
+                    </View>
+                  </ImageBackground>
+                </AnimatedPressable>
+              </View>
+            </View>
+          )}
         </View>
 
-        {/* ─── Trust Badges ─────────────────────────────────────────── */}
+        {/* ─── Trust Badges Bar ───────────────────────────────────────── */}
         <TrustStrip />
 
-        {/* ─── Duo Promo Highlights (Tokopedia / Shopee Style) ─────────────── */}
-        <View style={[styles.duoPromoContainer, isDesktop && styles.duoPromoContainerDesktop]}>
-          <AnimatedPressable
-            style={[styles.duoPromoCard, isDesktop && styles.duoPromoCardDesktop]}
-            onPress={() => onNavigate('exchange')}
-            scaleDown={0.98}
-          >
-            <ImageBackground
-              source={{ uri: products[4]?.image || heroSlides[1].image }}
-              style={styles.duoPromoImg}
-              imageStyle={{ borderRadius: 12 }}
-              resizeMode="cover"
-            >
-              <View style={styles.duoPromoOverlay} />
-              <View style={styles.duoPromoContent}>
-                <View style={styles.duoPromoBadge}>
-                  <Text style={styles.duoPromoBadgeText}>🔥 EKSTRA 100 POIN</Text>
-                </View>
-                <Text style={styles.duoPromoTitle}>Tukar Baju Jadi Voucher</Text>
-                <Text style={styles.duoPromoSub}>Daur ulang pakaian lama tanpa ribet</Text>
-              </View>
-            </ImageBackground>
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[styles.duoPromoCard, isDesktop && styles.duoPromoCardDesktop]}
-            onPress={() => onNavigate('custom-design')}
-            scaleDown={0.98}
-          >
-            <ImageBackground
-              source={{ uri: products[3]?.image || heroSlides[0].image }}
-              style={styles.duoPromoImg}
-              imageStyle={{ borderRadius: 12 }}
-              resizeMode="cover"
-            >
-              <View style={styles.duoPromoOverlay} />
-              <View style={styles.duoPromoContent}>
-                <View style={[styles.duoPromoBadge, { backgroundColor: '#1E4D2B' }]}>
-                  <Text style={styles.duoPromoBadgeText}>✂️ BESPOKE ATELIER</Text>
-                </View>
-                <Text style={styles.duoPromoTitle}>Jahit Kustom Presisi</Text>
-                <Text style={styles.duoPromoSub}>100% dibuat khusus sesuai ukuranmu</Text>
-              </View>
-            </ImageBackground>
-          </AnimatedPressable>
-        </View>
-
-        {/* ─── Service Grid Launcher (Shopee Style) ─────────────────── */}
+        {/* ─── Shopee 10-Icon Service Launcher (Menu Lingkaran Shopee) ─── */}
         <View style={styles.serviceGridContainer}>
-          <View style={[styles.serviceGrid, isDesktop && styles.serviceGridDesktop]}>
-            {serviceIcons.map((service) => (
-              <Pressable
-                key={service.id}
-                style={[styles.serviceItem, isDesktop && styles.serviceItemDesktop]}
-                onPress={() => {
-                  if (service.route === 'passport-info') {
-                    setScanModalVisible(true);
-                  } else {
-                    onNavigate(service.route);
-                  }
-                }}
-              >
-                <View style={[styles.serviceIconCircle, isDesktop && styles.serviceIconCircleDesktop, { backgroundColor: service.color + '14' }]}>
-                  <MaterialCommunityIcons name={service.icon} size={isDesktop ? 24 : 20} color={service.color} />
-                </View>
-                <Text style={[styles.serviceLabel, isDesktop && styles.serviceLabelDesktop]} numberOfLines={1}>{service.label}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        {/* ─── Welcome Perk Card ────────────────────────────────────── */}
-        <View style={styles.welcomePerkContainer}>
-          <View style={styles.welcomePerkCard}>
-            <View style={styles.welcomePerkLeft}>
-              <View style={styles.welcomePerkIcon}>
-                <LeafMark size={16} color={colors.forest} />
-              </View>
-              <View style={styles.welcomePerkText}>
-                <Text style={styles.welcomePerkTitle}>Voucher Sambutan Sirkular</Text>
-                <Text style={styles.welcomePerkSub}>Diskon Rp25.000 untuk pesanan pertamamu</Text>
-                <View style={styles.welcomeCodeRow}>
-                  <Text style={styles.welcomeCodeTag}>Kode: NUZ2026-25</Text>
-                </View>
-              </View>
+          <View style={styles.serviceGridCard}>
+            <View style={styles.serviceGridRow}>
+              {serviceIcons.map((service) => (
+                <Pressable
+                  key={service.id}
+                  style={styles.serviceItem}
+                  onPress={() => {
+                    if (service.route === 'passport-info') {
+                      setScanModalVisible(true);
+                    } else {
+                      onNavigate(service.route);
+                    }
+                  }}
+                >
+                  <View style={[styles.serviceIconCircle, { backgroundColor: service.bg }]}>
+                    <MaterialCommunityIcons name={service.icon} size={22} color={service.color} />
+                  </View>
+                  <Text style={styles.serviceLabel} numberOfLines={2}>{service.label}</Text>
+                </Pressable>
+              ))}
             </View>
-            <Pressable
-              style={[styles.copyBtn, copiedCode && styles.copyBtnDone]}
-              onPress={copyPromoCode}
-            >
-              <Text style={[styles.copyBtnText, copiedCode && styles.copyBtnTextDone]}>
-                {copiedCode ? 'Tersalin ✓' : 'Salin'}
-              </Text>
-            </Pressable>
           </View>
         </View>
 
-        {/* ─── Kurasi Sirkular Terbatas (Shopee Flash Sale Style) ──────── */}
+        {/* ─── Shopee Flash Sale Section (Kilat) ───────────────────────── */}
         <View style={styles.curationSection}>
           <View style={styles.curationInner}>
             <View style={styles.curationHeader}>
               <View style={styles.curationTitleRow}>
-                <MaterialCommunityIcons name="fire" size={22} color="#EA580C" />
-                <Text style={styles.curationTitle}>RILIS TERBATAS ATELIER</Text>
+                <MaterialCommunityIcons name="fire" size={24} color="#EE4D2D" />
+                <Text style={styles.shopeeFlashTitle}>FLASH SALE</Text>
                 <View style={styles.flashCountdownRow}>
                   <View style={styles.timerBlock}><Text style={styles.timerBlockText}>{flashSaleTime.h}</Text></View>
                   <Text style={styles.timerColon}>:</Text>
@@ -645,28 +709,32 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                 return (
                   <AnimatedPressable
                     key={p.id}
-                    style={[styles.curationCard, isDesktop && styles.curationCardDesktop]}
+                    style={styles.flashProductCard}
                     onPress={() => onProductPress(p)}
                     scaleDown={0.97}
                   >
                     <ImageBackground
                       source={{ uri: p.image }}
-                      style={[styles.curationImg, isDesktop && styles.curationImgDesktop]}
-                      imageStyle={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
+                      style={styles.flashProductImg}
+                      imageStyle={{ borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
                     >
-                      <View style={styles.curationDiscountBadge}>
-                        <Text style={styles.curationDiscountText}>-35%</Text>
+                      <View style={styles.shopeeFlashDiscountFlag}>
+                        <Text style={styles.shopeeFlashDiscountText}>-35%</Text>
                       </View>
                     </ImageBackground>
 
-                    <View style={styles.curationBody}>
-                      <Text style={styles.curationProductTitle} numberOfLines={1}>{p.name}</Text>
-                      <Text style={styles.curationProductPrice}>{formatCurrency(p.price)}</Text>
-                      <Text style={styles.curationOriginalPrice}>{formatCurrency(originalPrice)}</Text>
-                      <View style={styles.curationStockBar}>
-                        <View style={[styles.curationStockFill, { width: `${Math.min(100, (15 - stock) * 8 + 30)}%` }]} />
-                        <Text style={styles.curationStockText}>
-                          🔥 SEGERA HABIS ({stock} unit)
+                    <View style={styles.flashProductBody}>
+                      <View style={styles.flashPriceRow}>
+                        <Text style={styles.flashCurrency}>Rp</Text>
+                        <Text style={styles.flashPrice}>{p.price.toLocaleString('id-ID')}</Text>
+                      </View>
+                      <Text style={styles.flashOriginalPrice}>Rp{originalPrice.toLocaleString('id-ID')}</Text>
+
+                      {/* Shopee Fiery Progress Bar */}
+                      <View style={styles.shopeeProgressBar}>
+                        <View style={[styles.shopeeProgressFill, { width: `${Math.min(100, (15 - stock) * 7 + 35)}%` }]} />
+                        <Text style={styles.shopeeProgressText}>
+                          🔥 SEGERA HABIS
                         </Text>
                       </View>
                     </View>
@@ -677,157 +745,224 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </View>
         </View>
 
-        {/* ─── Category chips filter ─────────────────────────────────────── */}
-        <View style={styles.sectionHeaderWrap}>
-          <SectionHeader
-            title="Koleksi Busana Sirkular"
-            action="Lihat Semua"
-            onAction={() => onNavigate('explore')}
-          />
-        </View>
-
-        <View style={styles.horizontalScrollWrap}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryRow}
-          >
-            {categories.map((item) => (
-              <Pressable
-                key={item}
-                style={[styles.chip, category === item && styles.chipActive]}
-                onPress={() => setCategory(item)}
-              >
-                <Text style={[styles.chipText, category === item && styles.chipTextActive]}>
-                  {item}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* ─── Featured Product Grid ─────────────────────────────────────── */}
-        <View style={[styles.productGrid, { gap: gridGap, paddingHorizontal: containerPadding }]}>
-          {featuredProducts.slice(0, numCols * 2).map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              grid
-              slotStyle={cardSlotStyle}
-              favorite={wishlist.includes(product.id)}
-              onToggleFavorite={() => requireAuth(() => toggleWishlist(product.id), 'Masuk ke akun untuk menyimpan produk ke Wishlist.')}
-              onPress={() => onProductPress(product)}
-            />
-          ))}
-        </View>
-
-        {/* ─── Local Tailor Spotlight ─────────────────────────────────────── */}
-        <View style={styles.sectionHeaderWrap}>
-          <SectionHeader title="Sorotan Penjahit Lokal" action="Lihat Semua" onAction={() => onNavigate('explore')} />
-        </View>
-
-        <View style={styles.horizontalScrollWrap}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.tailorRow}
-          >
-            {tailors.map((tailor) => (
-              <AnimatedPressable
-                key={tailor.id}
-                style={styles.tailorCard}
-                onPress={() => onTailorPress?.(tailor)}
-                scaleDown={0.97}
-              >
-                <ImageBackground
-                  source={{ uri: tailor.image }}
-                  style={styles.tailorImage}
-                  imageStyle={styles.tailorImageStyle}
-                >
-                  <View style={styles.tailorGradient} />
-                  <View style={styles.tailorBadge}>
-                    <MaterialCommunityIcons name="leaf" size={10} color={colors.white} />
-                    <Text style={styles.tailorBadgeText}>Lokal</Text>
-                  </View>
-                </ImageBackground>
-                <View style={styles.tailorInfo}>
-                  <Text style={styles.tailorName} numberOfLines={1}>{tailor.name}</Text>
-                  <View style={styles.tailorMeta}>
-                    <Feather name="map-pin" size={11} color={colors.warmGray} />
-                    <Text style={styles.tailorCity} numberOfLines={1}>{tailor.city}</Text>
-                  </View>
-                  <Text style={styles.tailorSpecialty} numberOfLines={2}>
-                    {tailor.specialty}
-                  </Text>
-                  <View style={styles.tailorFooter}>
-                    <View style={styles.tailorRating}>
-                      <Feather name="star" size={11} color={colors.warning} />
-                      <Text style={styles.tailorRatingText}>{tailor.rating}</Text>
-                    </View>
-                    <Text style={styles.tailorSold}>{tailor.sold} terjual</Text>
-                  </View>
+        {/* ─── Shopee Mall Section (FashionKu Mall) ────────────────────── */}
+        <View style={styles.shopeeMallSection}>
+          <View style={styles.shopeeMallInner}>
+            <View style={styles.shopeeMallHeader}>
+              <View style={styles.shopeeMallHeaderLeft}>
+                <View style={styles.shopeeMallBadge}>
+                  <Text style={styles.shopeeMallBadgeText}>MALL</Text>
                 </View>
-              </AnimatedPressable>
-            ))}
-          </ScrollView>
+                <Text style={styles.shopeeMallTitle}>FASHIONKU MALL</Text>
+                {isDesktop && (
+                  <View style={styles.shopeeMallPillRow}>
+                    <Text style={styles.shopeeMallPill}>🛡️ 100% Terverifikasi DPP</Text>
+                    <Text style={styles.shopeeMallPill}>🔄 7 Hari Garansi Pas</Text>
+                    <Text style={styles.shopeeMallPill}>🚚 Bebas Ongkir XTRA</Text>
+                  </View>
+                )}
+              </View>
+              <Pressable onPress={() => onNavigate('explore')}>
+                <Text style={styles.shopeeMallSeeAll}>Lihat Semua &gt;</Text>
+              </Pressable>
+            </View>
+
+            {/* Atelier Brand Carousel */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.shopeeMallScroll}
+            >
+              {tailors.map((t) => (
+                <AnimatedPressable
+                  key={t.id}
+                  style={styles.shopeeMallCard}
+                  onPress={() => onTailorPress?.(t)}
+                  scaleDown={0.97}
+                >
+                  <ImageBackground
+                    source={{ uri: t.image }}
+                    style={styles.shopeeMallCardImg}
+                    imageStyle={{ borderRadius: 4 }}
+                  >
+                    <View style={styles.shopeeMallCardOverlay} />
+                    <View style={styles.shopeeMallCardTag}>
+                      <Text style={styles.shopeeMallCardTagText}>OFFICIAL</Text>
+                    </View>
+                    <Text style={styles.shopeeMallCardName} numberOfLines={1}>{t.name}</Text>
+                    <Text style={styles.shopeeMallCardCity} numberOfLines={1}>{t.city}</Text>
+                  </ImageBackground>
+                </AnimatedPressable>
+              ))}
+            </ScrollView>
+          </View>
         </View>
 
-          {/* ─── UMKM Impact Banner ──────────────────────────────────────── */}
+        {/* ─── Kategori Pilihan (Shopee Categories Grid) ───────────────── */}
+        <View style={styles.shopeeCategorySection}>
+          <View style={styles.shopeeCategoryInner}>
+            <View style={styles.shopeeCategoryHeader}>
+              <Text style={styles.shopeeCategoryHeaderText}>KATEGORI PILIHAN</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.shopeeCategoryScroll}
+            >
+              {shopeeCategories.map((cat) => (
+                <Pressable
+                  key={cat.id}
+                  style={styles.shopeeCategoryItem}
+                  onPress={() => onNavigate(cat.route)}
+                >
+                  <View style={styles.shopeeCategoryThumbWrap}>
+                    <Image source={{ uri: cat.image }} style={styles.shopeeCategoryThumb} />
+                  </View>
+                  <Text style={styles.shopeeCategoryLabel} numberOfLines={2}>{cat.label}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+
+        {/* ─── Welcome Perk Voucher Card (Shopee Style) ───────────────── */}
+        <View style={styles.welcomePerkContainer}>
+          <View style={styles.welcomePerkCard}>
+            <View style={styles.welcomePerkLeft}>
+              <View style={styles.welcomePerkIcon}>
+                <LeafMark size={16} color="#EE4D2D" />
+              </View>
+              <View style={styles.welcomePerkText}>
+                <Text style={styles.welcomePerkTitle}>Voucher Sambutan Pengguna Baru</Text>
+                <Text style={styles.welcomePerkSub}>Diskon Rp25.000 untuk pesanan pertamamu</Text>
+                <View style={styles.welcomeCodeRow}>
+                  <Text style={styles.welcomeCodeTag}>Kode: SHOPEE-FASHIONKU25</Text>
+                </View>
+              </View>
+            </View>
+            <Pressable
+              style={[styles.copyBtn, copiedCode && styles.copyBtnDone]}
+              onPress={copyPromoCode}
+            >
+              <Text style={[styles.copyBtnText, copiedCode && styles.copyBtnTextDone]}>
+                {copiedCode ? 'Tersalin ✓' : 'Klaim'}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
+        {/* ─── Shopee Rekomendasi (Daily Discover Sticky Tabs & Infinite Grid) ─ */}
+        <View style={styles.shopeeDailyDiscoverContainer}>
+          <View style={styles.shopeeDailyDiscoverInner}>
+            {/* Shopee Active Tab Header */}
+            <View style={styles.shopeeDiscoverTabsBar}>
+              <View style={styles.shopeeActiveTab}>
+                <Text style={styles.shopeeActiveTabText}>REKOMENDASI</Text>
+                <View style={styles.shopeeActiveUnderline} />
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.shopeeCategoryFilterRow}
+              >
+                {categories.map((c) => (
+                  <Pressable
+                    key={c}
+                    style={[styles.shopeeFilterChip, category === c && styles.shopeeFilterChipActive]}
+                    onPress={() => setCategory(c)}
+                  >
+                    <Text style={[styles.shopeeFilterChipText, category === c && styles.shopeeFilterChipTextActive]}>
+                      {c}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* Shopee Responsive Product Grid */}
+            <View style={[styles.productGrid, { gap: gridGap }]}>
+              {featuredProducts.slice(0, numCols * 4).map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  grid
+                  slotStyle={cardSlotStyle}
+                  favorite={wishlist.includes(product.id)}
+                  onToggleFavorite={() => requireAuth(() => toggleWishlist(product.id), 'Masuk ke akun untuk menyimpan produk ke Wishlist.')}
+                  onPress={() => onProductPress(product)}
+                />
+              ))}
+            </View>
+
+            {/* Load More Button in Shopee Style */}
+            <View style={styles.loadMoreWrap}>
+              <Pressable style={styles.loadMoreBtn} onPress={() => onNavigate('explore')}>
+                <Text style={styles.loadMoreText}>Lihat Lebih Banyak</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+
+        {/* ─── UMKM Impact Banner ──────────────────────────────────────── */}
+        <View style={styles.umkmBannerOuter}>
           <AnimatedPressable
             style={styles.umkmBanner}
             onPress={() => onNavigate('impact')}
-            scaleDown={0.97}
+            scaleDown={0.98}
           >
             <View style={styles.umkmBannerLeft}>
               <View style={styles.umkmBannerIcon}>
-                <MaterialCommunityIcons name="account-group" size={22} color={colors.white} />
+                <MaterialCommunityIcons name="account-group" size={22} color="#FFFFFF" />
               </View>
               <View style={styles.umkmBannerText}>
-                <Text style={styles.umkmBannerTitle}>134 Penjahit UMKM</Text>
+                <Text style={styles.umkmBannerTitle}>134 Penjahit UMKM Terdaftar</Text>
                 <Text style={styles.umkmBannerSub}>
-                  Setiap pesanan memberdayakan artisan lokal Indonesia
+                  Setiap pesanan memberdayakan artisan lokal Indonesia dengan standar sirkular
                 </Text>
               </View>
             </View>
             <View style={styles.umkmBannerArrow}>
-              <Feather name="arrow-right" size={16} color={colors.white} />
+              <Feather name="arrow-right" size={16} color="#FFFFFF" />
             </View>
           </AnimatedPressable>
+        </View>
 
-        {/* ─── Shopee / Tokopedia Style Desktop Footer ────────────────────── */}
+        {/* ─── Shopee 5-Column Desktop Footer ─────────────────────────── */}
         {isDesktop && (
           <View style={styles.desktopFooter}>
             <View style={styles.desktopFooterInner}>
               <View style={styles.footerCol}>
-                <Text style={styles.footerColTitle}>Layanan Pelanggan</Text>
+                <Text style={styles.footerColTitle}>LAYANAN PELANGGAN</Text>
                 <Text style={styles.footerLink}>Pusat Bantuan</Text>
                 <Text style={styles.footerLink}>Cara Pembelian</Text>
-                <Text style={styles.footerLink}>Pengiriman & Tarif</Text>
-                <Text style={styles.footerLink}>Garansi Ukuran Pas</Text>
-                <Text style={styles.footerLink}>Pengembalian Barang</Text>
+                <Text style={styles.footerLink}>Pengiriman & Bebas Ongkir</Text>
+                <Text style={styles.footerLink}>Garansi Ukuran Pas 100%</Text>
+                <Text style={styles.footerLink}>Pengembalian Barang & Dana</Text>
+                <Text style={styles.footerLink}>Hubungi Kami</Text>
               </View>
 
               <View style={styles.footerCol}>
-                <Text style={styles.footerColTitle}>Jelajahi FashionKu</Text>
+                <Text style={styles.footerColTitle}>JELAJAHI FASHIONKU</Text>
                 <Text style={styles.footerLink}>Tentang Kami</Text>
                 <Text style={styles.footerLink}>Mitra Penjahit UMKM</Text>
                 <Text style={styles.footerLink}>Paspor Digital DPP</Text>
                 <Text style={styles.footerLink}>Dampak Lingkungan</Text>
-                <Text style={styles.footerLink}>Karir & Komunitas</Text>
+                <Text style={styles.footerLink}>Karir & Kebijakan Privasi</Text>
+                <Text style={styles.footerLink}>FashionKu Blog</Text>
               </View>
 
               <View style={styles.footerCol}>
-                <Text style={styles.footerColTitle}>Pembayaran</Text>
+                <Text style={styles.footerColTitle}>PEMBAYARAN</Text>
                 <View style={styles.footerBadgeWrap}>
-                  {['QRIS', 'BCA', 'Mandiri', 'BNI', 'BRI', 'GoPay', 'OVO'].map((pay) => (
+                  {['QRIS', 'BCA', 'Mandiri', 'BNI', 'BRI', 'ShopeePay', 'COD'].map((pay) => (
                     <View key={pay} style={styles.footerPayBadge}>
                       <Text style={styles.footerPayText}>{pay}</Text>
                     </View>
                   ))}
                 </View>
-                <Text style={[styles.footerColTitle, { marginTop: 14 }]}>Pengiriman</Text>
+                <Text style={[styles.footerColTitle, { marginTop: 14 }]}>PENGIRIMAN</Text>
                 <View style={styles.footerBadgeWrap}>
-                  {['JNE', 'SiCepat', 'J&T', 'GoSend', 'AnterAja'].map((courier) => (
+                  {['J&T', 'SiCepat', 'JNE', 'GoSend', 'AnterAja'].map((courier) => (
                     <View key={courier} style={styles.footerPayBadge}>
                       <Text style={styles.footerPayText}>{courier}</Text>
                     </View>
@@ -837,14 +972,16 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
 
               <View style={styles.footerColWide}>
                 <View style={styles.footerBrandRow}>
-                  <Image source={LOGO} style={styles.footerBrandLogo} resizeMode="contain" />
+                  <View style={styles.footerBrandLogoCard}>
+                    <Image source={LOGO} style={styles.footerBrandLogo} resizeMode="contain" />
+                  </View>
                   <Text style={styles.footerBrandName}>FashionKu</Text>
                 </View>
                 <Text style={styles.footerBrandDesc}>
-                  Platform e-commerce fesyen sirkular terdepan Indonesia. Menghubungkan pembeli dengan artisan penjahit lokal untuk menghasilkan pakaian bespoke ramah lingkungan dengan transparansi Digital Product Passport (DPP).
+                  Platform e-commerce fesyen sirkular terdepan Indonesia yang mengusung standar Shopee. Menghubungkan pembeli dengan 134 artisan penjahit lokal untuk menghasilkan busana bespoke ramah lingkungan dengan transparansi Digital Product Passport (DPP).
                 </Text>
                 <View style={styles.footerCertBadge}>
-                  <MaterialCommunityIcons name="shield-check" size={16} color="#2C6842" />
+                  <MaterialCommunityIcons name="shield-check" size={16} color="#EE4D2D" />
                   <Text style={styles.footerCertText}>100% Terverifikasi Ramah Lingkungan & DPP Certified</Text>
                 </View>
               </View>
@@ -852,14 +989,28 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
 
             <View style={styles.footerBottomBar}>
               <Text style={styles.footerCopyright}>
-                © 2026 FashionKu by CIRCULAI. Platform Fesyen Sirkular & Bespoke Indonesia. Hak Cipta Dilindungi.
+                © 2026 FashionKu Indonesia. Hak Cipta Dilindungi. Platform Fesyen Sirkular & Bespoke.
               </Text>
             </View>
           </View>
         )}
-
-
       </ScrollView>
+
+      {/* ─── Shopee Floating Chat Widget on Desktop ────────────────────── */}
+      {isDesktop && (
+        <View style={styles.floatingChatWrap}>
+          <Pressable
+            style={styles.floatingChatBtn}
+            onPress={() => onNavigate('quiz')}
+          >
+            <MaterialCommunityIcons name="chat-processing" size={20} color="#FFFFFF" />
+            <Text style={styles.floatingChatText}>Chat</Text>
+            <View style={styles.chatBadge}>
+              <Text style={styles.chatBadgeText}>1</Text>
+            </View>
+          </Pressable>
+        </View>
+      )}
 
       {/* ─── Digital Product Passport Scanner Camera Modal ────────────── */}
       <PassportScannerModal
@@ -901,7 +1052,7 @@ function TrustStrip() {
       >
         {trustBadges.map((item, idx) => (
           <View key={idx} style={styles.trustBadgePill}>
-            <MaterialCommunityIcons name={item.icon} size={13} color={colors.forest} />
+            <MaterialCommunityIcons name={item.icon} size={13} color="#EE4D2D" />
             <Text style={styles.trustBadgeText}>{item.text}</Text>
           </View>
         ))}
@@ -910,37 +1061,26 @@ function TrustStrip() {
   );
 }
 
-function ImpactStat({ icon, value, label }) {
-  return (
-    <View style={styles.impactStat}>
-      <View style={styles.impactStatIcon}>
-        <MaterialCommunityIcons name={icon} size={18} color={colors.forest} />
-      </View>
-      <Text style={styles.impactValue}>{value}</Text>
-      <Text style={styles.impactLabel}>{label}</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 110,
   },
-  // ─── Header Top ────────────────────────────────────────────────────────────
+
+  // ─── Shopee Orange Gradient Top Header ──────────────────────────────────────
   topHeader: {
-    backgroundColor: colors.white,
-    paddingHorizontal: 0,
-    paddingTop: 0,
-    paddingBottom: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    backgroundColor: '#EE4D2D', // Iconic Shopee Orange fallback
+    ...Platform.select({
+      web: {
+        backgroundImage: 'linear-gradient(-180deg, #f53d2d, #f63)',
+      },
+    }),
     width: '100%',
+    paddingBottom: 6,
     ...shadows.sm,
   },
   topUtilityBar: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-    backgroundColor: '#FAFBF6',
+    borderBottomColor: 'rgba(255, 255, 255, 0.18)',
     paddingVertical: 5,
     paddingHorizontal: 16,
     marginBottom: 6,
@@ -957,36 +1097,35 @@ const styles = StyleSheet.create({
   utilityLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   utilityRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-  utilityLink: {
+  utilityLinkWhite: {
     fontSize: 11.5,
-    color: '#6B7280',
+    color: '#FFFFFF',
     fontWeight: '500',
+    opacity: 0.92,
   },
-  utilityDivider: {
+  utilityDividerWhite: {
     fontSize: 11,
-    color: '#D1D5DB',
+    color: 'rgba(255, 255, 255, 0.4)',
   },
-  utilityPill: {
+  utilityPillShopee: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EDF7EE',
+    backgroundColor: 'rgba(0, 0, 0, 0.22)',
     paddingHorizontal: 8,
     paddingVertical: 2.5,
     borderRadius: 99,
-    borderWidth: 1,
-    borderColor: '#C6E7CE',
   },
-  utilityPillText: {
+  utilityPillTextShopee: {
     fontSize: 11,
-    color: '#20603D',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   topHeaderInner: {
@@ -1006,13 +1145,16 @@ const styles = StyleSheet.create({
   brandContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginRight: 6,
+    gap: 8,
+  },
+  brandLogoCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 6,
+    padding: 3,
   },
   brandLogo: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
+    width: 32,
+    height: 32,
   },
   brandTextGroup: {
     justifyContent: 'center',
@@ -1020,264 +1162,185 @@ const styles = StyleSheet.create({
   brandTitleText: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#2C6842',
-    letterSpacing: -0.6,
+    color: '#FFFFFF',
+    letterSpacing: -0.5,
   },
   brandTaglineText: {
-    fontSize: 9.5,
+    fontSize: 9,
     fontWeight: '700',
-    color: '#6A7D87',
-    letterSpacing: 0.3,
+    color: 'rgba(255, 255, 255, 0.88)',
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   searchSection: {
     flex: 1,
-    maxWidth: 620,
+    maxWidth: 640,
   },
   searchBox: {
     width: '100%',
   },
   searchInner: {
-    height: 42,
-    borderRadius: 10,
+    height: 40,
+    borderRadius: 3,
     backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#2C6842',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 12,
+    paddingLeft: 10,
     paddingRight: 3,
     justifyContent: 'space-between',
+    ...shadows.sm,
   },
   searchIconLeft: {
-    marginRight: 8,
+    marginRight: 6,
   },
   searchText: {
     flex: 1,
     fontSize: 13,
-    color: '#64748B',
+    color: '#757575',
     fontWeight: '500',
   },
   searchSubmitBtn: {
-    height: 36,
+    height: 34,
     paddingHorizontal: 16,
-    borderRadius: 7,
-    backgroundColor: '#2C6842',
+    borderRadius: 2,
+    backgroundColor: '#FB5533', // Shopee vibrant button
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   searchSubmitText: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
   },
   quickKeywordsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     marginTop: 4,
-    paddingLeft: 4,
+    paddingLeft: 2,
   },
   quickKeyword: {
     fontSize: 11,
-    color: '#64748B',
-    fontWeight: '500',
+    color: '#FFFFFF',
+    fontWeight: '400',
+    opacity: 0.9,
   },
   headerRightActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
   },
   headerActionBtn: {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
-    paddingHorizontal: 6,
-    paddingVertical: 4,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
   },
   actionBtnLabel: {
     fontSize: 10,
-    fontWeight: '600',
-    color: '#475569',
+    fontWeight: '500',
+    color: '#FFFFFF',
   },
   cartIconWrapper: {
     position: 'relative',
   },
   cartCountBadge: {
     position: 'absolute',
-    right: -8,
     top: -6,
+    right: -8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#EE4D2D',
+    borderRadius: 10,
     minWidth: 18,
     height: 18,
-    borderRadius: 9,
-    backgroundColor: '#EA580C',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 3,
-    borderWidth: 1.5,
-    borderColor: '#FFFFFF',
   },
   cartCountText: {
-    color: '#FFFFFF',
-    fontSize: 9.5,
+    color: '#EE4D2D',
+    fontSize: 10,
     fontWeight: '900',
   },
   headerLoginBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#2C6842',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 3,
   },
   headerLoginText: {
-    color: '#FFFFFF',
-    fontSize: 13,
+    color: '#EE4D2D',
+    fontSize: 12.5,
     fontWeight: '800',
   },
   headerUserBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 4,
+    gap: 6,
   },
   userAvatarSmall: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#2C6842',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   userAvatarInitial: {
-    color: '#FFFFFF',
+    color: '#EE4D2D',
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '900',
   },
   userNameHeader: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#1E293B',
+    color: '#FFFFFF',
   },
   desktopNavStrip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 20,
-    paddingTop: 8,
-    paddingBottom: 4,
+    gap: 16,
+    paddingTop: 6,
+    paddingBottom: 2,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: 'rgba(255, 255, 255, 0.18)',
   },
   navTabItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
+    gap: 5,
+    paddingVertical: 4,
     paddingHorizontal: 4,
   },
   navTabItemActive: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#2C6842',
+    borderBottomWidth: 2.5,
+    borderBottomColor: '#FFFFFF',
   },
   navTabText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#475569',
+    fontSize: 12.5,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.88)',
   },
   navTabTextActive: {
-    color: '#2C6842',
+    color: '#FFFFFF',
     fontWeight: '800',
   },
   locationBar: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingTop: 4,
+    paddingTop: 3,
     paddingBottom: 2,
   },
   locationText: {
-    fontSize: 11.5,
-    color: '#64748B',
-  },
-  heroTitleDesktop: {
-    fontSize: 26,
-    lineHeight: 34,
-  },
-  heroCopyDesktop: {
-    fontSize: 14,
-    lineHeight: 20,
-    maxWidth: 520,
-  },
-  flashCountdownRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  timerBlock: {
-    backgroundColor: '#1E293B',
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 4,
-  },
-  timerBlockText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '900',
-    fontFamily: 'monospace',
-  },
-  timerColon: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: '#1E293B',
-  },
-  curationCardDesktop: {
-    width: 175,
-  },
-  curationImgDesktop: {
-    height: 145,
-  },
-  curationDiscountBadge: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    backgroundColor: '#FEF2F2',
-    paddingHorizontal: 6,
-    paddingVertical: 2.5,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#FCA5A5',
-  },
-  curationDiscountText: {
-    color: '#DC2626',
-    fontSize: 10,
-    fontWeight: '900',
-  },
-  curationStockBar: {
-    height: 14,
-    backgroundColor: '#F1F5F9',
-    borderRadius: 7,
-    overflow: 'hidden',
-    position: 'relative',
-    marginTop: 6,
-    justifyContent: 'center',
-  },
-  curationStockFill: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: '#FDE047',
-    borderRadius: 7,
-  },
-  curationOriginalPrice: {
     fontSize: 11,
-    color: '#94A3B8',
-    textDecorationLine: 'line-through',
-    marginTop: 1,
+    color: 'rgba(255, 255, 255, 0.88)',
   },
 
-  // ─── Hero Outer Container & Duo Promo ─────────────────────────────────────
+  // ─── Hero Section ──────────────────────────────────────────────────────────
   heroOuterContainer: {
     maxWidth: 1200,
     width: '100%',
@@ -1286,421 +1349,611 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 6,
   },
-  heroContentDesktop: {
-    paddingHorizontal: 28,
-    paddingVertical: 24,
-  },
-  duoPromoContainer: {
-    maxWidth: 1200,
-    width: '100%',
-    alignSelf: 'center',
+  desktopHeroRow: {
     flexDirection: 'row',
-    gap: 10,
+    alignItems: 'center',
+    gap: 12,
+  },
+  heroCarouselDesktop: {
+    borderRadius: 4,
+    overflow: 'hidden',
+    position: 'relative',
+    ...shadows.sm,
+  },
+  heroCarousel: {
+    borderRadius: 6,
+    overflow: 'hidden',
+    position: 'relative',
+    ...shadows.sm,
+  },
+  heroGradientOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(15, 23, 42, 0.45)',
+  },
+  heroContentDesktop: {
+    paddingHorizontal: 26,
+    paddingVertical: 20,
+    zIndex: 2,
+  },
+  heroContent: {
     paddingHorizontal: 16,
-    marginTop: 6,
+    paddingVertical: 14,
+    zIndex: 2,
+  },
+  heroBadgeShopee: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EE4D2D',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 3,
     marginBottom: 6,
   },
-  duoPromoContainerDesktop: {
-    gap: 14,
+  heroBadgeShopeeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
-  duoPromoCard: {
-    flex: 1,
-    height: 105,
-    borderRadius: 14,
+  heroTitleDesktop: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '900',
+    lineHeight: 32,
+  },
+  heroTitle: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '900',
+    lineHeight: 22,
+  },
+  heroCopyDesktop: {
+    color: 'rgba(255,255,255,0.92)',
+    fontSize: 13,
+    lineHeight: 18,
+    maxWidth: 480,
+    marginTop: 4,
+  },
+  heroCopy: {
+    color: 'rgba(255,255,255,0.92)',
+    fontSize: 11,
+    lineHeight: 15,
+    marginTop: 2,
+  },
+  heroButtonShopee: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EE4D2D',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 3,
+    marginTop: 12,
+  },
+  heroButtonShopeeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  heroDots: {
+    position: 'absolute',
+    bottom: 8,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: 5,
+    zIndex: 5,
+  },
+  heroDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+  },
+  heroDotActive: {
+    backgroundColor: '#EE4D2D',
+    width: 16,
+  },
+
+  // ─── Desktop Right Stacked Promo Banners ───────────────────────────────────
+  desktopRightStack: {
+    justifyContent: 'space-between',
+  },
+  desktopRightBanner: {
+    width: '100%',
+    borderRadius: 4,
     overflow: 'hidden',
     ...shadows.sm,
   },
-  duoPromoCardDesktop: {
-    height: 135,
-  },
-  duoPromoImg: {
+  desktopRightImg: {
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end',
   },
-  duoPromoOverlay: {
+  desktopRightOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(15, 23, 42, 0.42)',
-    borderRadius: 14,
+    backgroundColor: 'rgba(15, 23, 42, 0.40)',
   },
-  duoPromoContent: {
-    padding: 12,
+  desktopRightContent: {
+    padding: 10,
     zIndex: 2,
   },
-  duoPromoBadge: {
+  shopeeBadgeOrange: {
     alignSelf: 'flex-start',
-    backgroundColor: '#EA580C',
+    backgroundColor: '#EE4D2D',
     paddingHorizontal: 6,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: 2,
     marginBottom: 3,
   },
-  duoPromoBadgeText: {
+  shopeeBadgeOrangeText: {
     color: '#FFFFFF',
-    fontSize: 9,
+    fontSize: 8.5,
     fontWeight: '800',
   },
-  duoPromoTitle: {
+  desktopRightTitle: {
     color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '800',
     lineHeight: 17,
   },
-  duoPromoSub: {
-    color: 'rgba(255,255,255,0.88)',
+  desktopRightSub: {
+    color: 'rgba(255,255,255,0.85)',
     fontSize: 10,
-    fontWeight: '500',
-  },
-  sectionHeaderWrap: {
-    maxWidth: 1200,
-    width: '100%',
-    alignSelf: 'center',
-    paddingHorizontal: 16,
-    marginTop: 18,
-    marginBottom: 4,
   },
 
-  // ─── Service Grid Desktop ──────────────────────────────────────────────────
-  serviceGridDesktop: {
+  // ─── Mobile Hero & Duo Promo ───────────────────────────────────────────────
+  mobileHeroWrapper: {
+    gap: 8,
+  },
+  mobileDuoPromoContainer: {
     flexDirection: 'row',
-    flexWrap: 'nowrap',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    gap: 8,
   },
-  serviceItemDesktop: {
-    width: '12%',
-    alignItems: 'center',
-  },
-  serviceIconCircleDesktop: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-  },
-  serviceLabelDesktop: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#1E293B',
-    marginTop: 6,
-  },
-
-  // ─── Desktop Footer ───────────────────────────────────────────────────────
-  desktopFooter: {
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    marginTop: 40,
-    paddingTop: 36,
-    paddingBottom: 24,
-    width: '100%',
-  },
-  desktopFooterInner: {
-    maxWidth: 1200,
-    width: '100%',
-    alignSelf: 'center',
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 32,
-    flexWrap: 'wrap',
-  },
-  footerCol: {
+  mobileDuoCard: {
     flex: 1,
-    minWidth: 160,
-  },
-  footerColWide: {
-    flex: 1.6,
-    minWidth: 260,
-  },
-  footerColTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#1E293B',
-    marginBottom: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  footerLink: {
-    fontSize: 12,
-    color: '#64748B',
-    marginBottom: 8,
-    fontWeight: '500',
-  },
-  footerBadgeWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  footerPayBadge: {
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  footerPayText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#334155',
-  },
-  footerBrandRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 10,
-  },
-  footerBrandLogo: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-  },
-  footerBrandName: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#2C6842',
-  },
-  footerBrandDesc: {
-    fontSize: 12,
-    color: '#64748B',
-    lineHeight: 18,
-    marginBottom: 14,
-  },
-  footerCertBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#EDF7EE',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#C6E7CE',
-    alignSelf: 'flex-start',
-  },
-  footerCertText: {
-    fontSize: 11,
-    color: '#2C6842',
-    fontWeight: '700',
-  },
-  footerBottomBar: {
-    maxWidth: 1200,
-    width: '100%',
-    alignSelf: 'center',
-    paddingHorizontal: 16,
-    marginTop: 28,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-    alignItems: 'center',
-  },
-  footerCopyright: {
-    fontSize: 11.5,
-    color: '#94A3B8',
-    textAlign: 'center',
-  },
-  // ─── Hero Carousel ────────────────────────────────────────────────────────
-  heroCarousel: {
-    position: 'relative',
+    height: 80,
+    borderRadius: 4,
     overflow: 'hidden',
-    maxWidth: 1200,
+    ...shadows.sm,
+  },
+  mobileDuoImg: {
     width: '100%',
-    alignSelf: 'center',
-    borderRadius: 16,
+    height: '100%',
+    justifyContent: 'flex-end',
   },
-  heroSlide: {
-    overflow: 'hidden',
-  },
-  heroCard: {
-    width: '100%',
-    borderRadius: 16,
-    overflow: 'hidden',
-    backgroundColor: colors.forest,
-    ...shadows.md,
-  },
-  heroImageBg: {
-    width: '100%',
-    minHeight: 180,
-    justifyContent: 'center',
-  },
-  heroGradientOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(28, 43, 33, 0.65)',
-    borderRadius: 20,
-  },
-  heroContent: {
-    width: '88%',
-    minHeight: 180,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 18,
+  mobileDuoContent: {
+    padding: 8,
     zIndex: 2,
   },
-  heroBadge: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    borderRadius: 9999,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    backgroundColor: 'rgba(255,255,255,0.22)',
-    marginBottom: 4,
-  },
-  heroBadgeText: {
-    color: colors.sand,
-    fontSize: 9,
-    fontWeight: '800',
-    letterSpacing: 0.3,
-  },
-  heroTitle: {
-    color: colors.white,
-    fontSize: 18,
-    fontWeight: '900',
-    lineHeight: 24,
-    letterSpacing: -0.3,
-  },
-  heroCopy: {
-    color: 'rgba(255,255,255,0.85)',
+  mobileDuoTitle: {
+    color: '#FFFFFF',
     fontSize: 12,
-    lineHeight: 16,
-    marginTop: 4,
+    fontWeight: '800',
   },
-  heroButton: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    marginTop: 6,
+  mobileDuoSub: {
+    color: '#FFDA44',
+    fontSize: 10,
+    fontWeight: '700',
   },
-  heroButtonText: {
-    color: colors.sand,
-    fontSize: 11,
-    fontWeight: '900',
-  },
-  heroButtonArrow: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.20)',
-  },
-  heroDots: {
-    position: 'absolute',
-    left: 28,
-    bottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  heroDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 99,
-    backgroundColor: colors.sand,
-  },
-  // ─── Trust Badges ─────────────────────────────────────────────────────────
+
+  // ─── Trust Badges ──────────────────────────────────────────────────────────
   trustStripContainer: {
-    paddingVertical: 8,
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 6,
   },
   trustStripContent: {
-    paddingHorizontal: 16,
+    flexDirection: 'row',
     gap: 8,
   },
   trustBadgePill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 99,
-    backgroundColor: colors.white,
+    gap: 5,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 4,
     borderWidth: 1,
-    borderColor: colors.lightGray,
-    ...shadows.sm,
+    borderColor: '#ECECEC',
   },
   trustBadgeText: {
     fontSize: 11,
-    fontWeight: '700',
-    color: colors.charcoal,
+    fontWeight: '600',
+    color: '#333333',
   },
 
-  // ─── Service Grid ─────────────────────────────────────────────────────────
+  // ─── Shopee 10-Icon Service Launcher Grid ──────────────────────────────────
   serviceGridContainer: {
-    paddingHorizontal: 16,
-    marginVertical: 10,
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
+    paddingHorizontal: 16,
+    marginTop: 4,
+    marginBottom: 6,
   },
-  serviceGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    rowGap: 14,
-    backgroundColor: colors.white,
-    paddingVertical: 16,
-    paddingHorizontal: 14,
-    borderRadius: 20,
+  serviceGridCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
     borderWidth: 1,
-    borderColor: colors.lightGray,
+    borderColor: '#ECECEC',
     ...shadows.sm,
   },
+  serviceGridRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    gap: 4,
+  },
   serviceItem: {
-    width: '23%',
     alignItems: 'center',
-    gap: 5,
+    width: '18%',
+    minWidth: 64,
+    marginVertical: 4,
   },
   serviceIconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 5,
   },
   serviceLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.charcoal,
+    fontSize: 10.5,
+    fontWeight: '500',
+    color: '#333333',
     textAlign: 'center',
+    lineHeight: 13,
   },
 
-  // ─── Welcome Perk Card ───────────────────────────────────────────────────
-  welcomePerkContainer: {
-    paddingHorizontal: 16,
-    marginVertical: 8,
+  // ─── Shopee Flash Sale Section ─────────────────────────────────────────────
+  curationSection: {
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 6,
   },
-  welcomePerkCard: {
+  curationInner: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    ...shadows.sm,
+  },
+  curationHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.white,
-    borderRadius: 18,
-    padding: 14,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+    paddingBottom: 8,
+  },
+  curationTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  shopeeFlashTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    fontStyle: 'italic',
+    color: '#EE4D2D',
+    letterSpacing: 0.3,
+  },
+  flashCountdownRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  timerBlock: {
+    backgroundColor: '#222222',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 2,
+  },
+  timerBlockText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '900',
+    fontFamily: 'monospace',
+  },
+  timerColon: {
+    fontSize: 11,
+    fontWeight: '900',
+    color: '#222222',
+  },
+  curationSeeAll: {
+    color: '#EE4D2D',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  curationScroll: {
+    gap: 10,
+  },
+  flashProductCard: {
+    width: 135,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
     borderWidth: 1,
-    borderColor: colors.lightGray,
+    borderColor: '#ECECEC',
+    overflow: 'hidden',
+  },
+  flashProductImg: {
+    width: '100%',
+    height: 120,
+    position: 'relative',
+  },
+  shopeeFlashDiscountFlag: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#FFDA44',
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    alignItems: 'center',
+  },
+  shopeeFlashDiscountText: {
+    color: '#EE4D2D',
+    fontSize: 9,
+    fontWeight: '900',
+  },
+  flashProductBody: {
+    padding: 6,
+    alignItems: 'center',
+  },
+  flashPriceRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  flashCurrency: {
+    color: '#EE4D2D',
+    fontSize: 9,
+    fontWeight: '700',
+  },
+  flashPrice: {
+    color: '#EE4D2D',
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  flashOriginalPrice: {
+    fontSize: 9.5,
+    color: '#9E9E9E',
+    textDecorationLine: 'line-through',
+  },
+  shopeeProgressBar: {
+    width: '100%',
+    height: 14,
+    backgroundColor: '#FFEAE8',
+    borderRadius: 7,
+    marginTop: 6,
+    overflow: 'hidden',
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shopeeProgressFill: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: '#EE4D2D',
+    borderRadius: 7,
+  },
+  shopeeProgressText: {
+    color: '#FFFFFF',
+    fontSize: 8,
+    fontWeight: '900',
+    zIndex: 2,
+  },
+
+  // ─── Shopee Mall Section (FashionKu Mall) ──────────────────────────────────
+  shopeeMallSection: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 6,
+  },
+  shopeeMallInner: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    ...shadows.sm,
+  },
+  shopeeMallHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+    paddingBottom: 8,
+    marginBottom: 10,
+  },
+  shopeeMallHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  shopeeMallBadge: {
+    backgroundColor: '#D0011B',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 2,
+  },
+  shopeeMallBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 9,
+    fontWeight: '900',
+  },
+  shopeeMallTitle: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: '#D0011B',
+    letterSpacing: 0.3,
+  },
+  shopeeMallPillRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginLeft: 8,
+  },
+  shopeeMallPill: {
+    fontSize: 11,
+    color: '#333333',
+    fontWeight: '500',
+  },
+  shopeeMallSeeAll: {
+    color: '#D0011B',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  shopeeMallScroll: {
+    gap: 10,
+  },
+  shopeeMallCard: {
+    width: 150,
+    height: 100,
+    borderRadius: 4,
+    overflow: 'hidden',
+    ...shadows.sm,
+  },
+  shopeeMallCardImg: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-end',
+    padding: 8,
+  },
+  shopeeMallCardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  shopeeMallCardTag: {
+    position: 'absolute',
+    top: 6,
+    left: 6,
+    backgroundColor: '#D0011B',
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 2,
+  },
+  shopeeMallCardTagText: {
+    color: '#FFFFFF',
+    fontSize: 7.5,
+    fontWeight: '800',
+  },
+  shopeeMallCardName: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+    zIndex: 2,
+  },
+  shopeeMallCardCity: {
+    color: 'rgba(255,255,255,0.85)',
+    fontSize: 9.5,
+    zIndex: 2,
+  },
+
+  // ─── Kategori Pilihan (Shopee Categories) ──────────────────────────────────
+  shopeeCategorySection: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 6,
+  },
+  shopeeCategoryInner: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    ...shadows.sm,
+  },
+  shopeeCategoryHeader: {
+    marginBottom: 10,
+  },
+  shopeeCategoryHeaderText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#757575',
+    letterSpacing: 0.2,
+  },
+  shopeeCategoryScroll: {
+    gap: 12,
+  },
+  shopeeCategoryItem: {
+    alignItems: 'center',
+    width: 80,
+  },
+  shopeeCategoryThumbWrap: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    marginBottom: 6,
+  },
+  shopeeCategoryThumb: {
+    width: '100%',
+    height: '100%',
+  },
+  shopeeCategoryLabel: {
+    fontSize: 10.5,
+    color: '#222222',
+    textAlign: 'center',
+    fontWeight: '500',
+    lineHeight: 13,
+  },
+
+  // ─── Welcome Perk Card ─────────────────────────────────────────────────────
+  welcomePerkContainer: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 6,
+  },
+  welcomePerkCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     ...shadows.sm,
   },
   welcomePerkLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
     flex: 1,
-    marginRight: 12,
   },
   welcomePerkIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 14,
-    backgroundColor: colors.sandLight,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFF0ED',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1710,312 +1963,144 @@ const styles = StyleSheet.create({
   welcomePerkTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: colors.charcoal,
+    color: '#222222',
   },
   welcomePerkSub: {
     fontSize: 11,
-    color: colors.warmGray,
-    marginTop: 2,
+    color: '#757575',
   },
   welcomeCodeRow: {
-    marginTop: 4,
+    marginTop: 3,
   },
   welcomeCodeTag: {
     fontSize: 10,
-    fontWeight: '800',
-    color: colors.forest,
-    letterSpacing: 0.3,
+    fontWeight: '700',
+    color: '#EE4D2D',
   },
   copyBtn: {
+    backgroundColor: '#EE4D2D',
     paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 99,
-    backgroundColor: colors.forest,
+    paddingVertical: 7,
+    borderRadius: 3,
   },
   copyBtnDone: {
-    backgroundColor: colors.successLight,
+    backgroundColor: '#10B981',
   },
   copyBtnText: {
-    fontSize: 11,
+    color: '#FFFFFF',
+    fontSize: 11.5,
     fontWeight: '800',
-    color: colors.white,
   },
   copyBtnTextDone: {
-    color: colors.success,
+    color: '#FFFFFF',
   },
 
-  // ─── Curation Section ────────────────────────────────────────────────────
-  curationSection: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 16,
-    marginVertical: 10,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#E2E8F0',
-    width: '100%',
-  },
-  curationInner: {
+  // ─── Shopee Rekomendasi (Daily Discover Sticky Tabs & Product Grid) ────────
+  shopeeDailyDiscoverContainer: {
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
-  },
-  curationHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
-    marginBottom: 12,
-  },
-  curationTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  curationDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: colors.forest,
-  },
-  curationTitle: {
-    color: colors.charcoal,
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  curationTimerPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: colors.white,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 99,
-    borderWidth: 1,
-    borderColor: colors.lightGray,
-  },
-  curationTimerText: {
-    color: colors.charcoal,
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  curationSeeAll: {
-    color: colors.forest,
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  curationScroll: {
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-  curationCard: {
-    width: 140,
-    backgroundColor: colors.white,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.lightGray,
-    overflow: 'hidden',
-    ...shadows.sm,
-  },
-  curationImg: {
-    height: 120,
-    justifyContent: 'flex-start',
-    backgroundColor: colors.sand,
-  },
-  curationBadge: {
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    alignSelf: 'flex-start',
-    margin: 6,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 99,
-  },
-  curationBadgeText: {
-    color: colors.forest,
-    fontSize: 8,
-    fontWeight: '800',
-  },
-  curationBody: {
-    padding: 10,
-    gap: 2,
-  },
-  curationProductTitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.charcoal,
-  },
-  curationProductPrice: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: colors.forest,
-  },
-  curationMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 4,
-  },
-  curationStockText: {
-    fontSize: 10,
-    color: colors.warmGray,
-  },
-  curationRating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-  },
-  curationRatingText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: colors.charcoal,
-  },
-
-  // ─── Categories & Product Grid ──────────────────────────────────────────────
-  horizontalScrollWrap: {
-    maxWidth: 1200,
-    width: '100%',
-    alignSelf: 'center',
+    marginTop: 6,
     marginBottom: 6,
   },
-  categoryRow: {
+  shopeeDailyDiscoverInner: {
+    gap: 10,
+  },
+  shopeeDiscoverTabsBar: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    ...shadows.sm,
+  },
+  shopeeActiveTab: {
+    borderBottomWidth: 3,
+    borderBottomColor: '#EE4D2D',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    position: 'relative',
+  },
+  shopeeActiveTabText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#EE4D2D',
+    letterSpacing: 0.3,
+  },
+  shopeeCategoryFilterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 16,
-    paddingBottom: 14,
+    paddingLeft: 12,
   },
-  chip: {
-    borderRadius: 9999,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: colors.white,
-    borderWidth: 1.5,
-    borderColor: colors.lightGray,
+  shopeeFilterChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 14,
+    backgroundColor: '#F5F5F5',
   },
-  chipActive: {
-    backgroundColor: colors.forest,
-    borderColor: colors.forest,
+  shopeeFilterChipActive: {
+    backgroundColor: '#FFF0ED',
+    borderWidth: 1,
+    borderColor: '#EE4D2D',
   },
-  chipText: {
-    color: colors.charcoal,
-    fontSize: 12,
-    fontWeight: '600',
+  shopeeFilterChipText: {
+    fontSize: 11.5,
+    color: '#757575',
+    fontWeight: '500',
   },
-  chipTextActive: {
-    color: colors.white,
+  shopeeFilterChipTextActive: {
+    color: '#EE4D2D',
     fontWeight: '800',
   },
   productGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    marginBottom: 24,
+    width: '100%',
+  },
+  loadMoreWrap: {
+    alignItems: 'center',
+    marginTop: 14,
+  },
+  loadMoreBtn: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    paddingHorizontal: 36,
+    paddingVertical: 10,
+    borderRadius: 2,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
+  },
+  loadMoreText: {
+    fontSize: 13,
+    color: '#555555',
+    fontWeight: '600',
+  },
+
+  // ─── UMKM Banner ───────────────────────────────────────────────────────────
+  umkmBannerOuter: {
     maxWidth: 1200,
     width: '100%',
     alignSelf: 'center',
-  },
-  // ─── Tailors ───────────────────────────────────────────────────────────────
-  tailorRow: {
-    gap: 12,
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    marginTop: 10,
+    marginBottom: 6,
   },
-  tailorCard: {
-    width: 185,
-    borderRadius: 18,
-    overflow: 'hidden',
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.lightGray,
-    ...shadows.sm,
-  },
-  tailorImage: {
-    height: 110,
-    justifyContent: 'flex-end',
-    padding: 8,
-  },
-  tailorImageStyle: {
-    backgroundColor: colors.sand,
-  },
-  tailorGradient: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(31,36,33,0.25)',
-  },
-  tailorBadge: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    borderRadius: 9999,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    backgroundColor: 'rgba(47,79,58,0.85)',
-  },
-  tailorBadgeText: {
-    color: colors.white,
-    fontSize: 9,
-    fontWeight: '800',
-  },
-  tailorInfo: {
-    padding: 10,
-  },
-  tailorName: {
-    color: colors.charcoal,
-    fontSize: 13,
-    fontWeight: '900',
-  },
-  tailorMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 2,
-  },
-  tailorCity: {
-    color: colors.warmGray,
-    fontSize: 10,
-    flex: 1,
-  },
-  tailorSpecialty: {
-    color: colors.warmGray,
-    fontSize: 10,
-    lineHeight: 13,
-    marginTop: 4,
-  },
-  tailorFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 8,
-  },
-  tailorRating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    backgroundColor: colors.warningLight,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 9999,
-  },
-  tailorRatingText: {
-    color: colors.warning,
-    fontSize: 10,
-    fontWeight: '800',
-  },
-  tailorSold: {
-    color: colors.warmGray,
-    fontSize: 10,
-  },
-  // ─── UMKM Banner ──────────────────────────────────────────────────────────
   umkmBanner: {
+    backgroundColor: '#1E293B',
+    borderRadius: 4,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.ming,
-    borderRadius: 18,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 20,
-    marginTop: 6,
-    maxWidth: 1200,
-    width: 'calc(100% - 32px)',
-    alignSelf: 'center',
     ...shadows.sm,
   },
   umkmBannerLeft: {
@@ -2025,173 +2110,179 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   umkmBannerIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#EE4D2D',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.16)',
   },
   umkmBannerText: {
     flex: 1,
   },
   umkmBannerTitle: {
-    color: colors.white,
     fontSize: 14,
-    fontWeight: '900',
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
   umkmBannerSub: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: 10,
-    marginTop: 2,
-    lineHeight: 14,
+    fontSize: 11,
+    color: '#94A3B8',
   },
   umkmBannerArrow: {
-    width: 34,
-    height: 34,
-    borderRadius: 11,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    marginLeft: 8,
   },
-  // ─── Impact Dashboard ──────────────────────────────────────────────────────
-  impactCard: {
-    borderRadius: 24,
-    overflow: 'hidden',
-    backgroundColor: colors.sand,
-    marginHorizontal: 16,
-    marginTop: 8,
-    padding: 16,
-    ...shadows.sm,
-  },
-  impactHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-    marginBottom: 12,
-  },
-  impactIconBg: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.forest,
-    flexShrink: 0,
-  },
-  impactTitle: {
-    color: colors.charcoal,
-    fontSize: 14,
-    fontWeight: '900',
-    marginBottom: 2,
-  },
-  impactCopy: {
-    color: colors.warmGray,
-    fontSize: 11,
-    lineHeight: 15,
-  },
-  impactDivider: {
-    height: 1,
-    backgroundColor: 'rgba(122,122,114,0.20)',
-    marginBottom: 12,
-  },
-  impactStats: {
-    flexDirection: 'row',
-  },
-  impactStat: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 3,
-  },
-  impactStatIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(47,79,58,0.10)',
-    marginBottom: 2,
-  },
-  impactStatDivider: {
-    width: 1,
-    backgroundColor: 'rgba(122,122,114,0.20)',
-  },
-  impactValue: {
-    color: colors.forest,
-    fontSize: 14,
-    fontWeight: '900',
-  },
-  impactLabel: {
-    color: colors.warmGray,
-    fontSize: 9,
-    lineHeight: 12,
-    textAlign: 'center',
-  },
-  // ─── Scan Modal ────────────────────────────────────────────────────────────
-  scanModalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(31,36,33,0.70)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  scanModalContent: {
+
+  // ─── Shopee 5-Column Desktop Footer ────────────────────────────────────────
+  desktopFooter: {
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 4,
+    borderTopColor: '#EE4D2D',
+    marginTop: 24,
+    paddingTop: 32,
+    paddingBottom: 20,
     width: '100%',
-    backgroundColor: colors.white,
-    borderRadius: 24,
-    padding: 20,
-    alignItems: 'center',
   },
-  scanHeader: {
+  desktopFooterInner: {
+    maxWidth: 1200,
     width: '100%',
+    alignSelf: 'center',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    paddingHorizontal: 16,
+    gap: 20,
   },
-  scanTitle: {
-    fontSize: 16,
+  footerCol: {
+    flex: 1,
+    gap: 8,
+  },
+  footerColWide: {
+    flex: 1.5,
+    gap: 10,
+  },
+  footerColTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: 'rgba(0,0,0,0.87)',
+    letterSpacing: 0.3,
+    marginBottom: 4,
+  },
+  footerLink: {
+    fontSize: 11.5,
+    color: 'rgba(0,0,0,0.65)',
+    fontWeight: '400',
+  },
+  footerBadgeWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  footerPayBadge: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#ECECEC',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 2,
+  },
+  footerPayText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#555555',
+  },
+  footerBrandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  footerBrandLogoCard: {
+    backgroundColor: '#FFF0ED',
+    borderRadius: 4,
+    padding: 3,
+  },
+  footerBrandLogo: {
+    width: 26,
+    height: 26,
+  },
+  footerBrandName: {
+    fontSize: 18,
     fontWeight: '900',
-    color: colors.forest,
+    color: '#EE4D2D',
   },
-  qrPlaceholderBox: {
-    width: 220,
-    height: 220,
-    borderRadius: 20,
-    backgroundColor: colors.ivory,
-    borderWidth: 2,
-    borderColor: colors.forestAlpha20,
-    borderStyle: 'dashed',
+  footerBrandDesc: {
+    fontSize: 11,
+    color: 'rgba(0,0,0,0.65)',
+    lineHeight: 16,
+  },
+  footerCertBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#FFF0ED',
+    padding: 8,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#FEE2E2',
+  },
+  footerCertText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#EE4D2D',
+  },
+  footerBottomBar: {
+    maxWidth: 1200,
+    width: '100%',
+    alignSelf: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#ECECEC',
+    marginTop: 24,
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  footerCopyright: {
+    fontSize: 11,
+    color: 'rgba(0,0,0,0.54)',
+  },
+
+  // ─── Floating Chat Widget ──────────────────────────────────────────────────
+  floatingChatWrap: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    zIndex: 99,
+  },
+  floatingChatBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EE4D2D',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 22,
+    ...shadows.lg,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
+  },
+  floatingChatText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  chatBadge: {
+    backgroundColor: '#FFDA44',
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-    marginVertical: 10,
   },
-  qrText: {
-    fontSize: 11,
-    color: colors.warmGray,
-    textAlign: 'center',
-    marginTop: 10,
-    fontWeight: '600',
-  },
-  qrDesc: {
-    fontSize: 11,
-    color: colors.warmGray,
-    textAlign: 'center',
-    lineHeight: 16,
-    marginVertical: 14,
-  },
-  closeScanBtn: {
-    backgroundColor: colors.forest,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 14,
-    width: '100%',
-    alignItems: 'center',
-  },
-  closeScanBtnText: {
-    color: colors.white,
-    fontSize: 13,
+  chatBadgeText: {
+    color: '#EE4D2D',
+    fontSize: 9,
     fontWeight: '900',
   },
 });
