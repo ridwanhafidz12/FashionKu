@@ -201,6 +201,9 @@ export default function ExchangeScreen({ onBack }) {
           onCourierNameChange={setCourierName}
           onTrackingNumberChange={setTrackingNumber}
           onReceiptPhotoChange={setReceiptPhoto}
+          onModeChange={setMode}
+          onPartnerChange={setSelectedPartner}
+          onNotesChange={setNotes}
           onNextToShipping={() => setStep(STEP_SHIPPING)}
           onNextToMode={() => setStep(STEP_MODE)}
           onNextToConfirm={() => setStep(STEP_CONFIRM)}
@@ -253,6 +256,9 @@ function TukarTab({
   onCourierNameChange,
   onTrackingNumberChange,
   onReceiptPhotoChange,
+  onModeChange,
+  onPartnerChange,
+  onNotesChange,
   onNextToShipping,
   onNextToMode,
   onNextToConfirm,
@@ -438,7 +444,7 @@ function TukarTab({
                 <TouchableOpacity
                   style={styles.photoBtn}
                   onPress={() => {
-                    setItemPhoto('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80');
+                    onItemPhotoChange('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80');
                     Alert.alert('Foto Terambil', 'Foto pakaian berhasil diambil melalui kamera.');
                   }}
                 >
@@ -449,7 +455,7 @@ function TukarTab({
                 <TouchableOpacity
                   style={styles.photoBtn}
                   onPress={() => {
-                    setItemPhoto('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=600&q=80');
+                    onItemPhotoChange('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=600&q=80');
                     Alert.alert('Foto Terpilih', 'Foto pakaian berhasil dipilih dari galeri.');
                   }}
                 >
@@ -531,7 +537,7 @@ function TukarTab({
               <TouchableOpacity
                 style={[styles.photoBtn, { marginTop: 6 }]}
                 onPress={() => {
-                  setReceiptPhoto('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80');
+                  onReceiptPhotoChange('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80');
                   Alert.alert('Foto Struk Terpilih', 'Foto struk resi berhasil dilampirkan.');
                 }}
               >

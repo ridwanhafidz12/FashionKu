@@ -12,6 +12,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Image,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,

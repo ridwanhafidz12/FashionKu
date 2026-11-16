@@ -25,7 +25,9 @@ import {
   savedAddresses,
   sortOptions as fallbackSortOptions,
   tailors as fallbackTailors,
-  calcExchangePoints
+  calcExchangePoints,
+  exchangeItemTypes,
+  formatCurrency
 } from '../data/appData';
 import { api } from '../services/api';
 import { syncQueue } from '../services/syncQueue';

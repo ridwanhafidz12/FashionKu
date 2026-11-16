@@ -148,6 +148,7 @@ export default function StylistScreen({
         products={products}
         wishlist={wishlist}
         toggleWishlist={toggleWishlist}
+        requireAuth={requireAuth}
       />
     );
   }
@@ -539,7 +540,7 @@ function AnalyzingScreen({ loadingIndex }) {
   );
 }
 
-function ResultScreen({ result, answers = {}, onBack, onRestart, onNavigate, onProductPress, products, wishlist, toggleWishlist }) {
+function ResultScreen({ result, answers = {}, onBack, onRestart, onNavigate, onProductPress, products, wishlist, toggleWishlist, requireAuth }) {
   const recommended = products.slice(0, 2);
   const [aiNarrative, setAiNarrative] = useState(null);
   const [loadingAi, setLoadingAi] = useState(false);

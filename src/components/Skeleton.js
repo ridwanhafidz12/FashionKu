@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 
-import { colors } from '../theme/colors';
+import { colors, shadows } from '../theme/colors';
 
 /**
  * Skeleton — shimmer loading placeholder.

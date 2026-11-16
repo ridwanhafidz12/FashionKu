@@ -74,7 +74,7 @@ export default function BottomTabs({ active, onChange }) {
       style={[
         styles.tabs,
         isDesktop
-          ? [styles.tabsDesktop, { left: desktopLeft, width: desktopTabWidth, bottom: 20 }]
+          ? [styles.tabsDesktop, { bottom: 20 }]
           : [styles.tabsMobile, { height: 72 + insets.bottom, paddingBottom: Math.max(insets.bottom, 8) }],
       ]}
     >
