@@ -1,0 +1,113 @@
+// ─── Database Markup Language (DBML) ───────────────────────────
+// Project: FashionKu / CIRCULAI
+// Database: PostgreSQL (Supabase)
+// Description: Skema Basis Data E-Commerce Fashion Sirkular & Made-to-Order
+
+Project FashionKu {
+  database_type: 'PostgreSQL'
+  Note: 'Platform Sirkular Fashion & Bespoke On-Demand Marketplace (ISCOMFEST)'
+}
+
+Table profiles {
+  user_id uuid [pk, note: 'ID autentikasi unik pengguna']
+  app_user_code varchar [note: 'Kode unik customer (misal USR-001)']
+  name varchar [not null]
+  email varchar
+  phone varchar
+  photo_uri text
+  created_at timestamptz
+  updated_at timestamptz
+}
+
+Table measurements {
+  user_id uuid [pk, note: 'Relasi 1-to-1 dengan profil pengguna']
+  height varchar [note: 'Tinggi badan']
+  chest varchar [note: 'Lingkar dada']
+  waist varchar [note: 'Lingkar pinggang']
+  hips varchar [note: 'Lingkar pinggul']
+  updated_at timestamptz
+}
+
+Table addresses {
+  id varchar [pk]
+  user_id uuid [not null]
+  label varchar [note: 'Label alamat (Rumah, Kantor)']
+  receiver varchar [not null]
+  phone varchar [not null]
+  detail text [not null]
+  created_at timestamptz
+}
+
+Table tailors {
+  id bigint [pk, increment]
+  name varchar [unique, not null]
+  city varchar [not null]
+  specialty text
+  rating numeric [default: 0]
+  sold integer [default: 0]
+  verified boolean [default: true]
+  image text
+  created_at timestamptz
+}
+
+Table products {
+  id varchar [pk]
+  name varchar [not null]
+  tailor_name varchar [not null]
+  tailor_city varchar [not null]
+  price integer [not null]
+  category varchar [not null]
+  saved_fabric varchar [default: '0.0m']
+  material text [not null]
+  eco_score integer [default: 75]
+  stock integer [default: 10]
+  created_at timestamptz
+}
+
+Table cart_items {
+  id uuid [pk]
+  user_id uuid [not null]
+  product_id varchar [not null]
+  quantity integer [default: 1]
+  unit_price integer [not null]
+  customization jsonb [note: 'Catatan kustom ukuran & bahan']
+  created_at timestamptz
+}
+
+Table orders {
+  id varchar [pk]
+  user_id uuid [not null]
+  status varchar [default: 'WAITING_PAYMENT']
+  payload jsonb [note: 'Rincian pesanan, item, alamat, dan kurir']
+  return_request jsonb
+  created_at timestamptz
+}
+
+Table return_requests {
+  id varchar [pk]
+  order_id varchar [not null]
+  user_id uuid [not null]
+  status varchar [default: 'REVIEWING']
+  reason_label varchar [not null]
+  notes text [not null]
+  created_at timestamptz
+}
+
+Table messages {
+  id uuid [pk]
+  user_id uuid [not null]
+  tailor_name varchar [not null]
+  sender varchar [note: 'user | tailor | system']
+  text text [not null]
+  created_at timestamptz
+}
+
+// ─── Relations (Foreign Keys & Cardinality) ──────────────────────
+Ref: measurements.user_id - profiles.user_id // 1 to 1
+Ref: addresses.user_id > profiles.user_id     // Many to 1
+Ref: orders.user_id > profiles.user_id        // Many to 1
+Ref: cart_items.user_id > profiles.user_id    // Many to 1
+Ref: cart_items.product_id > products.id      // Many to 1
+Ref: return_requests.order_id - orders.id     // 1 to 1
+Ref: return_requests.user_id > profiles.user_id // Many to 1
+Ref: messages.user_id > profiles.user_id      // Many to 1
