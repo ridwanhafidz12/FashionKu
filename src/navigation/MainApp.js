@@ -20,6 +20,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -46,6 +47,7 @@ import ImpactDashboardScreen from '../screens/ImpactDashboardScreen';
 import TailorPortalScreen from '../screens/TailorPortalScreen';
 import AdminCmsScreen from '../screens/AdminCmsScreen';
 import AuthModal from '../components/AuthModal';
+import FloatingWhatsAppButton from '../components/FloatingWhatsAppButton';
 import { TOAST_FADE_IN_MS, TOAST_FADE_OUT_MS, TOAST_VISIBLE_DURATION_MS, TAB_PRELOAD_INTERVAL_MS } from '../config/constants';
 import { layout } from '../styles/layout';
 import { colors, shadows } from '../theme/colors';
@@ -82,6 +84,9 @@ export default function MainApp() {
   const { notice, setNotice, authModalConfig, closeAuthModal, createMidtransPayment, selectedAddress, addresses, isLoggedIn, openAuthModal } = useAppState();
   const active = route.name;
   const showTabs = MAIN_TABS.includes(active);
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 768;
+  const waBottomOffset = isDesktop ? 28 : (showTabs ? 84 : 24) + insets.bottom;
 
   // Toast animation
   const toastOpacity = React.useRef(new Animated.Value(0)).current;
@@ -475,6 +480,9 @@ export default function MainApp() {
         {!!stackContent && <View style={styles.screenLayer}>{stackContent}</View>}
       </View>
       {showTabs && <BottomTabs active={active} onChange={navigate} />}
+
+      {/* ─── Floating WhatsApp Chat Button (#25D366) ────────────────── */}
+      <FloatingWhatsAppButton bottomOffset={waBottomOffset} />
 
       {/* ─── Premium toast notification ─────────────────────────────── */}
       {!!notice && (

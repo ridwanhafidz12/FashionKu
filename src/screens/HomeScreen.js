@@ -1057,22 +1057,6 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         )}
       </ScrollView>
 
-      {/* ─── Floating Chat Widget on Desktop (#2C6842) ────────────────── */}
-      {isDesktop && (
-        <View style={styles.floatingChatWrap}>
-          <Pressable
-            style={styles.floatingChatBtn}
-            onPress={() => onNavigate('quiz')}
-          >
-            <MaterialCommunityIcons name="chat-processing" size={20} color="#FFFFFF" />
-            <Text style={styles.floatingChatText}>Chat</Text>
-            <View style={styles.chatBadge}>
-              <Text style={styles.chatBadgeText}>1</Text>
-            </View>
-          </Pressable>
-        </View>
-      )}
-
       {/* ─── Digital Product Passport Scanner Camera Modal ────────────── */}
       <PassportScannerModal
         visible={scanModalVisible}
@@ -2325,46 +2309,5 @@ const styles = StyleSheet.create({
   footerCopyright: {
     fontSize: 11,
     color: 'rgba(0,0,0,0.54)',
-  },
-
-  // ─── Floating Chat Widget (#2C6842) ────────────────────────────────────────
-  floatingChatWrap: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    zIndex: 99,
-  },
-  floatingChatBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: colors.forest,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 22,
-    ...shadows.lg,
-    ...Platform.select({
-      web: {
-        cursor: 'pointer',
-      },
-    }),
-  },
-  floatingChatText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  chatBadge: {
-    backgroundColor: '#DDEB9D',
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  chatBadgeText: {
-    color: colors.forestMid,
-    fontSize: 9,
-    fontWeight: '900',
   },
 });
