@@ -502,7 +502,7 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
                 <MaterialCommunityIcons name="tshirt-crew-outline" size={40} color={colors.forest} />
               </View>
               <Text style={styles.emptyTitle}>
-                {wishlistOnly ? 'Wishlist masih kosong' : 'Produk sirkular tidak ditemukan'}
+                {wishlistOnly ? 'Wishlist masih kosong' : 'Produk tidak ditemukan'}
               </Text>
               <Text style={styles.emptyDesc}>
                 {wishlistOnly
