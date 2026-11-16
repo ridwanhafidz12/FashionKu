@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   // ─── Hero ─────────────────────────────────────────────────────────────────
   hero: {
     height: 380,
-    maxWidth: 960,
+    maxWidth: 1400,
     width: '100%',
     alignSelf: 'center',
     justifyContent: 'space-between',
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 24,
     backgroundColor: colors.ivory,
-    maxWidth: 960,
+    maxWidth: 1400,
     width: '100%',
     alignSelf: 'center',
   },
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    maxWidth: 960,
+    maxWidth: 1400,
     width: '100%',
     alignSelf: 'center',
   },

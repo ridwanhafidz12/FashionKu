@@ -97,7 +97,7 @@ function SummaryRow({ label, value, accent, strong }) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F5F5F5' },
-  content: { padding: 16, paddingBottom: 40, maxWidth: 800, width: '100%', alignSelf: 'center' },
+  content: { padding: 16, paddingBottom: 40, maxWidth: 1200, width: '100%', alignSelf: 'center' },
   card: { flexDirection: 'row', gap: 12, padding: 12, borderRadius: 4, backgroundColor: colors.white, borderWidth: 1, borderColor: '#ECECEC', marginBottom: 10, ...shadows.sm },
   image: { width: 80, height: 95, borderRadius: 4, backgroundColor: colors.sand },
   info: { flex: 1 },

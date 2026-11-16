@@ -18,10 +18,11 @@ import { colors, shadows } from '../theme/colors';
 
 export default function ExploreScreen({ onProductPress, onNavigate, onBack, wishlistOnly = false }) {
   const { width: screenWidth } = useWindowDimensions();
-  const maxContentWidth = Math.min(screenWidth, 1200);
-  const numCols = screenWidth >= 1100 ? 4 : screenWidth >= 768 ? 3 : 2;
-  const gridGap = screenWidth < 500 ? 12 : 16;
-  const availableGridWidth = maxContentWidth - 40;
+  const isDesktop = screenWidth >= 768;
+  const maxContentWidth = isDesktop ? Math.min(screenWidth - 32, 1680) : screenWidth;
+  const numCols = screenWidth >= 1500 ? 6 : screenWidth >= 1200 ? 5 : screenWidth >= 768 ? 4 : 2;
+  const gridGap = screenWidth < 500 ? 8 : 12;
+  const availableGridWidth = maxContentWidth - (isDesktop ? 32 : 16);
   const cardWidth = Math.floor((availableGridWidth - (numCols - 1) * gridGap) / numCols);
   const cardSlotStyle = { width: cardWidth };
 
@@ -230,7 +231,7 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
 
 const styles = StyleSheet.create({
   container: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
   },

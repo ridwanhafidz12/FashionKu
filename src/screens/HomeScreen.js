@@ -79,16 +79,16 @@ const shopeeCategories = [
 export default function HomeScreen({ isActive = true, onNavigate, onProductPress, onTailorPress, onExchange }) {
   const { width: screenWidth } = useWindowDimensions();
   const isDesktop = screenWidth >= 768;
-  const maxContentWidth = Math.min(screenWidth, 1200);
-  const containerPadding = 16;
+  const maxContentWidth = isDesktop ? Math.min(screenWidth - 32, 1680) : screenWidth;
+  const containerPadding = isDesktop ? 16 : 12;
   const availableWidth = maxContentWidth - (containerPadding * 2);
 
   // Exact desktop ratio: 66.5% main carousel, 33.5% stacked promo banners
   const heroWidth = isDesktop ? Math.floor(availableWidth * 0.665) : availableWidth;
   const heroRightWidth = isDesktop ? availableWidth - heroWidth - 12 : availableWidth;
-  const heroHeight = isDesktop ? 270 : 180;
+  const heroHeight = isDesktop ? (screenWidth >= 1500 ? 320 : screenWidth >= 1200 ? 285 : 260) : 180;
 
-  const numCols = isDesktop ? (screenWidth >= 1200 ? 5 : 4) : 2;
+  const numCols = isDesktop ? (screenWidth >= 1500 ? 6 : screenWidth >= 1200 ? 5 : 4) : 2;
   const gridGap = isDesktop ? 12 : 8;
   const cardWidth = Math.floor((availableWidth - (numCols - 1) * gridGap) / numCols);
   const cardSlotStyle = {
@@ -658,7 +658,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               {serviceIcons.map((service) => (
                 <Pressable
                   key={service.id}
-                  style={styles.serviceItem}
+                  style={[styles.serviceItem, isDesktop && screenWidth >= 1200 && { width: '9.6%', marginVertical: 2 }]}
                   onPress={() => {
                     if (service.route === 'passport-info') {
                       setScanModalVisible(true);
@@ -702,19 +702,19 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.curationScroll}
             >
-              {products.slice(0, 6).map((p) => {
+              {products.slice(0, isDesktop ? 10 : 6).map((p) => {
                 const stock = p.stock ?? 1;
                 const originalPrice = Math.round(p.price * 1.35);
                 return (
                   <AnimatedPressable
                     key={p.id}
-                    style={styles.flashProductCard}
+                    style={[styles.flashProductCard, isDesktop && { width: screenWidth >= 1440 ? 175 : 155 }]}
                     onPress={() => onProductPress(p)}
                     scaleDown={0.97}
                   >
                     <ImageBackground
                       source={{ uri: p.image }}
-                      style={styles.flashProductImg}
+                      style={[styles.flashProductImg, isDesktop && { height: screenWidth >= 1440 ? 155 : 135 }]}
                       imageStyle={{ borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
                     >
                       <View style={styles.flashDiscountBadge}>
@@ -806,7 +806,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.shopeeCategoryScroll}
+              contentContainerStyle={[styles.shopeeCategoryScroll, isDesktop && { justifyContent: 'space-between', flexGrow: 1 }]}
             >
               {shopeeCategories.map((cat) => (
                 <Pressable
@@ -1042,15 +1042,17 @@ const trustBadges = [
 ];
 
 function TrustStrip() {
+  const { width } = useWindowDimensions();
+  const isDesk = width >= 768;
   return (
     <View style={styles.trustStripContainer}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.trustStripContent}
+        contentContainerStyle={[styles.trustStripContent, isDesk && { justifyContent: 'space-between', flexGrow: 1 }]}
       >
         {trustBadges.map((item, idx) => (
-          <View key={idx} style={styles.trustBadgePill}>
+          <View key={idx} style={[styles.trustBadgePill, isDesk && { flex: 1, justifyContent: 'center' }]}>
             <MaterialCommunityIcons name={item.icon} size={13} color={colors.forest} />
             <Text style={styles.trustBadgeText}>{item.text}</Text>
           </View>
@@ -1084,7 +1086,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   topUtilityInner: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     flexDirection: 'row',
@@ -1127,7 +1129,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   topHeaderInner: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1172,7 +1174,7 @@ const styles = StyleSheet.create({
   },
   searchSection: {
     flex: 1,
-    maxWidth: 640,
+    maxWidth: 760,
   },
   searchBox: {
     width: '100%',
@@ -1338,7 +1340,7 @@ const styles = StyleSheet.create({
 
   // ─── Hero Section ──────────────────────────────────────────────────────────
   heroOuterContainer: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1538,7 +1540,7 @@ const styles = StyleSheet.create({
 
   // ─── Trust Badges ──────────────────────────────────────────────────────────
   trustStripContainer: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1568,7 +1570,7 @@ const styles = StyleSheet.create({
 
   // ─── 10-Icon Service Launcher Grid ─────────────────────────────────────────
   serviceGridContainer: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1614,7 +1616,7 @@ const styles = StyleSheet.create({
 
   // ─── Flash Sale Section ────────────────────────────────────────────────────
   curationSection: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1758,7 +1760,7 @@ const styles = StyleSheet.create({
 
   // ─── FashionKu Mall Section ───────────────────────────────────────────────
   shopeeMallSection: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1867,7 +1869,7 @@ const styles = StyleSheet.create({
 
   // ─── Kategori Pilihan ──────────────────────────────────────────────────────
   shopeeCategorySection: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1921,7 +1923,7 @@ const styles = StyleSheet.create({
 
   // ─── Welcome Perk Card ─────────────────────────────────────────────────────
   welcomePerkContainer: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -1993,7 +1995,7 @@ const styles = StyleSheet.create({
 
   // ─── Rekomendasi (Daily Discover Sticky Tabs & Product Grid) ───────────────
   shopeeDailyDiscoverContainer: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -2083,7 +2085,7 @@ const styles = StyleSheet.create({
 
   // ─── UMKM Banner ───────────────────────────────────────────────────────────
   umkmBannerOuter: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
@@ -2140,7 +2142,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   desktopFooterInner: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     flexDirection: 'row',
@@ -2226,7 +2228,7 @@ const styles = StyleSheet.create({
     color: colors.forest,
   },
   footerBottomBar: {
-    maxWidth: 1200,
+    maxWidth: 1680,
     width: '100%',
     alignSelf: 'center',
     borderTopWidth: 1,
