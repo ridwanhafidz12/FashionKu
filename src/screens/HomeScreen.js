@@ -69,16 +69,16 @@ const serviceIcons = [
 
 // ─── Visual Category Thumbnails (Ultra-HD Guaranteed CDN Images) ───────────────
 const shopeeCategories = [
-  { id: 'c1', label: 'Atasan Wanita', image: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c2', label: 'Kemeja Pria', image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c3', label: 'Dress Batik', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c4', label: 'Outer & Blazer', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c5', label: 'Kain Sisa Kiloan', image: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c6', label: 'Bespoke Kustom', image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=300&h=300&q=85', route: 'custom-design' },
-  { id: 'c7', label: 'Aksesoris Etnik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c8', label: 'Baju Anak', image: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c9', label: 'Linen Premium', image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
-  { id: 'c10', label: 'Zero Waste Pack', image: 'https://images.unsplash.com/photo-1542295669297-4d352b042bca?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c1', label: 'Atasan Wanita', image: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { category: 'Casual' } },
+  { id: 'c2', label: 'Kemeja Pria', image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { category: 'Formal' } },
+  { id: 'c3', label: 'Dress Batik', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { category: 'Dress' } },
+  { id: 'c4', label: 'Outer & Blazer', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { category: 'Outer' } },
+  { id: 'c5', label: 'Kain Sisa Kiloan', image: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { query: 'Kain Sisa' } },
+  { id: 'c6', label: 'Bespoke Kustom', image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=300&h=300&q=85', route: 'custom-design', params: {} },
+  { id: 'c7', label: 'Aksesoris Etnik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { query: 'Aksesoris' } },
+  { id: 'c8', label: 'Baju Anak', image: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { query: 'Anak' } },
+  { id: 'c9', label: 'Linen Premium', image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { query: 'Linen' } },
+  { id: 'c10', label: 'Zero Waste Pack', image: 'https://images.unsplash.com/photo-1542295669297-4d352b042bca?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore', params: { query: 'Zero Waste' } },
 ];
 
 export default function HomeScreen({ isActive = true, onNavigate, onProductPress, onTailorPress, onExchange }) {
@@ -785,13 +785,31 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         </View>
 
         {/* ─── Trust Badges Bar ───────────────────────────────────────── */}
-        <TrustStrip />
+        <TrustStrip onNavigate={onNavigate} />
 
         {/* ─── Kategori Pilihan (Visual Categories Grid) ───────────────── */}
         <View style={styles.shopeeCategorySection}>
           <View style={styles.shopeeCategoryInner}>
             <View style={styles.shopeeCategoryHeader}>
-              <Text style={styles.shopeeCategoryHeaderText}>KATEGORI</Text>
+              <View style={styles.shopeeCategoryTitleGroup}>
+                <View style={styles.shopeeCategoryTag}>
+                  <MaterialCommunityIcons name="shape-outline" size={16} color={colors.forest} />
+                </View>
+                <View>
+                  <Text style={styles.shopeeCategoryHeaderText}>KATEGORI PILIHAN</Text>
+                  <Text style={styles.shopeeCategorySubText}>Kurasi busana sirkular & material pilihan atelier</Text>
+                </View>
+              </View>
+              <Pressable
+                style={({ hovered }) => [
+                  styles.shopeeCategorySeeAllBtn,
+                  hovered && styles.shopeeCategorySeeAllBtnHover,
+                ]}
+                onPress={() => onNavigate('explore')}
+              >
+                <Text style={styles.shopeeCategorySeeAllText}>Lihat Semua</Text>
+                <MaterialCommunityIcons name="chevron-right" size={15} color={colors.forest} />
+              </Pressable>
             </View>
             <ScrollView
               horizontal
@@ -801,8 +819,11 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               {shopeeCategories.map((cat) => (
                 <Pressable
                   key={cat.id}
-                  style={styles.shopeeCategoryItem}
-                  onPress={() => onNavigate(cat.route)}
+                  style={({ hovered }) => [
+                    styles.shopeeCategoryItem,
+                    hovered && styles.shopeeCategoryItemHover,
+                  ]}
+                  onPress={() => onNavigate(cat.route, cat.params)}
                 >
                   <View style={styles.shopeeCategoryThumbWrap}>
                     <Image
@@ -1116,13 +1137,45 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
 }
 
 const trustBadges = [
-  { icon: 'leaf', text: '100% Upcycled Fabric' },
-  { icon: 'scissors-cutting', text: 'Artisan MTO Lokal' },
-  { icon: 'shield-check', text: 'Garansi Ukuran Pas' },
-  { icon: 'qrcode-scan', text: 'Paspor Digital DPP' },
+  {
+    icon: 'leaf-circle-outline',
+    title: '100% Upcycled Fabric',
+    subtitle: 'Kain sisa terkurasi & bersertifikat',
+    route: 'explore',
+    params: { query: 'Upcycled' },
+    color: '#16A34A',
+    bg: '#EDF7EE',
+  },
+  {
+    icon: 'scissors-cutting',
+    title: 'Artisan MTO Lokal',
+    subtitle: '134+ penjahit UMKM terverifikasi',
+    route: 'tailor-portal',
+    params: {},
+    color: '#2C6842',
+    bg: '#EAF3ED',
+  },
+  {
+    icon: 'shield-check-outline',
+    title: 'Garansi Ukuran Pas',
+    subtitle: 'Bebas permak 100% pas di badan',
+    route: 'custom-design',
+    params: {},
+    color: '#0284C7',
+    bg: '#E0F2FE',
+  },
+  {
+    icon: 'qrcode-scan',
+    title: 'Paspor Digital DPP',
+    subtitle: 'Transparansi rantai pasok & emisi',
+    route: 'passport-info',
+    params: {},
+    color: '#7C3AED',
+    bg: '#EDE9FE',
+  },
 ];
 
-function TrustStrip() {
+function TrustStrip({ onNavigate }) {
   const { width } = useWindowDimensions();
   const isDesk = width >= 768;
   return (
@@ -1130,13 +1183,29 @@ function TrustStrip() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={[styles.trustStripContent, isDesk && { justifyContent: 'space-between', flexGrow: 1 }]}
+        contentContainerStyle={[
+          styles.trustStripContent,
+          isDesk && { justifyContent: 'space-between', flexGrow: 1 },
+        ]}
       >
         {trustBadges.map((item, idx) => (
-          <View key={idx} style={[styles.trustBadgePill, isDesk && { flex: 1, justifyContent: 'center' }]}>
-            <MaterialCommunityIcons name={item.icon} size={13} color={colors.forest} />
-            <Text style={styles.trustBadgeText}>{item.text}</Text>
-          </View>
+          <Pressable
+            key={idx}
+            style={({ hovered }) => [
+              styles.trustBadgeCard,
+              isDesk && { flex: 1 },
+              hovered && styles.trustBadgeCardHover,
+            ]}
+            onPress={() => onNavigate && onNavigate(item.route, item.params)}
+          >
+            <View style={[styles.trustBadgeIconWrap, { backgroundColor: item.bg }]}>
+              <MaterialCommunityIcons name={item.icon} size={18} color={item.color} />
+            </View>
+            <View style={styles.trustBadgeTextWrap}>
+              <Text style={styles.trustBadgeTitle} numberOfLines={1}>{item.title}</Text>
+              <Text style={styles.trustBadgeSubtitle} numberOfLines={1}>{item.subtitle}</Text>
+            </View>
+          </Pressable>
         ))}
       </ScrollView>
     </View>
@@ -1730,28 +1799,56 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
-    marginTop: 6,
-    marginBottom: 6,
+    marginTop: 8,
+    marginBottom: 4,
   },
   trustStripContent: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 10,
+    paddingVertical: 2,
   },
-  trustBadgePill: {
+  trustBadgeCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 10,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderColor: '#E5E7EB',
+    minWidth: 200,
+    cursor: 'pointer',
+    ...shadows.xs,
+    transition: 'all 0.2s ease',
   },
-  trustBadgeText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#333333',
+  trustBadgeCardHover: {
+    borderColor: '#A3D9B1',
+    transform: [{ translateY: -2 }],
+    ...shadows.sm,
+  },
+  trustBadgeIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trustBadgeTextWrap: {
+    flex: 1,
+  },
+  trustBadgeTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#1E293B',
+    lineHeight: 16,
+  },
+  trustBadgeSubtitle: {
+    fontSize: 10.5,
+    color: '#64748B',
+    fontWeight: '500',
+    marginTop: 1,
+    lineHeight: 14,
   },
 
   // ─── 10-Icon Service Launcher Grid ─────────────────────────────────────────
@@ -2072,53 +2169,108 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     paddingHorizontal: 16,
-    marginTop: 6,
-    marginBottom: 6,
+    marginTop: 8,
+    marginBottom: 8,
   },
   shopeeCategoryInner: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 4,
-    padding: 12,
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderColor: '#E5E7EB',
     ...shadows.sm,
   },
   shopeeCategoryHeader: {
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 14,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  shopeeCategoryTitleGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  shopeeCategoryTag: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#EDF7EE',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   shopeeCategoryHeaderText: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#757575',
-    letterSpacing: 0.2,
+    color: '#0F172A',
+    letterSpacing: 0.3,
+  },
+  shopeeCategorySubText: {
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 1,
+    fontWeight: '400',
+  },
+  shopeeCategorySeeAllBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+  },
+  shopeeCategorySeeAllBtnHover: {
+    backgroundColor: '#EDF7EE',
+    borderColor: '#C6E7CE',
+  },
+  shopeeCategorySeeAllText: {
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: colors.forest,
   },
   shopeeCategoryScroll: {
-    gap: 12,
+    gap: 14,
+    paddingVertical: 4,
   },
   shopeeCategoryItem: {
     alignItems: 'center',
-    width: 90,
+    width: 92,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+  },
+  shopeeCategoryItemHover: {
+    transform: [{ translateY: -3 }],
   },
   shopeeCategoryThumbWrap: {
-    width: 68,
-    height: 68,
-    borderRadius: 4,
+    width: 72,
+    height: 72,
+    borderRadius: 20,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#ECECEC',
-    backgroundColor: '#FAFAFA',
-    marginBottom: 6,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+    marginBottom: 8,
+    ...shadows.xs,
   },
   shopeeCategoryThumb: {
     width: '100%',
     height: '100%',
   },
   shopeeCategoryLabel: {
-    fontSize: 10.5,
-    color: '#222222',
+    fontSize: 11.5,
+    color: '#1E293B',
     textAlign: 'center',
-    fontWeight: '500',
-    lineHeight: 13,
+    fontWeight: '600',
+    lineHeight: 15,
   },
 
   // ─── Welcome Perk Card ─────────────────────────────────────────────────────
