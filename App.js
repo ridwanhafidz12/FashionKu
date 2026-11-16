@@ -106,6 +106,9 @@ const styles = StyleSheet.create({
       web: {
         minHeight: '100vh',
         overflowX: 'hidden',
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+        textRendering: 'optimizeLegibility',
       },
     }),
   },

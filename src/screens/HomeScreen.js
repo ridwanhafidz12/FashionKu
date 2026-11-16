@@ -50,32 +50,32 @@ import { formatCurrency } from '../data/appData';
 
 const LOGO = require('../../assets/images/fashionku_icon_transparent.png');
 
-// ─── 10-Icon Circular Service Launcher (FashionKu Palette) ─────────────────────
+// ─── 10-Icon Circular Service Launcher (Vibrant Shopee-Grade Icons) ───────────
 const serviceIcons = [
-  { id: 'bespoke', label: 'Bespoke\nKustom', icon: 'scissors-cutting', color: '#2C6842', bg: '#EDF7EE', route: 'custom-design' },
-  { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#27667B', bg: '#E6F0F4', route: 'quiz' },
+  { id: 'bespoke', label: 'Bespoke\nKustom', icon: 'scissors-cutting', color: '#059669', bg: '#ECFDF5', route: 'custom-design' },
+  { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#7C3AED', bg: '#F5F3FF', route: 'quiz' },
   { id: 'exchange', label: 'Eco Swap\nTukar Baju', icon: 'recycle', color: '#2C6842', bg: '#EDF7EE', route: 'exchange' },
-  { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#143D60', bg: '#EAF0F6', route: 'explore' },
-  { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#1C4A2E', bg: '#EDF7EE', route: 'explore' },
-  { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#2C6842', bg: '#EDF7EE', route: 'passport-info' },
-  { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#27667B', bg: '#E6F0F4', route: 'exchange' },
-  { id: 'shipping', label: 'Gratis Ongkir\nXTRA', icon: 'truck-fast-outline', color: '#2C6842', bg: '#EDF7EE', route: 'explore' },
-  { id: 'guarantee', label: 'Garansi Pas\n100% Cocok', icon: 'shield-check-outline', color: '#143D60', bg: '#EAF0F6', route: 'explore' },
-  { id: 'flash', label: 'Kurasi Spesial\nDiskon 60%', icon: 'star-outline', color: '#2C6842', bg: '#EDF7EE', route: 'explore' },
+  { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#0284C7', bg: '#F0F9FF', route: 'explore' },
+  { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#D97706', bg: '#FFFBEB', route: 'explore' },
+  { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#047857', bg: '#ECFDF5', route: 'passport-info' },
+  { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#EA580C', bg: '#FFF7ED', route: 'exchange' },
+  { id: 'shipping', label: 'Gratis Ongkir\nXTRA', icon: 'truck-fast-outline', color: '#00897B', bg: '#E0F2F1', route: 'explore' },
+  { id: 'guarantee', label: 'Garansi Pas\n100% Cocok', icon: 'shield-check-outline', color: '#2563EB', bg: '#EFF6FF', route: 'explore' },
+  { id: 'flash', label: 'Kurasi Spesial\nDiskon 60%', icon: 'star-outline', color: '#DC2626', bg: '#FEF2F2', route: 'explore' },
 ];
 
-// ─── Visual Category Thumbnails ───────────────────────────────────────────────
+// ─── Visual Category Thumbnails (Ultra-HD Guaranteed CDN Images) ───────────────
 const shopeeCategories = [
-  { id: 'c1', label: 'Atasan Wanita', image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/6d2ec2e1f3f544a8b4d71c61e34a1467~.jpeg.webp', route: 'explore' },
-  { id: 'c2', label: 'Kemeja Pria', image: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/99/MTA-185118741/brd-74257_full01-473f6415.webp', route: 'explore' },
-  { id: 'c3', label: 'Dress Batik', image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/43427d1d8a6642af8db7bbc290ee71d3~.jpeg.webp', route: 'explore' },
-  { id: 'c4', label: 'Outer & Blazer', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2021/4/29/7375a0df-b1a9-4675-9e1d-d55aebf168df.jpg', route: 'explore' },
-  { id: 'c5', label: 'Kain Sisa Kiloan', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/13/2e8c2017-c454-4638-b615-5cb8bdf63da2.jpg', route: 'explore' },
-  { id: 'c6', label: 'Bespoke Kustom', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2023/1/10/7c4da692-f048-4cb2-83b6-2bcbe5d36e2f.jpg', route: 'custom-design' },
-  { id: 'c7', label: 'Aksesoris Etnik', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2022/5/20/0e4370cf-6047-49f3-85cb-4340fc29b0f4.jpg', route: 'explore' },
-  { id: 'c8', label: 'Baju Anak', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2021/11/17/5adba5ea-27df-4ee8-b21a-e87f174e928d.jpg', route: 'explore' },
-  { id: 'c9', label: 'Linen Premium', image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/43427d1d8a6642af8db7bbc290ee71d3~.jpeg.webp', route: 'explore' },
-  { id: 'c10', label: 'Zero Waste Pack', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/13/2e8c2017-c454-4638-b615-5cb8bdf63da2.jpg', route: 'explore' },
+  { id: 'c1', label: 'Atasan Wanita', image: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c2', label: 'Kemeja Pria', image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c3', label: 'Dress Batik', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c4', label: 'Outer & Blazer', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c5', label: 'Kain Sisa Kiloan', image: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c6', label: 'Bespoke Kustom', image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=300&h=300&q=85', route: 'custom-design' },
+  { id: 'c7', label: 'Aksesoris Etnik', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c8', label: 'Baju Anak', image: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c9', label: 'Linen Premium', image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
+  { id: 'c10', label: 'Zero Waste Pack', image: 'https://images.unsplash.com/photo-1542295669297-4d352b042bca?auto=format&fit=crop&w=300&h=300&q=85', route: 'explore' },
 ];
 
 export default function HomeScreen({ isActive = true, onNavigate, onProductPress, onTailorPress, onExchange }) {
@@ -124,9 +124,9 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   } = useAppState();
 
   const heroSlides = useMemo(() => {
-    const prodImg1 = products[0]?.image || 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/6d2ec2e1f3f544a8b4d71c61e34a1467~.jpeg.webp';
-    const prodImg2 = products[4]?.image || products[1]?.image || 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/43427d1d8a6642af8db7bbc290ee71d3~.jpeg.webp';
-    const prodImg3 = products[1]?.image || products[2]?.image || 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/99/MTA-185118741/brd-74257_full01-473f6415.webp';
+    const bannerImg1 = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1920&q=85';
+    const bannerImg2 = 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1920&q=85';
+    const bannerImg3 = 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1920&q=85';
 
     return [
       {
@@ -137,7 +137,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         copy: 'Kain sisa atelier pilihan dengan potongan harga terbesar bulan ini.',
         button: 'Belanja Sekarang',
         route: 'explore',
-        image: prodImg1,
+        image: bannerImg1,
       },
       {
         id: 'bespoke-studio',
@@ -147,7 +147,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         copy: 'Desain kustom baju buatan penjahit lokal sesuai ukuran tubuhmu.',
         button: 'Coba Bespoke Studio',
         route: 'custom-design',
-        image: prodImg2,
+        image: bannerImg2,
       },
       {
         id: 'ai-stylist',
@@ -157,10 +157,10 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         copy: 'Rekomendasi outfit cocok dengan warna kulit & bentuk tubuhmu.',
         button: 'Coba AI Stylist',
         route: 'quiz',
-        image: prodImg3,
+        image: bannerImg3,
       },
     ];
-  }, [products]);
+  }, []);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -515,7 +515,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   scaleDown={0.98}
                 >
                   <ImageBackground
-                    source={{ uri: products[4]?.image || heroSlides[1].image }}
+                    source={{ uri: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=85' }}
                     style={styles.desktopRightImg}
                     imageStyle={{ borderRadius: 4 }}
                     resizeMode="cover"
@@ -537,7 +537,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   scaleDown={0.98}
                 >
                   <ImageBackground
-                    source={{ uri: products[3]?.image || heroSlides[0].image }}
+                    source={{ uri: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=85' }}
                     style={styles.desktopRightImg}
                     imageStyle={{ borderRadius: 4 }}
                     resizeMode="cover"
@@ -614,7 +614,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   scaleDown={0.98}
                 >
                   <ImageBackground
-                    source={{ uri: products[4]?.image || heroSlides[1].image }}
+                    source={{ uri: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=85' }}
                     style={styles.mobileDuoImg}
                     imageStyle={{ borderRadius: 4 }}
                     resizeMode="cover"
@@ -633,7 +633,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   scaleDown={0.98}
                 >
                   <ImageBackground
-                    source={{ uri: products[3]?.image || heroSlides[0].image }}
+                    source={{ uri: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=85' }}
                     style={styles.mobileDuoImg}
                     imageStyle={{ borderRadius: 4 }}
                     resizeMode="cover"
@@ -667,7 +667,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   }}
                 >
                   <View style={[styles.serviceIconCircle, { backgroundColor: service.bg }]}>
-                    <MaterialCommunityIcons name={service.icon} size={22} color={service.color} />
+                    <MaterialCommunityIcons name={service.icon} size={24} color={service.color} />
                   </View>
                   <Text style={styles.serviceLabel} numberOfLines={2}>{service.label}</Text>
                 </Pressable>
@@ -1605,19 +1605,21 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   serviceIconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 5,
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
   },
   serviceLabel: {
-    fontSize: 10.5,
-    fontWeight: '500',
-    color: '#333333',
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#1E293B',
     textAlign: 'center',
-    lineHeight: 13,
+    lineHeight: 14,
   },
 
   // ─── Flash Sale Section ────────────────────────────────────────────────────

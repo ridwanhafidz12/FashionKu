@@ -48,7 +48,7 @@ export const products = [
     ecoScore: 78,
     material: 'Rayon lokal sisa produksi', // rayon lokal Rp35.000–50.000/m (ulastempat.com)
     color: '#D7B39A',
-    image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/6d2ec2e1f3f544a8b4d71c61e34a1467~.jpeg.webp',
+    image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=85',
     description: 'Wrap top serbaguna dengan tali pinggang yang membentuk siluet tanpa terasa ketat.',
     measurements: ['Lingkar dada', 'Panjang top', 'Lingkar lengan'],
     recommendations: ['Office-to-dinner', 'Rectangle body', 'Warm earth palette'],
@@ -132,7 +132,7 @@ export const products = [
     ecoScore: 81,
     material: 'Rayon flowy',
     color: '#B96E5B',
-    image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/43427d1d8a6642af8db7bbc290ee71d3~.jpeg.webp',
+    image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=85',
     description: 'Midi dress terracotta dengan potongan flowy untuk special event yang tetap mindful.',
     measurements: ['Lingkar dada', 'Lingkar pinggang', 'Panjang midi'],
     recommendations: ['Special event', 'Feminine soft', 'Medium warm skin'],
@@ -1157,7 +1157,7 @@ export const promoMemberItems = [
     discount: '25%',
     price: 116250,
     originalPrice: 155000,
-    image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/6d2ec2e1f3f544a8b4d71c61e34a1467~.jpeg.webp',
+    image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=85',
     productId: 1
   },
   {
