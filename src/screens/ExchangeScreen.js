@@ -56,10 +56,16 @@ function PointBadge({ points, small }) {
 }
 
 // ─── Main Screen ─────────────────────────────────────────────────────────────
-export default function ExchangeScreen({ onBack }) {
+export default function ExchangeScreen({ onBack, initialTab = 'tukar' }) {
   const insets = useSafeAreaInsets();
   const { circularPoints, exchangeHistory, submitExchange, redeemPoints, requireAuth } = useAppState();
-  const [activeTab, setActiveTab] = useState('tukar');
+  const [activeTab, setActiveTab] = useState(initialTab || 'tukar');
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   // ─── Tukar flow state ─────────────────────────────────────────────────────
   const [step, setStep] = useState(STEP_SELECT);

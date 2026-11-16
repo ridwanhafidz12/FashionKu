@@ -66,6 +66,8 @@ function getRouteKey(route) {
   return [
     route.name,
     params.wishlistOnly ? 'wishlist' : '',
+    params.query ?? '',
+    params.tab ?? '',
     params.product?.id ?? '',
     params.orderId ?? params.order?.id ?? '',
     params.focusedOrderId ?? '',
@@ -369,7 +371,7 @@ export default function MainApp() {
       );
     }
     if (active === 'exchange') {
-      return <ExchangeScreen onBack={goBack} />;
+      return <ExchangeScreen onBack={goBack} initialTab={params?.tab || 'tukar'} />;
     }
     if (active === 'tailor-portal') {
       return (
@@ -418,6 +420,8 @@ export default function MainApp() {
           >
             <MemoExploreScreen
               wishlistOnly={active === 'explore' && tabParams.wishlistOnly === true}
+              initialQuery={active === 'explore' ? (tabParams.query || '') : ''}
+              initialCategory={active === 'explore' ? (tabParams.category || 'Semua') : 'Semua'}
               onBack={goBack}
               onNavigate={navigate}
               onProductPress={openProduct}

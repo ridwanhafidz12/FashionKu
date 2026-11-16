@@ -57,11 +57,11 @@ const LOGO = require('../../assets/images/fashionku_icon_transparent.png');
 const serviceIcons = [
   { id: 'bespoke', label: 'Bespoke\nKustom', icon: 'scissors-cutting', color: '#059669', bg: '#ECFDF5', route: 'custom-design' },
   { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#7C3AED', bg: '#F5F3FF', route: 'quiz' },
-  { id: 'exchange', label: 'Eco Swap\nTukar Baju', icon: 'recycle', color: '#2C6842', bg: '#EDF7EE', route: 'exchange' },
-  { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#0284C7', bg: '#F0F9FF', route: 'explore' },
+  { id: 'exchange', label: 'Eco Swap\nTukar Baju', icon: 'recycle', color: '#2C6842', bg: '#EDF7EE', route: 'exchange', params: { tab: 'tukar' } },
+  { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#0284C7', bg: '#F0F9FF', route: 'explore', params: { query: 'Made-to-Order' } },
   { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#D97706', bg: '#FFFBEB', route: 'tailor-portal' },
   { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#047857', bg: '#ECFDF5', route: 'passport-info' },
-  { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#EA580C', bg: '#FFF7ED', route: 'exchange' },
+  { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#EA580C', bg: '#FFF7ED', route: 'exchange', params: { tab: 'poin' } },
 ];
 
 // ─── Visual Category Thumbnails (Ultra-HD Guaranteed CDN Images) ───────────────
@@ -710,9 +710,11 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                     if (service.route === 'passport-info') {
                       setScanModalVisible(true);
                     } else {
-                      onNavigate(service.route);
+                      onNavigate(service.route, service.params);
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={service.label.replace('\n', ' ')}
                 >
                   <View style={[styles.serviceIconCircle, { backgroundColor: service.bg }]}>
                     <MaterialCommunityIcons name={service.icon} size={24} color={service.color} />
@@ -1575,6 +1577,11 @@ const styles = StyleSheet.create({
     width: '18%',
     minWidth: 64,
     marginVertical: 4,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
   },
   serviceIconCircle: {
     width: 48,
@@ -1585,6 +1592,11 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.05)',
+    ...Platform.select({
+      web: {
+        transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease',
+      },
+    }),
   },
   serviceLabel: {
     fontSize: 11,

@@ -41,7 +41,14 @@ const trendingKeywords = [
   'Dress MTO',
 ];
 
-export default function ExploreScreen({ onProductPress, onNavigate, onBack, wishlistOnly = false }) {
+export default function ExploreScreen({
+  onProductPress,
+  onNavigate,
+  onBack,
+  wishlistOnly = false,
+  initialQuery = '',
+  initialCategory = 'Semua',
+}) {
   const { width: screenWidth } = useWindowDimensions();
   const isDesktop = screenWidth >= 768;
   const maxContentWidth = isDesktop ? Math.min(screenWidth - 32, 1680) : screenWidth;
@@ -51,12 +58,24 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
   const cardWidth = Math.floor((availableGridWidth - (numCols - 1) * gridGap) / numCols);
   const cardSlotStyle = { width: cardWidth };
 
-  const [category, setCategory] = useState('Semua');
-  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState(initialCategory || 'Semua');
+  const [query, setQuery] = useState(initialQuery || '');
   const [sort, setSort] = useState('Terbaru');
   const [filterOpen, setFilterOpen] = useState(false);
   const [scanModalVisible, setScanModalVisible] = useState(false);
   const [scannedPassportOrder, setScannedPassportOrder] = useState(null);
+
+  useEffect(() => {
+    if (initialQuery !== undefined && initialQuery !== '') {
+      setQuery(initialQuery);
+    }
+  }, [initialQuery]);
+
+  useEffect(() => {
+    if (initialCategory && initialCategory !== 'Semua') {
+      setCategory(initialCategory);
+    }
+  }, [initialCategory]);
 
   const {
     categories,
@@ -110,7 +129,8 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
           p.name.toLowerCase().includes(q) ||
           p.tailor.toLowerCase().includes(q) ||
           (p.category && p.category.toLowerCase().includes(q)) ||
-          (p.material && p.material.toLowerCase().includes(q));
+          (p.material && p.material.toLowerCase().includes(q)) ||
+          (Array.isArray(p.badges) && p.badges.some((b) => b.toLowerCase().includes(q)));
         const wishlistMatch = !wishlistOnly || wishlist.includes(p.id);
         return catMatch && searchMatch && wishlistMatch;
       })
