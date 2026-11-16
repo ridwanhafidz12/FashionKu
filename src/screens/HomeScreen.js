@@ -52,7 +52,7 @@ import { formatCurrency } from '../data/appData';
 
 const LOGO = require('../../assets/images/fashionku_icon_transparent.png');
 
-// ─── 10-Icon Circular Service Launcher (Vibrant Shopee-Grade Icons) ───────────
+// ─── Circular Service Launcher (Vibrant Shopee-Grade Icons) ─────────────────
 const serviceIcons = [
   { id: 'bespoke', label: 'Bespoke\nKustom', icon: 'scissors-cutting', color: '#059669', bg: '#ECFDF5', route: 'custom-design' },
   { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#7C3AED', bg: '#F5F3FF', route: 'quiz' },
@@ -61,9 +61,6 @@ const serviceIcons = [
   { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#D97706', bg: '#FFFBEB', route: 'tailor-portal' },
   { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#047857', bg: '#ECFDF5', route: 'passport-info' },
   { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#EA580C', bg: '#FFF7ED', route: 'exchange' },
-  { id: 'shipping', label: 'Gratis Ongkir\nXTRA', icon: 'truck-fast-outline', color: '#00897B', bg: '#E0F2F1', route: 'explore' },
-  { id: 'guarantee', label: 'Garansi Pas\n100% Cocok', icon: 'shield-check-outline', color: '#2563EB', bg: '#EFF6FF', route: 'explore' },
-  { id: 'flash', label: 'Kurasi Spesial\nDiskon 60%', icon: 'star-outline', color: '#DC2626', bg: '#FEF2F2', route: 'explore' },
 ];
 
 // ─── Visual Category Thumbnails (Ultra-HD Guaranteed CDN Images) ───────────────
@@ -700,14 +697,14 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           )}
         </View>
 
-        {/* ─── 10-Icon Service Launcher (Shopee Single Row Style) ─────── */}
+        {/* ─── Circular Service Launcher (Shopee Single Row Style) ─────── */}
         <View style={styles.serviceGridContainer}>
           <View style={styles.serviceGridCard}>
             <View style={styles.serviceGridRow}>
               {serviceIcons.map((service) => (
                 <Pressable
                   key={service.id}
-                  style={[styles.serviceItem, isDesktop && screenWidth >= 1200 && { width: '9.6%', marginVertical: 2 }]}
+                  style={[styles.serviceItem, isDesktop && screenWidth >= 1200 && { width: '13.8%', marginVertical: 2 }]}
                   onPress={() => {
                     if (service.route === 'passport-info') {
                       setScanModalVisible(true);
