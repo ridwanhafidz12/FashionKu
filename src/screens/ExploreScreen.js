@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     borderColor: '#ECECEC',
   },
   headerBadgeText: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 11,
     fontWeight: '800',
   },
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.white,
     borderWidth: 1.5,
-    borderColor: '#EE4D2D',
+    borderColor: colors.forest,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
@@ -334,20 +334,20 @@ const styles = StyleSheet.create({
     ...shadows.sm,
   },
   filterButtonActive: {
-    backgroundColor: '#EE4D2D',
-    borderColor: '#EE4D2D',
+    backgroundColor: colors.forest,
+    borderColor: colors.forest,
   },
   // ─── Filter panel ─────────────────────────────────────────────────────────
   filterPanel: {
     overflow: 'hidden',
     borderRadius: 6,
-    backgroundColor: '#FFF0ED',
+    backgroundColor: '#EDF7EE',
     borderWidth: 1,
-    borderColor: '#FEE2E2',
+    borderColor: '#C6E7CE',
     paddingHorizontal: 14,
   },
   filterTitle: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 11,
     fontWeight: '800',
     marginTop: 10,
@@ -370,8 +370,8 @@ const styles = StyleSheet.create({
     borderColor: '#ECECEC',
   },
   sortChipActive: {
-    backgroundColor: '#EE4D2D',
-    borderColor: '#EE4D2D',
+    backgroundColor: colors.forest,
+    borderColor: colors.forest,
   },
   sortText: {
     color: '#555555',
@@ -396,8 +396,8 @@ const styles = StyleSheet.create({
     borderColor: '#ECECEC',
   },
   chipActive: {
-    backgroundColor: '#FFF0ED',
-    borderColor: '#EE4D2D',
+    backgroundColor: '#EDF7EE',
+    borderColor: colors.forest,
   },
   chipText: {
     color: '#555555',
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   chipTextActive: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontWeight: '800',
   },
   // ─── Result ───────────────────────────────────────────────────────────────

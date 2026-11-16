@@ -269,7 +269,7 @@ export default function ProductDetailScreen({ product, onBack, onCustomize, onCh
             onPress={handleChat}
             scaleDown={0.92}
           >
-            <Feather name="message-circle" size={20} color="#EE4D2D" />
+            <Feather name="message-circle" size={20} color={colors.forest} />
           </AnimatedPressable>
 
           <AnimatedPressable style={styles.orderButton} onPress={handleOrder} scaleDown={0.97}>
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   price: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 26,
     fontWeight: '900',
     marginBottom: 8,
@@ -581,8 +581,8 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGray,
   },
   sizeCircleActive: {
-    backgroundColor: '#EE4D2D',
-    borderColor: '#EE4D2D',
+    backgroundColor: colors.forest,
+    borderColor: colors.forest,
     ...shadows.sm,
   },
   sizeCircleText: {
@@ -607,8 +607,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   customSizePillActive: {
-    backgroundColor: '#EE4D2D',
-    borderColor: '#EE4D2D',
+    backgroundColor: colors.forest,
+    borderColor: colors.forest,
   },
   customSizeText: {
     color: colors.forest,
@@ -735,9 +735,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFF0ED',
+    backgroundColor: '#EDF7EE',
     borderWidth: 1.5,
-    borderColor: '#EE4D2D',
+    borderColor: colors.forest,
   },
   orderButton: {
     flex: 1,
@@ -747,7 +747,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     ...shadows.sm,
   },
   orderButtonContent: {

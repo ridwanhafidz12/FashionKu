@@ -84,7 +84,7 @@ export default function BottomTabs({ active, onChange }) {
       {tabs.map((tab) => {
         const selected = active === tab.id;
         const isCenter = tab.id === 'quiz';
-        const iconColor = selected ? '#EE4D2D' : '#757575';
+        const iconColor = selected ? colors.forest : '#757575';
 
         return (
           <Pressable
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconActive: {
-    backgroundColor: '#FFF0ED',
+    backgroundColor: '#EDF7EE',
   },
   // ─── Center AI Stylist tab ─────────────────────────────────────────────────
   centerIcon: {
@@ -204,16 +204,16 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     marginTop: -28,
     borderWidth: 3,
     borderColor: '#FFFFFF',
     ...shadows.md,
   },
   centerIconActive: {
-    backgroundColor: '#D73211',
+    backgroundColor: colors.forestMid,
     borderColor: '#FFFFFF',
-    shadowColor: '#EE4D2D',
+    shadowColor: colors.forest,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 12,
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   labelActive: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontWeight: '800',
   },
 });

@@ -1,17 +1,18 @@
 /**
  * @file HomeScreen.js
- * @description Landing screen for FashionKu — 99.5% authentic Shopee layout & design system.
+ * @description Landing screen for FashionKu with brand green palette (#2C6842)
+ * and Shopee-grade structural layout & responsive design system.
  *
  * Features:
- * - Iconic Shopee Orange Gradient header (Desktop & Mobile)
+ * - Clean white sticky header with brand Forest Green (#2C6842) accents & search bar
  * - Desktop side-by-side Hero (66.5% Carousel + 33.5% Stacked Promo Banners)
- * - 10-Icon Circular Service Launcher (Shopee circle menu)
- * - Shopee Flash Sale with countdown timer blocks, yellow discount stickers, and fiery progress bars
- * - FashionKu Mall (Shopee Mall red header, 100% original, official ateliers)
- * - Kategori Pilihan Shopee (8 visual category cards)
- * - Rekomendasi (Shopee Daily Discover tab bar + 5-column desktop / 2-column mobile grid)
- * - Floating Chat widget on desktop
- * - Shopee 5-column comprehensive footer
+ * - 10-Icon Circular Service Launcher (Shopee circle menu in brand palette)
+ * - Flash Sale section with countdown timer blocks, discount badges, and progress bar
+ * - FashionKu Mall (Forest Green header, 100% original, official ateliers)
+ * - Kategori Pilihan (8 visual category cards)
+ * - Rekomendasi (Daily Discover tab bar + 5-column desktop / 2-column mobile grid)
+ * - Floating Chat widget on desktop (#2C6842)
+ * - 5-column comprehensive footer
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -49,21 +50,21 @@ import { formatCurrency } from '../data/appData';
 
 const LOGO = require('../../assets/images/fashionku_icon_transparent.png');
 
-// ─── Shopee 10-Icon Circular Service Launcher ─────────────────────────────────
+// ─── 10-Icon Circular Service Launcher (FashionKu Palette) ─────────────────────
 const serviceIcons = [
-  { id: 'bespoke', label: 'Bespoke\nKustom', icon: 'scissors-cutting', color: '#EE4D2D', bg: '#FFF0ED', route: 'custom-design' },
-  { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#8B5CF6', bg: '#F5F3FF', route: 'quiz' },
-  { id: 'exchange', label: 'Eco Swap\nTukar Baju', icon: 'recycle', color: '#10B981', bg: '#ECFDF5', route: 'exchange' },
-  { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#0284C7', bg: '#F0F9FF', route: 'explore' },
-  { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#D97706', bg: '#FFFBEB', route: 'explore' },
-  { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#059669', bg: '#ECFDF5', route: 'passport-info' },
-  { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#EA580C', bg: '#FFF7ED', route: 'exchange' },
-  { id: 'shipping', label: 'Gratis Ongkir\nXTRA', icon: 'truck-fast-outline', color: '#00BFA5', bg: '#E6FAF7', route: 'explore' },
-  { id: 'guarantee', label: 'Garansi Pas\n100% Cocok', icon: 'shield-check-outline', color: '#2563EB', bg: '#EFF6FF', route: 'explore' },
-  { id: 'flash', label: 'Kurasi Spesial\nDiskon 60%', icon: 'star-outline', color: '#DC2626', bg: '#FEF2F2', route: 'explore' },
+  { id: 'bespoke', label: 'Bespoke\nKustom', icon: 'scissors-cutting', color: '#2C6842', bg: '#EDF7EE', route: 'custom-design' },
+  { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#27667B', bg: '#E6F0F4', route: 'quiz' },
+  { id: 'exchange', label: 'Eco Swap\nTukar Baju', icon: 'recycle', color: '#2C6842', bg: '#EDF7EE', route: 'exchange' },
+  { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#143D60', bg: '#EAF0F6', route: 'explore' },
+  { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#1C4A2E', bg: '#EDF7EE', route: 'explore' },
+  { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#2C6842', bg: '#EDF7EE', route: 'passport-info' },
+  { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#27667B', bg: '#E6F0F4', route: 'exchange' },
+  { id: 'shipping', label: 'Gratis Ongkir\nXTRA', icon: 'truck-fast-outline', color: '#2C6842', bg: '#EDF7EE', route: 'explore' },
+  { id: 'guarantee', label: 'Garansi Pas\n100% Cocok', icon: 'shield-check-outline', color: '#143D60', bg: '#EAF0F6', route: 'explore' },
+  { id: 'flash', label: 'Kurasi Spesial\nDiskon 60%', icon: 'star-outline', color: '#2C6842', bg: '#EDF7EE', route: 'explore' },
 ];
 
-// ─── Shopee Category Thumbnails ───────────────────────────────────────────────
+// ─── Visual Category Thumbnails ───────────────────────────────────────────────
 const shopeeCategories = [
   { id: 'c1', label: 'Atasan Wanita', image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/6d2ec2e1f3f544a8b4d71c61e34a1467~.jpeg.webp', route: 'explore' },
   { id: 'c2', label: 'Kemeja Pria', image: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/99/MTA-185118741/brd-74257_full01-473f6415.webp', route: 'explore' },
@@ -82,7 +83,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   const containerPadding = 16;
   const availableWidth = maxContentWidth - (containerPadding * 2);
 
-  // Exact Shopee desktop ratio: 66.5% main carousel, 33.5% stacked promo banners
+  // Exact desktop ratio: 66.5% main carousel, 33.5% stacked promo banners
   const heroWidth = isDesktop ? Math.floor(availableWidth * 0.665) : availableWidth;
   const heroRightWidth = isDesktop ? availableWidth - heroWidth - 12 : availableWidth;
   const heroHeight = isDesktop ? 270 : 180;
@@ -129,7 +130,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
       {
         id: 'circular-sale',
         badge: 'Circular Super Sale',
-        badgeIcon: 'fire',
+        badgeIcon: 'recycle',
         title: 'Diskon s.d. 60%\n+ Extra Poin Daur Ulang',
         copy: 'Kain sisa atelier pilihan dengan potongan harga terbesar bulan ini.',
         button: 'Belanja Sekarang',
@@ -221,7 +222,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
 
   const copyPromoCode = async () => {
     try {
-      await Share.share({ message: 'SHOPEE-FASHIONKU25' });
+      await Share.share({ message: 'FASHIONKU25' });
     } catch {
       // silently ignore
     }
@@ -236,7 +237,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     : 'Tambah alamat biar belanja lebih asyik';
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
+    <View style={{ flex: 1, backgroundColor: '#F5F6F8' }}>
       <ScrollView
         style={layout.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -245,37 +246,35 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={handleRefresh}
-            tintColor="#EE4D2D"
-            colors={['#EE4D2D']}
+            tintColor={colors.forest}
+            colors={[colors.forest]}
           />
         }
       >
-        {/* ─── Shopee Signature Orange Gradient Header ─────────────────── */}
+        {/* ─── Header: Clean Modern Desktop & Mobile (Brand Green Palette) ── */}
         <View style={styles.topHeader}>
           {/* Top Utility Bar (Desktop only) */}
           {isDesktop && (
             <View style={styles.topUtilityBar}>
               <View style={styles.topUtilityInner}>
                 <View style={styles.utilityLeft}>
-                  <Text style={styles.utilityLinkWhite}>Tentang FashionKu</Text>
-                  <Text style={styles.utilityDividerWhite}>|</Text>
-                  <Text style={styles.utilityLinkWhite}>Mitra Penjahit UMKM</Text>
-                  <Text style={styles.utilityDividerWhite}>|</Text>
-                  <Text style={styles.utilityLinkWhite}>Download Aplikasi</Text>
-                  <Text style={styles.utilityDividerWhite}>|</Text>
-                  <Text style={styles.utilityLinkWhite}>Ikuti Kami di Instagram, TikTok</Text>
+                  <Text style={styles.utilityLink}>Tentang FashionKu</Text>
+                  <Text style={styles.utilityDivider}>|</Text>
+                  <Text style={styles.utilityLink}>Mitra Penjahit UMKM</Text>
+                  <Text style={styles.utilityDivider}>|</Text>
+                  <Text style={styles.utilityLink}>Download Aplikasi</Text>
                 </View>
                 <View style={styles.utilityRight}>
-                  <Pressable style={styles.utilityPillShopee} onPress={() => onNavigate('impact')}>
-                    <MaterialCommunityIcons name="coin" size={12} color="#FFD700" />
-                    <Text style={styles.utilityPillTextShopee}>{circularPoints} Poin Sirkular</Text>
+                  <Pressable style={styles.utilityPill} onPress={() => onNavigate('impact')}>
+                    <MaterialCommunityIcons name="leaf" size={12} color={colors.forest} />
+                    <Text style={styles.utilityPillText}>{circularPoints} Poin Sirkular</Text>
                   </Pressable>
-                  <Text style={styles.utilityDividerWhite}>|</Text>
+                  <Text style={styles.utilityDivider}>|</Text>
                   <Pressable onPress={() => onNavigate('orders')}>
-                    <Text style={styles.utilityLinkWhite}>Lacak Pesanan</Text>
+                    <Text style={styles.utilityLink}>Lacak Pesanan</Text>
                   </Pressable>
-                  <Text style={styles.utilityDividerWhite}>|</Text>
-                  <Text style={styles.utilityLinkWhite}>Bantuan</Text>
+                  <Text style={styles.utilityDivider}>|</Text>
+                  <Text style={styles.utilityLink}>Bantuan</Text>
                 </View>
               </View>
             </View>
@@ -295,7 +294,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                 </View>
               </Pressable>
 
-              {/* Shopee Big White Search Box */}
+              {/* Big Search Box with Forest Green Search Button */}
               <View style={styles.searchSection}>
                 <AnimatedPressable
                   style={styles.searchBox}
@@ -303,7 +302,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   scaleDown={0.99}
                 >
                   <View style={styles.searchInner}>
-                    <Feather name="search" size={15} color="#757575" style={styles.searchIconLeft} />
+                    <Feather name="search" size={15} color="#64748B" style={styles.searchIconLeft} />
                     <Text style={styles.searchText} numberOfLines={1}>
                       {isDesktop ? 'Cari outfit upcycled, dress kain sisa, penjahit Jogja...' : 'Cari di FashionKu...'}
                     </Text>
@@ -334,7 +333,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   onPress={() => setScanModalVisible(true)}
                   hitSlop={8}
                 >
-                  <MaterialCommunityIcons name="qrcode-scan" size={20} color="#FFFFFF" />
+                  <MaterialCommunityIcons name="qrcode-scan" size={20} color="#111827" />
                   {isDesktop && <Text style={styles.actionBtnLabel}>Paspor</Text>}
                 </Pressable>
 
@@ -345,7 +344,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                     onPress={() => onNavigate('explore', { wishlistOnly: true })}
                     hitSlop={8}
                   >
-                    <Feather name="heart" size={20} color="#FFFFFF" />
+                    <Feather name="heart" size={20} color="#111827" />
                     <Text style={styles.actionBtnLabel}>Favorit</Text>
                   </Pressable>
                 )}
@@ -357,7 +356,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   hitSlop={8}
                 >
                   <View style={styles.cartIconWrapper}>
-                    <Feather name="shopping-cart" size={22} color="#FFFFFF" />
+                    <Feather name="shopping-bag" size={22} color={colors.forest} />
                     {cart.length > 0 && (
                       <View style={styles.cartCountBadge}>
                         <Text style={styles.cartCountText}>{cart.length}</Text>
@@ -397,31 +396,31 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
             {isDesktop && (
               <View style={styles.desktopNavStrip}>
                 <Pressable style={[styles.navTabItem, styles.navTabItemActive]} onPress={() => onNavigate('home')}>
-                  <MaterialCommunityIcons name="home-variant" size={15} color="#FFFFFF" />
+                  <MaterialCommunityIcons name="home-variant" size={15} color={colors.forest} />
                   <Text style={[styles.navTabText, styles.navTabTextActive]}>Beranda</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('explore')}>
-                  <MaterialCommunityIcons name="hanger" size={15} color="rgba(255,255,255,0.85)" />
+                  <MaterialCommunityIcons name="hanger" size={15} color="#475569" />
                   <Text style={styles.navTabText}>Katalog Busana</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('quiz')}>
-                  <MaterialCommunityIcons name="creation" size={15} color="rgba(255,255,255,0.85)" />
+                  <MaterialCommunityIcons name="creation" size={15} color={colors.forest} />
                   <Text style={styles.navTabText}>AI Stylist Pintar</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('explore')}>
-                  <MaterialCommunityIcons name="account-group" size={15} color="rgba(255,255,255,0.85)" />
+                  <MaterialCommunityIcons name="account-group" size={15} color="#475569" />
                   <Text style={styles.navTabText}>Mitra Penjahit</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('exchange')}>
-                  <MaterialCommunityIcons name="recycle" size={15} color="rgba(255,255,255,0.85)" />
+                  <MaterialCommunityIcons name="recycle" size={15} color="#475569" />
                   <Text style={styles.navTabText}>Eco Swap</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('impact')}>
-                  <MaterialCommunityIcons name="leaf" size={15} color="rgba(255,255,255,0.85)" />
+                  <MaterialCommunityIcons name="leaf" size={15} color="#475569" />
                   <Text style={styles.navTabText}>Dampak Lingkungan</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('orders')}>
-                  <MaterialCommunityIcons name="package-variant-closed" size={15} color="rgba(255,255,255,0.85)" />
+                  <MaterialCommunityIcons name="package-variant-closed" size={15} color="#475569" />
                   <Text style={styles.navTabText}>Pesanan Saya</Text>
                 </Pressable>
               </View>
@@ -432,16 +431,16 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               style={styles.locationBar}
               onPress={() => requireAuth(() => onNavigate('profile-addresses'), 'Masuk untuk mengelola alamat pengiriman.')}
             >
-              <Feather name="map-pin" size={11} color="rgba(255,255,255,0.88)" />
+              <Feather name="map-pin" size={11} color="#64748B" />
               <Text style={styles.locationText} numberOfLines={1}>
-                Dikirim ke: <Text style={{ fontWeight: '700', color: '#FFFFFF' }}>{activeAddressLabel}</Text>
+                Dikirim ke: <Text style={{ fontWeight: '700', color: '#111827' }}>{activeAddressLabel}</Text>
               </Text>
-              <Feather name="chevron-down" size={11} color="rgba(255,255,255,0.88)" />
+              <Feather name="chevron-down" size={11} color="#64748B" />
             </Pressable>
           </View>
         </View>
 
-        {/* ─── Shopee Desktop Side-by-Side Hero (66.5% Carousel + 33.5% Stacked Promo) ─ */}
+        {/* ─── Desktop Side-by-Side Hero (66.5% Carousel + 33.5% Stacked Promo) ─ */}
         <View style={styles.heroOuterContainer}>
           {isDesktop ? (
             <View style={styles.desktopHeroRow}>
@@ -478,14 +477,14 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                         >
                           <View style={styles.heroGradientOverlay} />
                           <View style={styles.heroContentDesktop}>
-                            <View style={styles.heroBadgeShopee}>
+                            <View style={styles.heroBadgeBrand}>
                               <MaterialCommunityIcons name={slide.badgeIcon} size={11} color="#FFFFFF" />
-                              <Text style={styles.heroBadgeShopeeText}>{slide.badge}</Text>
+                              <Text style={styles.heroBadgeBrandText}>{slide.badge}</Text>
                             </View>
                             <Text style={styles.heroTitleDesktop}>{slide.title}</Text>
                             <Text style={styles.heroCopyDesktop}>{slide.copy}</Text>
-                            <View style={styles.heroButtonShopee}>
-                              <Text style={styles.heroButtonShopeeText}>{slide.button}</Text>
+                            <View style={styles.heroButtonBrand}>
+                              <Text style={styles.heroButtonBrandText}>{slide.button}</Text>
                               <Feather name="arrow-right" size={13} color="#FFFFFF" />
                             </View>
                           </View>
@@ -521,8 +520,8 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   >
                     <View style={styles.desktopRightOverlay} />
                     <View style={styles.desktopRightContent}>
-                      <View style={styles.shopeeBadgeOrange}>
-                        <Text style={styles.shopeeBadgeOrangeText}>🔥 EKSTRA 100 POIN</Text>
+                      <View style={styles.brandBadgeSmall}>
+                        <Text style={styles.brandBadgeSmallText}>♻️ EKSTRA 100 POIN</Text>
                       </View>
                       <Text style={styles.desktopRightTitle}>Tukar Baju Jadi Voucher</Text>
                       <Text style={styles.desktopRightSub}>Daur ulang pakaian tanpa ribet</Text>
@@ -543,8 +542,8 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   >
                     <View style={styles.desktopRightOverlay} />
                     <View style={styles.desktopRightContent}>
-                      <View style={[styles.shopeeBadgeOrange, { backgroundColor: '#D0011B' }]}>
-                        <Text style={styles.shopeeBadgeOrangeText}>✂️ BESPOKE ATELIER</Text>
+                      <View style={[styles.brandBadgeSmall, { backgroundColor: colors.forestMid }]}>
+                        <Text style={styles.brandBadgeSmallText}>✂️ BESPOKE ATELIER</Text>
                       </View>
                       <Text style={styles.desktopRightTitle}>Jahit Kustom Presisi</Text>
                       <Text style={styles.desktopRightSub}>100% dibuat sesuai ukuranmu</Text>
@@ -583,9 +582,9 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                         >
                           <View style={styles.heroGradientOverlay} />
                           <View style={styles.heroContent}>
-                            <View style={styles.heroBadgeShopee}>
+                            <View style={styles.heroBadgeBrand}>
                               <MaterialCommunityIcons name={slide.badgeIcon} size={11} color="#FFFFFF" />
-                              <Text style={styles.heroBadgeShopeeText}>{slide.badge}</Text>
+                              <Text style={styles.heroBadgeBrandText}>{slide.badge}</Text>
                             </View>
                             <Text style={styles.heroTitle}>{slide.title}</Text>
                             <Text style={styles.heroCopy}>{slide.copy}</Text>
@@ -652,7 +651,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         {/* ─── Trust Badges Bar ───────────────────────────────────────── */}
         <TrustStrip />
 
-        {/* ─── Shopee 10-Icon Service Launcher (Menu Lingkaran Shopee) ─── */}
+        {/* ─── 10-Icon Service Launcher (Menu Lingkaran Brand Palette) ─── */}
         <View style={styles.serviceGridContainer}>
           <View style={styles.serviceGridCard}>
             <View style={styles.serviceGridRow}>
@@ -678,13 +677,13 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </View>
         </View>
 
-        {/* ─── Shopee Flash Sale Section (Kilat) ───────────────────────── */}
+        {/* ─── Flash Sale Section (Atelier Kilat) ───────────────────────── */}
         <View style={styles.curationSection}>
           <View style={styles.curationInner}>
             <View style={styles.curationHeader}>
               <View style={styles.curationTitleRow}>
-                <MaterialCommunityIcons name="fire" size={24} color="#EE4D2D" />
-                <Text style={styles.shopeeFlashTitle}>FLASH SALE</Text>
+                <MaterialCommunityIcons name="fire" size={24} color="#EA580C" />
+                <Text style={styles.flashSaleTitle}>FLASH SALE ATELIER</Text>
                 <View style={styles.flashCountdownRow}>
                   <View style={styles.timerBlock}><Text style={styles.timerBlockText}>{flashSaleTime.h}</Text></View>
                   <Text style={styles.timerColon}>:</Text>
@@ -718,8 +717,8 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                       style={styles.flashProductImg}
                       imageStyle={{ borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
                     >
-                      <View style={styles.shopeeFlashDiscountFlag}>
-                        <Text style={styles.shopeeFlashDiscountText}>-35%</Text>
+                      <View style={styles.flashDiscountBadge}>
+                        <Text style={styles.flashDiscountText}>-35%</Text>
                       </View>
                     </ImageBackground>
 
@@ -730,7 +729,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                       </View>
                       <Text style={styles.flashOriginalPrice}>Rp{originalPrice.toLocaleString('id-ID')}</Text>
 
-                      {/* Shopee Fiery Progress Bar */}
+                      {/* Progress Bar */}
                       <View style={styles.shopeeProgressBar}>
                         <View style={[styles.shopeeProgressFill, { width: `${Math.min(100, (15 - stock) * 7 + 35)}%` }]} />
                         <Text style={styles.shopeeProgressText}>
@@ -745,7 +744,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </View>
         </View>
 
-        {/* ─── Shopee Mall Section (FashionKu Mall) ────────────────────── */}
+        {/* ─── FashionKu Mall Section ─────────────────────────────────── */}
         <View style={styles.shopeeMallSection}>
           <View style={styles.shopeeMallInner}>
             <View style={styles.shopeeMallHeader}>
@@ -798,7 +797,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </View>
         </View>
 
-        {/* ─── Kategori Pilihan (Shopee Categories Grid) ───────────────── */}
+        {/* ─── Kategori Pilihan (Visual Categories Grid) ───────────────── */}
         <View style={styles.shopeeCategorySection}>
           <View style={styles.shopeeCategoryInner}>
             <View style={styles.shopeeCategoryHeader}>
@@ -825,18 +824,18 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </View>
         </View>
 
-        {/* ─── Welcome Perk Voucher Card (Shopee Style) ───────────────── */}
+        {/* ─── Welcome Perk Voucher Card ──────────────────────────────── */}
         <View style={styles.welcomePerkContainer}>
           <View style={styles.welcomePerkCard}>
             <View style={styles.welcomePerkLeft}>
               <View style={styles.welcomePerkIcon}>
-                <LeafMark size={16} color="#EE4D2D" />
+                <LeafMark size={16} color={colors.forest} />
               </View>
               <View style={styles.welcomePerkText}>
                 <Text style={styles.welcomePerkTitle}>Voucher Sambutan Pengguna Baru</Text>
                 <Text style={styles.welcomePerkSub}>Diskon Rp25.000 untuk pesanan pertamamu</Text>
                 <View style={styles.welcomeCodeRow}>
-                  <Text style={styles.welcomeCodeTag}>Kode: SHOPEE-FASHIONKU25</Text>
+                  <Text style={styles.welcomeCodeTag}>Kode: FASHIONKU25</Text>
                 </View>
               </View>
             </View>
@@ -851,10 +850,10 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </View>
         </View>
 
-        {/* ─── Shopee Rekomendasi (Daily Discover Sticky Tabs & Infinite Grid) ─ */}
+        {/* ─── Rekomendasi (Daily Discover Sticky Tabs & Product Grid) ─── */}
         <View style={styles.shopeeDailyDiscoverContainer}>
           <View style={styles.shopeeDailyDiscoverInner}>
-            {/* Shopee Active Tab Header */}
+            {/* Active Tab Header Bar */}
             <View style={styles.shopeeDiscoverTabsBar}>
               <View style={styles.shopeeActiveTab}>
                 <Text style={styles.shopeeActiveTabText}>REKOMENDASI</Text>
@@ -879,7 +878,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               </ScrollView>
             </View>
 
-            {/* Shopee Responsive Product Grid */}
+            {/* Responsive Product Grid */}
             <View style={[styles.productGrid, { gap: gridGap }]}>
               {featuredProducts.slice(0, numCols * 4).map((product) => (
                 <ProductCard
@@ -894,7 +893,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               ))}
             </View>
 
-            {/* Load More Button in Shopee Style */}
+            {/* Load More Button */}
             <View style={styles.loadMoreWrap}>
               <Pressable style={styles.loadMoreBtn} onPress={() => onNavigate('explore')}>
                 <Text style={styles.loadMoreText}>Lihat Lebih Banyak</Text>
@@ -927,7 +926,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           </AnimatedPressable>
         </View>
 
-        {/* ─── Shopee 5-Column Desktop Footer ─────────────────────────── */}
+        {/* ─── 5-Column Desktop Footer (Brand Palette) ─────────────────── */}
         {isDesktop && (
           <View style={styles.desktopFooter}>
             <View style={styles.desktopFooterInner}>
@@ -954,7 +953,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               <View style={styles.footerCol}>
                 <Text style={styles.footerColTitle}>PEMBAYARAN</Text>
                 <View style={styles.footerBadgeWrap}>
-                  {['QRIS', 'BCA', 'Mandiri', 'BNI', 'BRI', 'ShopeePay', 'COD'].map((pay) => (
+                  {['QRIS', 'BCA', 'Mandiri', 'BNI', 'BRI', 'GoPay', 'COD'].map((pay) => (
                     <View key={pay} style={styles.footerPayBadge}>
                       <Text style={styles.footerPayText}>{pay}</Text>
                     </View>
@@ -978,10 +977,10 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   <Text style={styles.footerBrandName}>FashionKu</Text>
                 </View>
                 <Text style={styles.footerBrandDesc}>
-                  Platform e-commerce fesyen sirkular terdepan Indonesia yang mengusung standar Shopee. Menghubungkan pembeli dengan 134 artisan penjahit lokal untuk menghasilkan busana bespoke ramah lingkungan dengan transparansi Digital Product Passport (DPP).
+                  Platform e-commerce fesyen sirkular terdepan Indonesia. Menghubungkan pembeli dengan 134 artisan penjahit lokal untuk menghasilkan busana bespoke ramah lingkungan dengan transparansi Digital Product Passport (DPP).
                 </Text>
                 <View style={styles.footerCertBadge}>
-                  <MaterialCommunityIcons name="shield-check" size={16} color="#EE4D2D" />
+                  <MaterialCommunityIcons name="shield-check" size={16} color={colors.forest} />
                   <Text style={styles.footerCertText}>100% Terverifikasi Ramah Lingkungan & DPP Certified</Text>
                 </View>
               </View>
@@ -996,7 +995,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         )}
       </ScrollView>
 
-      {/* ─── Shopee Floating Chat Widget on Desktop ────────────────────── */}
+      {/* ─── Floating Chat Widget on Desktop (#2C6842) ────────────────── */}
       {isDesktop && (
         <View style={styles.floatingChatWrap}>
           <Pressable
@@ -1052,7 +1051,7 @@ function TrustStrip() {
       >
         {trustBadges.map((item, idx) => (
           <View key={idx} style={styles.trustBadgePill}>
-            <MaterialCommunityIcons name={item.icon} size={13} color="#EE4D2D" />
+            <MaterialCommunityIcons name={item.icon} size={13} color={colors.forest} />
             <Text style={styles.trustBadgeText}>{item.text}</Text>
           </View>
         ))}
@@ -1066,21 +1065,19 @@ const styles = StyleSheet.create({
     paddingBottom: 110,
   },
 
-  // ─── Shopee Orange Gradient Top Header ──────────────────────────────────────
+  // ─── Clean Header Top (White + Forest Green Accents) ───────────────────────
   topHeader: {
-    backgroundColor: '#EE4D2D', // Iconic Shopee Orange fallback
-    ...Platform.select({
-      web: {
-        backgroundImage: 'linear-gradient(-180deg, #f53d2d, #f63)',
-      },
-    }),
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
     width: '100%',
     paddingBottom: 6,
     ...shadows.sm,
   },
   topUtilityBar: {
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.18)',
+    borderBottomColor: '#F1F5F9',
+    backgroundColor: '#FAFBF6',
     paddingVertical: 5,
     paddingHorizontal: 16,
     marginBottom: 6,
@@ -1097,35 +1094,36 @@ const styles = StyleSheet.create({
   utilityLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
   utilityRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-  utilityLinkWhite: {
+  utilityLink: {
     fontSize: 11.5,
-    color: '#FFFFFF',
+    color: '#6B7280',
     fontWeight: '500',
-    opacity: 0.92,
   },
-  utilityDividerWhite: {
+  utilityDivider: {
     fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.4)',
+    color: '#D1D5DB',
   },
-  utilityPillShopee: {
+  utilityPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.22)',
+    backgroundColor: '#EDF7EE',
     paddingHorizontal: 8,
     paddingVertical: 2.5,
     borderRadius: 99,
+    borderWidth: 1,
+    borderColor: '#C6E7CE',
   },
-  utilityPillTextShopee: {
+  utilityPillText: {
     fontSize: 11,
-    color: '#FFFFFF',
+    color: '#20603D',
     fontWeight: '700',
   },
   topHeaderInner: {
@@ -1148,7 +1146,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   brandLogoCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#EDF7EE',
     borderRadius: 6,
     padding: 3,
   },
@@ -1162,13 +1160,13 @@ const styles = StyleSheet.create({
   brandTitleText: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#FFFFFF',
+    color: colors.forest,
     letterSpacing: -0.5,
   },
   brandTaglineText: {
     fontSize: 9,
     fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.88)',
+    color: '#64748B',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
@@ -1181,14 +1179,15 @@ const styles = StyleSheet.create({
   },
   searchInner: {
     height: 40,
-    borderRadius: 3,
+    borderRadius: 4,
     backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: colors.forest,
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 10,
     paddingRight: 3,
     justifyContent: 'space-between',
-    ...shadows.sm,
   },
   searchIconLeft: {
     marginRight: 6,
@@ -1196,14 +1195,14 @@ const styles = StyleSheet.create({
   searchText: {
     flex: 1,
     fontSize: 13,
-    color: '#757575',
+    color: '#64748B',
     fontWeight: '500',
   },
   searchSubmitBtn: {
     height: 34,
     paddingHorizontal: 16,
-    borderRadius: 2,
-    backgroundColor: '#FB5533', // Shopee vibrant button
+    borderRadius: 3,
+    backgroundColor: colors.forest,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -1222,9 +1221,8 @@ const styles = StyleSheet.create({
   },
   quickKeyword: {
     fontSize: 11,
-    color: '#FFFFFF',
-    fontWeight: '400',
-    opacity: 0.9,
+    color: '#64748B',
+    fontWeight: '500',
   },
   headerRightActions: {
     flexDirection: 'row',
@@ -1240,8 +1238,8 @@ const styles = StyleSheet.create({
   },
   actionBtnLabel: {
     fontSize: 10,
-    fontWeight: '500',
-    color: '#FFFFFF',
+    fontWeight: '600',
+    color: '#111827',
   },
   cartIconWrapper: {
     position: 'relative',
@@ -1250,9 +1248,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -6,
     right: -8,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     borderRadius: 10,
     minWidth: 18,
     height: 18,
@@ -1261,18 +1257,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
   },
   cartCountText: {
-    color: '#EE4D2D',
+    color: '#FFFFFF',
     fontSize: 10,
     fontWeight: '900',
   },
   headerLoginBtn: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 3,
+    backgroundColor: colors.forest,
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 4,
   },
   headerLoginText: {
-    color: '#EE4D2D',
+    color: '#FFFFFF',
     fontSize: 12.5,
     fontWeight: '800',
   },
@@ -1285,19 +1281,19 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.forest,
     alignItems: 'center',
     justifyContent: 'center',
   },
   userAvatarInitial: {
-    color: '#EE4D2D',
+    color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '900',
   },
   userNameHeader: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#111827',
   },
   desktopNavStrip: {
     flexDirection: 'row',
@@ -1306,7 +1302,7 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     paddingBottom: 2,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.18)',
+    borderTopColor: '#F1F5F9',
   },
   navTabItem: {
     flexDirection: 'row',
@@ -1317,15 +1313,15 @@ const styles = StyleSheet.create({
   },
   navTabItemActive: {
     borderBottomWidth: 2.5,
-    borderBottomColor: '#FFFFFF',
+    borderBottomColor: colors.forest,
   },
   navTabText: {
     fontSize: 12.5,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.88)',
+    color: '#475569',
   },
   navTabTextActive: {
-    color: '#FFFFFF',
+    color: colors.forest,
     fontWeight: '800',
   },
   locationBar: {
@@ -1337,7 +1333,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.88)',
+    color: '#64748B',
   },
 
   // ─── Hero Section ──────────────────────────────────────────────────────────
@@ -1380,18 +1376,18 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     zIndex: 2,
   },
-  heroBadgeShopee: {
+  heroBadgeBrand: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 3,
     marginBottom: 6,
   },
-  heroBadgeShopeeText: {
+  heroBadgeBrandText: {
     color: '#FFFFFF',
     fontSize: 10,
     fontWeight: '800',
@@ -1423,18 +1419,18 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     marginTop: 2,
   },
-  heroButtonShopee: {
+  heroButtonBrand: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 3,
     marginTop: 12,
   },
-  heroButtonShopeeText: {
+  heroButtonBrandText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '800',
@@ -1454,7 +1450,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.4)',
   },
   heroDotActive: {
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     width: 16,
   },
 
@@ -1481,15 +1477,15 @@ const styles = StyleSheet.create({
     padding: 10,
     zIndex: 2,
   },
-  shopeeBadgeOrange: {
+  brandBadgeSmall: {
     alignSelf: 'flex-start',
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 2,
     marginBottom: 3,
   },
-  shopeeBadgeOrangeText: {
+  brandBadgeSmallText: {
     color: '#FFFFFF',
     fontSize: 8.5,
     fontWeight: '800',
@@ -1535,7 +1531,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   mobileDuoSub: {
-    color: '#FFDA44',
+    color: '#DDEB9D',
     fontSize: 10,
     fontWeight: '700',
   },
@@ -1570,7 +1566,7 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
 
-  // ─── Shopee 10-Icon Service Launcher Grid ──────────────────────────────────
+  // ─── 10-Icon Service Launcher Grid ─────────────────────────────────────────
   serviceGridContainer: {
     maxWidth: 1200,
     width: '100%',
@@ -1616,7 +1612,7 @@ const styles = StyleSheet.create({
     lineHeight: 13,
   },
 
-  // ─── Shopee Flash Sale Section ─────────────────────────────────────────────
+  // ─── Flash Sale Section ────────────────────────────────────────────────────
   curationSection: {
     maxWidth: 1200,
     width: '100%',
@@ -1647,11 +1643,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  shopeeFlashTitle: {
+  flashSaleTitle: {
     fontSize: 16,
     fontWeight: '900',
     fontStyle: 'italic',
-    color: '#EE4D2D',
+    color: colors.forest,
     letterSpacing: 0.3,
   },
   flashCountdownRow: {
@@ -1660,7 +1656,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   timerBlock: {
-    backgroundColor: '#222222',
+    backgroundColor: '#1E293B',
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderRadius: 2,
@@ -1674,10 +1670,10 @@ const styles = StyleSheet.create({
   timerColon: {
     fontSize: 11,
     fontWeight: '900',
-    color: '#222222',
+    color: '#1E293B',
   },
   curationSeeAll: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -1697,17 +1693,17 @@ const styles = StyleSheet.create({
     height: 120,
     position: 'relative',
   },
-  shopeeFlashDiscountFlag: {
+  flashDiscountBadge: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: '#FFDA44',
+    backgroundColor: '#FEF3C7',
     paddingHorizontal: 4,
     paddingVertical: 2,
     alignItems: 'center',
   },
-  shopeeFlashDiscountText: {
-    color: '#EE4D2D',
+  flashDiscountText: {
+    color: '#92400E',
     fontSize: 9,
     fontWeight: '900',
   },
@@ -1720,12 +1716,12 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
   },
   flashCurrency: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 9,
     fontWeight: '700',
   },
   flashPrice: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 14,
     fontWeight: '900',
   },
@@ -1737,7 +1733,7 @@ const styles = StyleSheet.create({
   shopeeProgressBar: {
     width: '100%',
     height: 14,
-    backgroundColor: '#FFEAE8',
+    backgroundColor: '#EDF7EE',
     borderRadius: 7,
     marginTop: 6,
     overflow: 'hidden',
@@ -1750,7 +1746,7 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     borderRadius: 7,
   },
   shopeeProgressText: {
@@ -1760,7 +1756,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
 
-  // ─── Shopee Mall Section (FashionKu Mall) ──────────────────────────────────
+  // ─── FashionKu Mall Section ───────────────────────────────────────────────
   shopeeMallSection: {
     maxWidth: 1200,
     width: '100%',
@@ -1792,7 +1788,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   shopeeMallBadge: {
-    backgroundColor: '#D0011B',
+    backgroundColor: colors.forest,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 2,
@@ -1805,7 +1801,7 @@ const styles = StyleSheet.create({
   shopeeMallTitle: {
     fontSize: 15,
     fontWeight: '900',
-    color: '#D0011B',
+    color: colors.forest,
     letterSpacing: 0.3,
   },
   shopeeMallPillRow: {
@@ -1819,7 +1815,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   shopeeMallSeeAll: {
-    color: '#D0011B',
+    color: colors.forest,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -1847,7 +1843,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 6,
     left: 6,
-    backgroundColor: '#D0011B',
+    backgroundColor: colors.forest,
     paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: 2,
@@ -1869,7 +1865,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
 
-  // ─── Kategori Pilihan (Shopee Categories) ──────────────────────────────────
+  // ─── Kategori Pilihan ──────────────────────────────────────────────────────
   shopeeCategorySection: {
     maxWidth: 1200,
     width: '100%',
@@ -1953,7 +1949,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FFF0ED',
+    backgroundColor: '#EDF7EE',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1975,10 +1971,10 @@ const styles = StyleSheet.create({
   welcomeCodeTag: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#EE4D2D',
+    color: colors.forest,
   },
   copyBtn: {
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 3,
@@ -1995,7 +1991,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-  // ─── Shopee Rekomendasi (Daily Discover Sticky Tabs & Product Grid) ────────
+  // ─── Rekomendasi (Daily Discover Sticky Tabs & Product Grid) ───────────────
   shopeeDailyDiscoverContainer: {
     maxWidth: 1200,
     width: '100%',
@@ -2020,7 +2016,7 @@ const styles = StyleSheet.create({
   },
   shopeeActiveTab: {
     borderBottomWidth: 3,
-    borderBottomColor: '#EE4D2D',
+    borderBottomColor: colors.forest,
     paddingVertical: 10,
     paddingHorizontal: 14,
     position: 'relative',
@@ -2028,7 +2024,7 @@ const styles = StyleSheet.create({
   shopeeActiveTabText: {
     fontSize: 14,
     fontWeight: '900',
-    color: '#EE4D2D',
+    color: colors.forest,
     letterSpacing: 0.3,
   },
   shopeeCategoryFilterRow: {
@@ -2044,9 +2040,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   shopeeFilterChipActive: {
-    backgroundColor: '#FFF0ED',
+    backgroundColor: '#EDF7EE',
     borderWidth: 1,
-    borderColor: '#EE4D2D',
+    borderColor: colors.forest,
   },
   shopeeFilterChipText: {
     fontSize: 11.5,
@@ -2054,7 +2050,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   shopeeFilterChipTextActive: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontWeight: '800',
   },
   productGrid: {
@@ -2113,7 +2109,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -2133,11 +2129,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 
-  // ─── Shopee 5-Column Desktop Footer ────────────────────────────────────────
+  // ─── Desktop Footer (Brand Palette) ────────────────────────────────────────
   desktopFooter: {
     backgroundColor: '#FFFFFF',
     borderTopWidth: 4,
-    borderTopColor: '#EE4D2D',
+    borderTopColor: colors.forest,
     marginTop: 24,
     paddingTop: 32,
     paddingBottom: 20,
@@ -2196,7 +2192,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   footerBrandLogoCard: {
-    backgroundColor: '#FFF0ED',
+    backgroundColor: '#EDF7EE',
     borderRadius: 4,
     padding: 3,
   },
@@ -2207,7 +2203,7 @@ const styles = StyleSheet.create({
   footerBrandName: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#EE4D2D',
+    color: colors.forest,
   },
   footerBrandDesc: {
     fontSize: 11,
@@ -2218,16 +2214,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#FFF0ED',
+    backgroundColor: '#EDF7EE',
     padding: 8,
     borderRadius: 3,
     borderWidth: 1,
-    borderColor: '#FEE2E2',
+    borderColor: '#C6E7CE',
   },
   footerCertText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#EE4D2D',
+    color: colors.forest,
   },
   footerBottomBar: {
     maxWidth: 1200,
@@ -2245,7 +2241,7 @@ const styles = StyleSheet.create({
     color: 'rgba(0,0,0,0.54)',
   },
 
-  // ─── Floating Chat Widget ──────────────────────────────────────────────────
+  // ─── Floating Chat Widget (#2C6842) ────────────────────────────────────────
   floatingChatWrap: {
     position: 'absolute',
     bottom: 24,
@@ -2256,7 +2252,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#EE4D2D',
+    backgroundColor: colors.forest,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 22,
@@ -2273,7 +2269,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   chatBadge: {
-    backgroundColor: '#FFDA44',
+    backgroundColor: '#DDEB9D',
     width: 16,
     height: 16,
     borderRadius: 8,
@@ -2281,7 +2277,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   chatBadgeText: {
-    color: '#EE4D2D',
+    color: colors.forestMid,
     fontSize: 9,
     fontWeight: '900',
   },

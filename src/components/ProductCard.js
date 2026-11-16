@@ -1,8 +1,8 @@
 /**
  * @file ProductCard.js
- * @description Authentic Shopee-grade product card component (99.5% Shopee spec).
- * Features Star+/Mall badges, yellow discount ribbon, Gratis Ongkir XTRA overlay,
- * promo voucher chips, bold Shopee-red pricing, rating, sold counter, and city tags.
+ * @description Authentic Shopee-grade product card component with FashionKu brand green design tokens.
+ * Features Star+/Mall badges, discount ribbon, Gratis Ongkir XTRA overlay,
+ * promo voucher chips, bold Forest Green pricing, rating, sold counter, and city tags.
  */
 
 import React, { memo } from 'react';
@@ -41,7 +41,7 @@ function ProductCard({
           style={styles.shopeeImage}
           imageStyle={styles.imageInner}
         >
-          {/* Top Left: Star+ or Mall Badge */}
+          {/* Top Left: Star+ or Mall Badge in Brand Forest Green */}
           <View style={styles.badgeTopLeft}>
             {isMall ? (
               <View style={styles.mallBadge}>
@@ -55,7 +55,7 @@ function ProductCard({
             )}
           </View>
 
-          {/* Top Right: Shopee Yellow Discount Ribbon Flag */}
+          {/* Top Right: Discount Ribbon Flag */}
           <View style={styles.shopeeDiscountFlag}>
             <Text style={styles.shopeeDiscountPercent}>35%</Text>
             <Text style={styles.shopeeDiscountLabel}>OFF</Text>
@@ -72,7 +72,7 @@ function ProductCard({
             <Feather
               name="heart"
               size={12}
-              color={favorite ? '#EE4D2D' : '#64748B'}
+              color={favorite ? colors.forest : '#64748B'}
             />
           </AnimatedPressable>
 
@@ -105,7 +105,7 @@ function ProductCard({
             </View>
           </View>
 
-          {/* Price Row: Shopee Red Bold */}
+          {/* Price Row: Brand Forest Green Bold */}
           <View style={styles.priceRow}>
             <Text style={styles.currencySymbol}>Rp</Text>
             <Text style={styles.priceNumber}>{formattedPrice}</Text>
@@ -167,7 +167,7 @@ function ProductCard({
           <Feather
             name="heart"
             size={14}
-            color={favorite ? '#EE4D2D' : '#64748B'}
+            color={favorite ? colors.forest : '#64748B'}
           />
         </AnimatedPressable>
 
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FA',
   },
 
-  // ─── Shopee Top Badges ─────────────────────────────────────────────────────
+  // ─── Top Badges (Brand Forest Green) ───────────────────────────────────────
   badgeTopLeft: {
     position: 'absolute',
     top: 0,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   starBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EE4D2D', // Shopee Signature Orange
+    backgroundColor: colors.forest, // Brand Forest Green
     paddingHorizontal: 4,
     paddingVertical: 1.5,
     borderTopLeftRadius: 3,
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   mallBadge: {
-    backgroundColor: '#D0011B', // Shopee Mall Red
+    backgroundColor: colors.forestMid, // Deep Forest Green
     paddingHorizontal: 5,
     paddingVertical: 1.5,
     borderTopLeftRadius: 3,
@@ -281,12 +281,12 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
 
-  // ─── Shopee Signature Yellow Discount Flag ─────────────────────────────────
+  // ─── Discount Ribbon Flag (Soft Gold) ──────────────────────────────────────
   shopeeDiscountFlag: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: '#FFDA44', // Authentic Shopee discount flag yellow
+    backgroundColor: '#FEF3C7', // Soft warm gold
     paddingHorizontal: 3.5,
     paddingTop: 2,
     paddingBottom: 4,
@@ -296,13 +296,13 @@ const styles = StyleSheet.create({
     width: 34,
   },
   shopeeDiscountPercent: {
-    color: '#EE4D2D',
+    color: '#92400E',
     fontSize: 9.5,
     fontWeight: '900',
     lineHeight: 11,
   },
   shopeeDiscountLabel: {
-    color: '#EE4D2D',
+    color: '#92400E',
     fontSize: 7.5,
     fontWeight: '800',
     lineHeight: 9,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 4,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderTopColor: '#FFDA44',
+    borderTopColor: '#FEF3C7',
   },
 
   // ─── Floating Heart Button ─────────────────────────────────────────────────
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
-    backgroundColor: '#00BFA5', // Shopee turquoise
+    backgroundColor: colors.ming, // Petroleum teal
     paddingHorizontal: 4,
     paddingVertical: 1.5,
     borderRadius: 2,
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   ecoScorePill: {
-    backgroundColor: 'rgba(44, 104, 66, 0.90)',
+    backgroundColor: colors.forest,
     paddingHorizontal: 4,
     paddingVertical: 1.5,
     borderRadius: 2,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
 
-  // ─── Shopee Info Body ──────────────────────────────────────────────────────
+  // ─── Info Body ─────────────────────────────────────────────────────────────
   shopeeCardBody: {
     padding: 8,
     paddingTop: 6,
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   },
   shopeeTitle: {
     fontSize: 12,
-    color: '#222222', // Authentic Shopee crisp dark gray text
+    color: '#222222',
     fontWeight: '500',
     lineHeight: 16,
     height: 32, // Exactly 2 lines
@@ -408,27 +408,27 @@ const styles = StyleSheet.create({
   },
   shopeeTagPromo: {
     borderWidth: 0.75,
-    borderColor: '#EE4D2D',
-    backgroundColor: '#FFF2EE',
-    paddingHorizontal: 3.5,
-    paddingVertical: 1,
-    borderRadius: 2,
-  },
-  shopeeTagPromoText: {
-    color: '#EE4D2D',
-    fontSize: 8,
-    fontWeight: '700',
-  },
-  shopeeTagEco: {
-    borderWidth: 0.75,
     borderColor: '#C6E7CE',
     backgroundColor: '#EDF7EE',
     paddingHorizontal: 3.5,
     paddingVertical: 1,
     borderRadius: 2,
   },
+  shopeeTagPromoText: {
+    color: colors.forest,
+    fontSize: 8,
+    fontWeight: '700',
+  },
+  shopeeTagEco: {
+    borderWidth: 0.75,
+    borderColor: '#C7D985',
+    backgroundColor: '#F4F8E5',
+    paddingHorizontal: 3.5,
+    paddingVertical: 1,
+    borderRadius: 2,
+  },
   shopeeTagEcoText: {
-    color: '#2C6842',
+    color: colors.forestMid,
     fontSize: 8,
     fontWeight: '700',
   },
@@ -438,19 +438,19 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   currencySymbol: {
-    color: '#EE4D2D', // Shopee orange-red
+    color: colors.forest,
     fontSize: 10,
     fontWeight: '700',
     marginRight: 1,
   },
   priceNumber: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 15,
     fontWeight: '900',
     letterSpacing: -0.3,
   },
   priceNumberLarge: {
-    color: '#EE4D2D',
+    color: colors.forest,
     fontSize: 17,
     fontWeight: '900',
     letterSpacing: -0.3,
