@@ -1,6 +1,6 @@
 /**
  * @file App.js
- * @description Application entry point for CIRCULAI.
+ * @description Application entry point for FashionKu.
  *
  * Manages the top-level phase state (splash → onboarding → main) and
  * configures the Android navigation bar colour to match the app theme.
@@ -20,7 +20,7 @@ import MainApp from './src/navigation/MainApp';
 import { AppProvider } from './src/state/AppContext';
 import { colors } from './src/theme/colors';
 
-const ONBOARDING_KEY = '@circulai/has_completed_onboarding';
+const ONBOARDING_KEY = '@fashionku/has_completed_onboarding';
 
 export default function App() {
   const [phase, setPhase] = useState('splash');
@@ -50,7 +50,8 @@ export default function App() {
 
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      const styleId = 'circulai-web-global-styles';
+      document.title = 'FashionKu — Ekosistem Busana & Penjahit Lokal';
+      const styleId = 'fashionku-web-global-styles';
       let style = document.getElementById(styleId);
       if (!style) {
         style = document.createElement('style');

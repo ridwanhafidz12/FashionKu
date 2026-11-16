@@ -1,6 +1,6 @@
 /**
  * @file NotificationModal.js
- * @description In-app notification sheet modal for CIRCULAI / FashionKu.
+ * @description In-app notification sheet modal for FashionKu.
  *
  * Mendukung notifikasi ringan:
  * - Update pengerjaan dan pengiriman pesanan

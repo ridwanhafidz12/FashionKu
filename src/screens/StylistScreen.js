@@ -1,6 +1,6 @@
 /**
  * @file StylistScreen.js
- * @description CIRCULAI AI Stylist — 5-step quiz + results screen.
+ * @description FashionKu AI Stylist — 5-step quiz + results screen.
  *
  * Flow: quiz (steps 1-5) → analyzing animation → result card.
  * The result card displays a rule-based style archetype computed locally,
@@ -169,7 +169,7 @@ export default function StylistScreen({
           <View style={{ flex: 1 }}>
             <View style={styles.kickerRow}>
               <MaterialCommunityIcons name="lightning-bolt" size={11} color={colors.forest} />
-              <Text style={styles.kicker}>CIRCULAI AI STYLIST</Text>
+              <Text style={styles.kicker}>FASHIONKU AI STYLIST</Text>
             </View>
             <Text style={styles.stepText}>Langkah {step} dari 5</Text>
           </View>
@@ -519,7 +519,7 @@ function AnalyzingScreen({ loadingIndex }) {
         </View>
       </View>
       <Text style={styles.loadingTitle}>AI sedang menganalisis...</Text>
-      <Text style={styles.loadingDesc}>CIRCULAI memproses profil unikmu untuk menemukan style yang paling sesuai</Text>
+      <Text style={styles.loadingDesc}>FashionKu memproses profil unikmu untuk menemukan style yang paling sesuai</Text>
       <View style={styles.loadingList}>
         {loadingSteps.map((item, index) => (
           <View

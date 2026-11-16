@@ -57,7 +57,7 @@ export default function ProfileScreen({ onNavigate, onExchange }) {
       Alert.alert(
         'Foto belum dapat dipilih',
         error.code === 'PHOTO_PERMISSION_DENIED'
-          ? 'Izinkan akses galeri agar CIRCULAI dapat menggunakan foto pilihanmu.'
+          ? 'Izinkan akses galeri agar FashionKu dapat menggunakan foto pilihanmu.'
           : 'Terjadi masalah saat memproses foto. Silakan coba lagi.'
       );
     }
@@ -70,7 +70,7 @@ export default function ProfileScreen({ onNavigate, onExchange }) {
     }
     Alert.alert(
       'Keluar dari akun?',
-      'Kamu akan keluar dari akun CIRCULAI.',
+      'Kamu akan keluar dari akun FashionKu.',
       [
         { text: 'Batal', style: 'cancel' },
         {
@@ -113,7 +113,7 @@ export default function ProfileScreen({ onNavigate, onExchange }) {
                 <Text style={styles.userEmail}>Masuk untuk menikmati semua fitur</Text>
                 <AnimatedPressable
                   style={styles.guestLoginBtn}
-                  onPress={() => openAuthModal('Masuk ke akun CIRCULAI kamu.')}
+                  onPress={() => openAuthModal('Masuk ke akun FashionKu kamu.')}
                   scaleDown={0.95}
                 >
                   <Text style={styles.guestLoginBtnText}>Masuk / Daftar Akun</Text>
@@ -138,7 +138,7 @@ export default function ProfileScreen({ onNavigate, onExchange }) {
                 <Text style={styles.userEmail}>{userProfile.email}</Text>
                 <View style={styles.memberBadge}>
                   <LeafMark color={colors.sand} size={14} />
-                  <Text style={styles.memberBadgeText}>CIRCULAI Member</Text>
+                  <Text style={styles.memberBadgeText}>FashionKu Member</Text>
                 </View>
               </Pressable>
               <Pressable style={styles.editProfile} onPress={() => setActivePanel('profile')}>
@@ -354,12 +354,12 @@ export default function ProfileScreen({ onNavigate, onExchange }) {
           <Feather name={isLoggedIn ? 'log-out' : 'log-in'} size={16} color={isLoggedIn ? colors.error : colors.forest} />
         </View>
         <Text style={[styles.logoutText, !isLoggedIn && styles.loginGuestText]}>
-          {isLoggedIn ? 'Keluar dari Akun' : 'Masuk ke Akun CIRCULAI'}
+          {isLoggedIn ? 'Keluar dari Akun' : 'Masuk ke Akun FashionKu'}
         </Text>
       </AnimatedPressable>
 
       {/* App version */}
-      <Text style={styles.version}>CIRCULAI v1.0.0 — Sustainable Fashion Platform</Text>
+      <Text style={styles.version}>FashionKu v1.0.0 — Sustainable Fashion Platform</Text>
       </ScrollView>
       <ProfileActionModal panel={activePanel} onClose={() => setActivePanel(null)} />
     </>

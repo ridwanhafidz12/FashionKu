@@ -1,6 +1,6 @@
 /**
  * @file supabaseApi.js
- * @description Supabase backend implementation for the CIRCULAI API contract.
+ * @description Supabase backend implementation for the FashionKu API contract.
  *
  * All public methods mirror those of `localApi` so the rest of the application
  * can switch between backends purely through the DATA_BACKEND env variable.
@@ -196,7 +196,7 @@ function createReturnRequest(orderId, draft) {
       {
         label: createdAt.toLocaleDateString('id-ID'),
         title: 'Pengajuan diterima',
-        desc: 'Bukti foto dan alasan sedang diverifikasi oleh tim CIRCULAI.'
+        desc: 'Bukti foto dan alasan sedang diverifikasi oleh tim FashionKu.'
       }
     ]
   };

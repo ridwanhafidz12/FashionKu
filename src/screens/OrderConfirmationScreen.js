@@ -49,7 +49,7 @@ export default function OrderConfirmationScreen({ order, onTrack, onOrders }) {
     >
       <View style={styles.successIcon}><Feather name="check" size={32} color={colors.white} /></View>
       <Text style={styles.title}>Pesanan Berhasil Dibuat</Text>
-      <Text style={styles.subtitle}>Detail pesanan sudah dikirim ke sistem CIRCULAI dan menunggu pembayaran.</Text>
+      <Text style={styles.subtitle}>Detail pesanan sudah dikirim ke sistem FashionKu dan menunggu pembayaran.</Text>
       <View style={styles.orderIdCard}>
         <Text style={styles.orderIdLabel}>ORDER ID</Text>
         <Text style={styles.orderId}>{order.id}</Text>

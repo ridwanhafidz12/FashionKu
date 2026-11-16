@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 
 /**
- * LeafMark — CIRCULAI's brand logomark.
+ * LeafMark — FashionKu's brand logomark.
  * A stylized leaf representing circular fashion and sustainability.
  *
  * Props:

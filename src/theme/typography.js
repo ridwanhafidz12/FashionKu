@@ -1,4 +1,4 @@
-// ─── CIRCULAI Typography System ──────────────────────────────────────────────
+// ─── FashionKu Typography System ──────────────────────────────────────────────
 // Uses system fonts with professional weight hierarchy
 // Platform-appropriate: San Francisco (iOS), Roboto (Android)
 

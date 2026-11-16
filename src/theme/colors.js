@@ -1,4 +1,4 @@
-// ─── CIRCULAI Design Token System ───────────────────────────────────────────
+// ─── FashionKu Design Token System ───────────────────────────────────────────
 // Palette Warna Hijau: Mindaro (#DDEB9D), Pistachio (#A0C878), Ming (#27667B), Indigo Dye (#143D60)
 
 export const colors = {

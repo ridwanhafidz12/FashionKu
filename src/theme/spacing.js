@@ -1,4 +1,4 @@
-// ─── CIRCULAI Spacing System ─────────────────────────────────────────────────
+// ─── FashionKu Spacing System ─────────────────────────────────────────────────
 // 4px base grid — consistent, scalable spacing
 
 export const spacing = {

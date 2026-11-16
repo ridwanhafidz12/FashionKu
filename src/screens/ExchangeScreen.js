@@ -129,7 +129,7 @@ export default function ExchangeScreen({ onBack, initialTab = 'tukar' }) {
       });
       setSubmittedRecord(record);
       setStep(STEP_SUCCESS);
-    }, 'Silakan masuk ke akun CIRCULAI untuk mengajukan tukar barang.');
+    }, 'Silakan masuk ke akun FashionKu untuk mengajukan tukar barang.');
   }, [submitExchange, selectedType, quantity, condition, itemPhoto, courierName, trackingNumber, receiptPhoto, mode, selectedPartner, notes, requireAuth]);
 
   const handleReset = useCallback(() => {
@@ -149,7 +149,7 @@ export default function ExchangeScreen({ onBack, initialTab = 'tukar' }) {
   const handleRedeem = useCallback((option) => {
     requireAuth(() => {
       redeemPoints(option);
-    }, 'Silakan masuk ke akun CIRCULAI untuk menukar poin dengan voucher.');
+    }, 'Silakan masuk ke akun FashionKu untuk menukar poin dengan voucher.');
   }, [redeemPoints, requireAuth]);
 
   return (
@@ -289,7 +289,7 @@ function TukarTab({
           <Text style={styles.successDesc}>
             {isPoints
               ? `Pengajuan tukar pakaian berhasil dikirim. Poin sebesar +${submittedRecord?.earnedPoints} Pts akan masuk otomatis setelah Admin / Penjahit memverifikasi resi dan kondisi barang sampai.`
-              : 'Pakaian bekasmu akan disalurkan ke mitra sosial CIRCULAI. Terima kasih atas kontribusimu!'}
+              : 'Pakaian bekasmu akan disalurkan ke mitra sosial FashionKu. Terima kasih atas kontribusimu!'}
           </Text>
 
           {isPoints && (
@@ -497,9 +497,9 @@ function TukarTab({
             <View style={styles.shippingInfo}>
               <Text style={styles.shippingTitle}>Alamat Tujuan Pengiriman:</Text>
               <Text style={styles.shippingAddr}>
-                CIRCULAI Eco Hub (Upcycling Workshop){'\n'}
+                FashionKu Eco Hub (Upcycling Workshop){'\n'}
                 Jl. Kaliurang KM 7, Sleman, D.I. Yogyakarta 55581{'\n'}
-                Penerima: Tim Verifikasi Circulai (0812-3456-7890)
+                Penerima: Tim Verifikasi FashionKu (0812-3456-7890)
               </Text>
             </View>
           </View>
@@ -594,7 +594,7 @@ function TukarTab({
             </View>
             <View style={styles.modeInfo}>
               <Text style={styles.modeTitle}>Sumbangkan ke Mitra Sosial</Text>
-              <Text style={styles.modeDesc}>Salurkan kain ke komunitas penjahit dan santri binaan CIRCULAI.</Text>
+              <Text style={styles.modeDesc}>Salurkan kain ke komunitas penjahit dan santri binaan FashionKu.</Text>
             </View>
             <View style={[styles.radioOuter, mode === 'donate' && styles.radioOuterActive]}>
               {mode === 'donate' && <View style={styles.radioInner} />}

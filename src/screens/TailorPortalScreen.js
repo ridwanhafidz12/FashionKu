@@ -1,6 +1,6 @@
 /**
  * @file TailorPortalScreen.js
- * @description Portal / Mode Mitra Penjahit UMKM (Tailor Hub) untuk CIRCULAI / FashionKu.
+ * @description Portal / Mode Mitra Penjahit UMKM (Tailor Hub) untuk FashionKu.
  *
  * Fitur:
  * 1. Profil & Usaha Penjahit: Info workshop, portofolio, spesialisasi, ganti bengkel.

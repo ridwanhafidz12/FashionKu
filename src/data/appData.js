@@ -394,7 +394,7 @@ export const returnReasons = [
 export const returnStatusMeta = {
   REVIEWING: {
     label: 'Dalam Review',
-    desc: 'Tim CIRCULAI sedang memverifikasi foto bukti dan alasan pengembalian.'
+    desc: 'Tim FashionKu sedang memverifikasi foto bukti dan alasan pengembalian.'
   },
   APPROVED: {
     label: 'Disetujui',
@@ -485,7 +485,7 @@ export const profileGroups = [
     title: 'Akun',
     items: [
       { icon: 'map-pin', label: 'Alamat', desc: 'Kelola alamat pengiriman' },
-      { icon: 'award', label: 'Membership', desc: 'CIRCULAI Member', badge: 'Green' },
+      { icon: 'award', label: 'Membership', desc: 'FashionKu Member', badge: 'Green' },
       { icon: 'bell', label: 'Notifikasi', desc: 'Pengaturan notifikasi' },
       { icon: 'shield', label: 'Keamanan', desc: 'Password & privasi' }
     ]
@@ -640,7 +640,7 @@ export const donationPartners = [
   },
   {
     id: 'desa_binaan',
-    name: 'Desa Binaan CIRCULAI',
+    name: 'Desa Binaan FashionKu',
     location: 'Klaten, Jawa Tengah',
     desc: 'Pemberdayaan pengrajin tenun tradisional di pedesaan',
     icon: 'account-group-outline',
@@ -788,7 +788,7 @@ export function createProductPassport({
     status: active ? 'ACTIVE' : 'PENDING',
     verification: active ? 'Passport aktif & terverifikasi' : 'Aktif setelah pesanan selesai',
     productId: product?.id,
-    productName: product?.name ?? 'Produk CIRCULAI',
+    productName: product?.name ?? 'Produk FashionKu',
     image: product?.image,
     materialOrigin: material ?? product?.material ?? 'Material lokal pilihan',
     tailor,
@@ -863,7 +863,7 @@ export function createOrderFromProduct(product, count, checkout = {}) {
       amount: formatCurrency(total),
       expiresAt: paymentExpiresAt
     },
-    courier: 'CIRCULAI Delivery',
+    courier: 'FashionKu Express',
     trackingCode: `CRL-${suffix}-ID`,
     shipmentStatus: 'Menunggu proses produksi',
     passport,
@@ -917,7 +917,7 @@ export function createOrderFromCart(items, count, checkout) {
     material: materials.join(', '),
     savedFabric: `${savedFabricTotal.toFixed(1)}m`,
     product: items.length > 1 ? `${firstItem.product.name} + ${items.length - 1} produk` : firstItem.product.name,
-    description: `${items.reduce((sum, item) => sum + item.quantity, 0)} item made-to-order dari checkout CIRCULAI`,
+    description: `${items.reduce((sum, item) => sum + item.quantity, 0)} item made-to-order dari checkout FashionKu`,
     passport: passports[0],
     passports
   };
@@ -973,7 +973,7 @@ export function normalizeOrder(order) {
     notes: 'Tidak ada catatan khusus',
     design: null,
     shippingAddress: 'Adi Arwan Syah, Sleman, Yogyakarta',
-    courier: 'CIRCULAI Delivery',
+    courier: 'FashionKu Express',
     trackingCode: `CRL-${suffix}-ID`,
     status: normalizedStatus,
     statusHistory: order.statusHistory ?? [
@@ -1141,7 +1141,7 @@ export function getStyleAnalysis(answers) {
   return {
     archetype: archetype.name,
     tagline: archetype.tagline,
-    analysis: `${heightInsight} ${occasionInsight} Dengan ${vibeLabel} sebagai vibe utama dan bentuk tubuh ${bodyLabel}, CIRCULAI merekomendasikan pilihan kain lokal yang menonjolkan siluetmu secara alami.`,
+    analysis: `${heightInsight} ${occasionInsight} Dengan ${vibeLabel} sebagai vibe utama dan bentuk tubuh ${bodyLabel}, FashionKu merekomendasikan pilihan kain lokal yang menonjolkan siluetmu secara alami.`,
     palette: palettes[answers.skinTone ?? 'medium-olive'] ?? palettes['medium-olive'],
     cuttings: cuttings[bodyShape]?.good ?? [],
     avoidCuttings: cuttings[bodyShape]?.avoid ?? [],

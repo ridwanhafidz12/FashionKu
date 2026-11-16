@@ -1,6 +1,6 @@
 /**
  * @file AdminCmsScreen.js
- * @description Dashboard Admin / Superadmin (CMS Web) untuk CIRCULAI / FashionKu.
+ * @description Dashboard Admin / Superadmin (CMS Web) untuk FashionKu.
  *
  * Fitur:
  * 1. Verifikasi Eco Swap & Approval Poin: 1 tombol "Setujui & Tambah Poin" setelah cek foto kain & resi.
@@ -139,7 +139,7 @@ export default function AdminCmsScreen({ onBack, onNavigate }) {
             <LeafMark size={16} color="#A3E635" />
             <Text style={styles.headerTitle}>Superadmin CMS</Text>
           </View>
-          <Text style={styles.headerSub}>Dashboard Operasional & Kurasi Circulai</Text>
+          <Text style={styles.headerSub}>Dashboard Operasional & Kurasi FashionKu</Text>
         </View>
         <View style={styles.adminRoleBadge}>
           <Text style={styles.adminRoleText}>SUPERADMIN</Text>

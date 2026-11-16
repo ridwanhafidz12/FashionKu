@@ -77,7 +77,7 @@ export default function CustomizationScreen({ product, initial = {}, onBack, onG
         notes: initial.notes ?? '',
       });
       onGoCart();
-    }, 'Silakan masuk ke akun CIRCULAI untuk menambahkan produk ke keranjang.');
+    }, 'Silakan masuk ke akun FashionKu untuk menambahkan produk ke keranjang.');
   };
 
   const handlePickSampleSwatch = (url) => {

@@ -4,7 +4,7 @@
  * and Shipping Resi tracking.
  *
  * Dwifungsi:
- * 1. Scan Circular Passport QR tag fisik pada pakaian CIRCULAI untuk membaca
+ * 1. Scan Circular Passport QR tag fisik pada pakaian FashionKu untuk membaca
  *    asal-usul kain sisa, profil penjahit, dan dampak lingkungan yang dihemat.
  * 2. Info Resi & Tracking: Customer bisa melihat nomor resi pengiriman dan foto struk
  *    resi yang diupload penjahit, disertai tombol "Salin Resi".
@@ -294,7 +294,7 @@ export default function PassportScannerModal({
                   </Text>
                   <Text style={styles.fallbackSub}>
                     {!permission?.granted
-                      ? 'Berikan izin kamera untuk memindai QR code tag pakaian CIRCULAI secara langsung.'
+                      ? 'Berikan izin kamera untuk memindai QR code tag pakaian FashionKu secara langsung.'
                       : 'Kamera aktif. Gunakan input manual atau sampel tag untuk memverifikasi paspor sirkular.'}
                   </Text>
                   {!permission?.granted && (

@@ -1,6 +1,6 @@
 /**
  * @file OnboardingScreen.js
- * @description Ultra-premium, responsive onboarding showcase for CIRCULAI.
+ * @description Ultra-premium, responsive onboarding showcase for FashionKu.
  *
  * Fully responsive:
  * - Desktop: Luxury 2-column split showcase layout with full-height editorial photography,
@@ -81,7 +81,7 @@ const stepThemes = [
     features: [
       { icon: 'hand-heart-outline', label: 'Upah Adil', desc: 'Langsung ke penjahit' },
       { icon: 'storefront-outline', label: 'Bengkel UMKM', desc: 'Mitra lokal terkurasi' },
-      { icon: 'shield-check-outline', label: 'Rekber Aman', desc: 'Escrow Circulai' },
+      { icon: 'shield-check-outline', label: 'Rekber Aman', desc: 'Escrow FashionKu' },
     ],
     stats: [
       { val: '134+', label: 'Penjahit UMKM' },
@@ -178,7 +178,7 @@ export default function OnboardingScreen({ onDone }) {
                 <LeafMark color={colors.forest} size={22} />
               </View>
               <View>
-                <Text style={styles.brandText}>CIRCULAI</Text>
+                <Text style={styles.brandText}>FashionKu</Text>
                 <Text style={styles.brandTagline}>Sirkular Fashion Made-To-Order</Text>
               </View>
             </View>
@@ -350,7 +350,7 @@ export default function OnboardingScreen({ onDone }) {
               <View style={styles.brandMarkSmall}>
                 <LeafMark color={colors.forest} size={18} />
               </View>
-              <Text style={styles.brandTextSmall}>CIRCULAI</Text>
+              <Text style={styles.brandTextSmall}>FashionKu</Text>
             </View>
 
             <Pressable style={styles.skipButton} onPress={onDone}>

@@ -1,7 +1,7 @@
 /**
  * @file ImpactDashboardScreen.js
  * @description Personal Impact Dashboard — menampilkan dampak lingkungan dan sosial
- * dari aktivitas circular fashion pengguna CIRCULAI.
+ * dari aktivitas circular fashion pengguna FashionKu.
  *
  * Fitur:
  * - CO₂ saved counter dengan animasi
@@ -10,7 +10,7 @@
  * - Achievement badges sistem (Eco Champion, dll)
  * - Circular Points history timeline
  * - Shareable impact card CTA
- * - Ringkasan dampak komunitas CIRCULAI secara keseluruhan
+ * - Ringkasan dampak komunitas FashionKu secara keseluruhan
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -249,8 +249,8 @@ export default function ImpactDashboardScreen({ onNavigate }) {
   const handleShareImpact = async () => {
     try {
       await Share.share({
-        message: `Saya telah menghemat ${personalImpact.co2Saved.toFixed(1)} kg CO₂ dan mendukung ${personalImpact.tailorsSupported} penjahit UMKM lokal lewat CIRCULAI! #CircularFashion #SupportUMKM`,
-        title: 'Dampak Lingkunganku di CIRCULAI',
+        message: `Saya telah menghemat ${personalImpact.co2Saved.toFixed(1)} kg CO₂ dan mendukung ${personalImpact.tailorsSupported} penjahit UMKM lokal lewat FashionKu! #CircularFashion #SupportUMKM`,
+        title: 'Dampak Lingkunganku di FashionKu',
       });
     } catch {
       // share cancelled
@@ -467,11 +467,11 @@ export default function ImpactDashboardScreen({ onNavigate }) {
             })}
           </View>
 
-          {/* ─── Komunitas CIRCULAI Stats ───────────────────────────────── */}
+          {/* ─── Komunitas FashionKu Stats ───────────────────────────────── */}
           <View style={styles.communitySection}>
             <View style={styles.communityHeader}>
               <MaterialCommunityIcons name="earth" size={18} color={colors.white} />
-              <Text style={styles.communityTitle}>Dampak Komunitas CIRCULAI</Text>
+              <Text style={styles.communityTitle}>Dampak Komunitas FashionKu</Text>
             </View>
             <Text style={styles.communitySub}>
               Bersama ribuan pengguna, kita membangun ekosistem fashion yang lebih adil & berkelanjutan.

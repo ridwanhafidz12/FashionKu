@@ -49,7 +49,7 @@ export default function ProductDetailScreen({ product, onBack, onCustomize, onCh
         savedFabric: product.savedFabric,
         estimatedCo2: '2.7 kg CO₂',
       },
-      verificationCode: 'VERIFIED-CIRCULAI-CHAIN',
+      verificationCode: 'VERIFIED-FASHIONKU-CHAIN',
       issuedAt: '2026-08-21',
       activatedAt: '2026-08-21',
       status: 'ACTIVE',

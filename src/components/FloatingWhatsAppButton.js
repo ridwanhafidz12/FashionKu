@@ -19,7 +19,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 const WHATSAPP_PHONE = '6281973612917';
 const WHATSAPP_MESSAGE =
-  'Halo Admin FashionKu / Circulai, saya ingin konsultasi mengenai produk & pesanan sirkular fashion.';
+  'Halo Admin FashionKu, saya ingin konsultasi mengenai produk & pesanan busana.';
 
 export default function FloatingWhatsAppButton({
   phone = WHATSAPP_PHONE,
@@ -151,7 +151,7 @@ export default function FloatingWhatsAppButton({
         onHoverOut={handleHoverOut}
         style={styles.pressable}
         accessibilityRole="button"
-        accessibilityLabel="Chat WhatsApp Admin Circulai"
+        accessibilityLabel="Chat WhatsApp Admin FashionKu"
       >
         <Animated.View
           style={[

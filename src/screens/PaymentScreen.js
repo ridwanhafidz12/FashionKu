@@ -186,7 +186,7 @@ export default function PaymentScreen({ address, onBack, onComplete }) {
         {/* Voucher Selector */}
         {userVouchers.length > 0 && (
           <>
-            <Text style={styles.sectionHeader}>Voucher Diskon Circulai</Text>
+            <Text style={styles.sectionHeader}>Voucher Diskon FashionKu</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }}>
               <AnimatedPressable
                 style={[styles.voucherChip, !selectedVoucherId && styles.voucherChipActive]}
@@ -276,9 +276,9 @@ export default function PaymentScreen({ address, onBack, onComplete }) {
             <MaterialCommunityIcons name="shield-lock" size={24} color={colors.forest} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.escrowTitle}>Garansi Escrow Circulai (Rekber Aman)</Text>
+            <Text style={styles.escrowTitle}>Garansi Escrow FashionKu (Rekber Aman)</Text>
             <Text style={styles.escrowDesc}>
-              Dana belanja kamu aman tersimpan di rekening penampung Circulai. Dana baru diteruskan ke saldo penjahit setelah kamu menerima paket dan menekan tombol "Konfirmasi Pesanan Diterima".
+              Dana belanja kamu aman tersimpan di rekening penampung FashionKu. Dana baru diteruskan ke saldo penjahit setelah kamu menerima paket dan menekan tombol "Konfirmasi Pesanan Diterima".
             </Text>
           </View>
         </View>

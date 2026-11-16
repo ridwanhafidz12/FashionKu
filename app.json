@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "CIRCULAI",
-    "slug": "circulai",
+    "name": "FashionKu",
+    "slug": "fashionku",
     "version": "1.0.0",
-    "scheme": "circulai",
+    "scheme": "fashionku",
     "platforms": [
       "ios",
       "android",
@@ -18,7 +18,7 @@
       "backgroundColor": "#FAFBF6"
     },
     "android": {
-      "package": "com.circulai.app",
+      "package": "com.fashionku.app",
       "edgeToEdgeEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/fashionku_icon.png",
@@ -27,10 +27,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.circulai.app",
+      "bundleIdentifier": "com.fashionku.app",
       "infoPlist": {
-        "NSCameraUsageDescription": "Izinkan CIRCULAI mengakses kamera untuk memindai QR tag Digital Product Passport pakaian.",
-        "NSPhotoLibraryUsageDescription": "Izinkan CIRCULAI mengakses galeri untuk memilih foto profil atau referensi desain."
+        "NSCameraUsageDescription": "Izinkan FashionKu mengakses kamera untuk memindai QR tag Digital Product Passport pakaian.",
+        "NSPhotoLibraryUsageDescription": "Izinkan FashionKu mengakses galeri untuk memilih foto profil atau referensi desain."
       }
     },
     "androidStatusBar": {
@@ -65,7 +65,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Izinkan CIRCULAI mengakses kamera untuk memindai QR tag Digital Product Passport pakaian.",
+          "cameraPermission": "Izinkan FashionKu mengakses kamera untuk memindai QR tag Digital Product Passport pakaian.",
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
@@ -73,8 +73,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Izinkan CIRCULAI mengakses galeri untuk memilih foto profil atau referensi desain.",
-          "cameraPermission": "Izinkan CIRCULAI mengakses kamera untuk mengambil foto referensi desain ke penjahit.",
+          "photosPermission": "Izinkan FashionKu mengakses galeri untuk memilih foto profil atau referensi desain.",
+          "cameraPermission": "Izinkan FashionKu mengakses kamera untuk mengambil foto referensi desain ke penjahit.",
           "microphonePermission": false
         }
       ],

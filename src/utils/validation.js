@@ -1,6 +1,6 @@
 /**
  * @file validation.js
- * @description Input validation and sanitisation utilities for CIRCULAI forms.
+ * @description Input validation and sanitisation utilities for FashionKu forms.
  *
  * Provides reusable validation rules for addresses, contact numbers,
  * body measurements, and custom order parameters to ensure data integrity

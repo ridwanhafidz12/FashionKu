@@ -15,7 +15,7 @@ export default function CartScreen({ onBack, onContinue, onExplore }) {
   const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleContinue = () => {
-    requireAuth(onContinue, 'Silakan masuk ke akun CIRCULAI untuk memilih alamat & membuat pesanan.');
+    requireAuth(onContinue, 'Silakan masuk ke akun FashionKu untuk memilih alamat & membuat pesanan.');
   };
 
   return (

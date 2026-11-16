@@ -1,6 +1,6 @@
 /**
  * @file AppContext.js
- * @description Global application state provider for CIRCULAI.
+ * @description Global application state provider for FashionKu.
  *
  * Uses React Context + a single provider component (`AppProvider`) to share
  * state across the entire component tree. All mutations are exposed as
@@ -112,7 +112,7 @@ const defaultEcoSwapSubmissions = [
   {
     id: 'EXC-2026-A1',
     customerName: 'SalSalmann',
-    customerEmail: 'salsalman@circulai.com',
+    customerEmail: 'salsalman@fashionku.web.id',
     itemTypeId: 'baju_bekas',
     itemTypeLabel: 'Baju / Pakaian Bekas',
     quantity: 3,
@@ -269,10 +269,10 @@ async function callGeminiTailorReply(tailorName, userMessage, context = {}, imag
 
   const subject = context.orderId
     ? `pesanan ${context.orderId} — ${context.productName ?? ''}`
-    : context.productName ?? 'produk custom CIRCULAI';
+    : context.productName ?? 'produk custom FashionKu';
 
   const prompt = [
-    `Kamu adalah ${tailorName}, seorang penjahit lokal profesional dari platform fashion berkelanjutan CIRCULAI Indonesia.`,
+    `Kamu adalah ${tailorName}, seorang penjahit lokal profesional dari platform fashion berkelanjutan FashionKu Indonesia.`,
     `Kamu sedang melayani chat dengan pelanggan yang bertanya tentang: ${subject}.`,
     image ? 'Pelanggan juga melampirkan sebuah FOTO REFERENSI / SKETSA model busana.' : '',
     '',
@@ -375,7 +375,7 @@ function createLocalReturnRequest(orderId, draft) {
       {
         label: createdAt.toLocaleDateString('id-ID'),
         title: 'Pengajuan diterima',
-        desc: 'Bukti foto dan alasan sedang diverifikasi oleh tim CIRCULAI.'
+        desc: 'Bukti foto dan alasan sedang diverifikasi oleh tim FashionKu.'
       }
     ]
   };
@@ -427,7 +427,7 @@ export function AppProvider({ children }) {
   const [adminVouchers, setAdminVouchers] = useState(defaultAdminVouchers);
   const [notifications, setNotifications] = useState(defaultNotifications);
   const [managedUsers, setManagedUsers] = useState([
-    { id: 'usr-1', name: 'SalSalmann', email: 'salsalman@circulai.com', role: 'customer', status: 'ACTIVE', joined: '12 Mei 2026' },
+    { id: 'usr-1', name: 'SalSalmann', email: 'salsalman@fashionku.web.id', role: 'customer', status: 'ACTIVE', joined: '12 Mei 2026' },
     { id: 'usr-2', name: 'Budi Santoso', email: 'budi.santoso@email.com', role: 'customer', status: 'ACTIVE', joined: '28 April 2026' },
     { id: 'tlr-1', name: 'Rahayu Tailor', email: 'rahayu.atelier@gmail.com', role: 'tailor', status: 'ACTIVE', joined: '10 Januari 2026' },
     { id: 'tlr-2', name: 'Kartika Studio', email: 'kartika.bdg@gmail.com', role: 'tailor', status: 'ACTIVE', joined: '15 Februari 2026' },
@@ -677,7 +677,7 @@ export function AppProvider({ children }) {
       }
       setOrders((prev) => (prev.length > 0 ? prev : initialOrders.map(normalizeOrder)));
       await refreshBackend({ silent: true });
-      setNotice(`Selamat datang di CIRCULAI, ${data.name || 'Member'}!`);
+      setNotice(`Selamat datang di FashionKu, ${data.name || 'Member'}!`);
       return true;
     } catch (err) {
       throw err;
@@ -1092,7 +1092,7 @@ export function AppProvider({ children }) {
     const record = {
       id: exchangeId,
       customerName: userProfile?.name || 'SalSalmann',
-      customerEmail: userProfile?.email || 'salsalman@circulai.com',
+      customerEmail: userProfile?.email || 'salsalman@fashionku.web.id',
       itemTypeId,
       itemTypeLabel: itemType?.label || 'Pakaian Bekas',
       quantity,
@@ -1656,7 +1656,7 @@ export function AppProvider({ children }) {
 }
 
 /**
- * Hook that provides access to the global CIRCULAI app state and all
+ * Hook that provides access to the global FashionKu app state and all
  * mutation actions. Must be used inside a component wrapped by `AppProvider`.
  *
  * @returns {ReturnType<typeof useMemo>} The full application context value.
@@ -1666,7 +1666,7 @@ export function useAppState() {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error(
-      '[CIRCULAI] useAppState() must be called inside an <AppProvider>.',
+      '[FashionKu] useAppState() must be called inside an <AppProvider>.',
     );
   }
   return context;

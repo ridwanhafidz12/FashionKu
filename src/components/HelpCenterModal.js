@@ -1,6 +1,6 @@
 /**
  * @file HelpCenterModal.js
- * @description Pusat Bantuan & Komplain untuk CIRCULAI / FashionKu.
+ * @description Pusat Bantuan & Komplain untuk FashionKu.
  *
  * Mengarahkan customer langsung ke resolusi komplain dengan Admin jika pakaian
  * tidak sesuai ukuran kesepakatan, cacat jahitan, atau kendala pengiriman.

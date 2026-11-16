@@ -1,6 +1,6 @@
 /**
  * @file syncQueue.js
- * @description Offline mutation replay queue manager for CIRCULAI.
+ * @description Offline mutation replay queue manager for FashionKu.
  *
  * When the app is operating in offline / fallback mode, state mutations
  * (e.g., adding an address, toggling a wishlist item, or placing an order draft)
@@ -13,7 +13,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const QUEUE_STORAGE_KEY = '@circulai/offline-mutation-queue-v1';
+const QUEUE_STORAGE_KEY = '@fashionku/offline-mutation-queue-v1';
 
 class SyncQueue {
   /**

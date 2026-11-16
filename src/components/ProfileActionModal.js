@@ -11,7 +11,7 @@ import { deleteProfilePhoto, pickProfilePhoto } from '../utils/profilePhoto';
 const panelMeta = {
   profile: { title: 'Edit Profil', subtitle: 'Perbarui informasi akunmu', icon: 'user' },
   measurements: { title: 'Ukuran Tersimpan', subtitle: 'Dipakai saat membuat custom order', icon: 'maximize-2' },
-  membership: { title: 'CIRCULAI Membership', subtitle: 'Lihat progress dan benefit member', icon: 'award' },
+  membership: { title: 'FashionKu Membership', subtitle: 'Lihat progress dan benefit member', icon: 'award' },
   notifications: { title: 'Pengaturan Notifikasi', subtitle: 'Pilih kabar yang ingin kamu terima', icon: 'bell' },
   security: { title: 'Keamanan Akun', subtitle: 'Kelola perlindungan akunmu', icon: 'shield' },
   help: { title: 'Pusat Bantuan', subtitle: 'Jawaban cepat untuk pertanyaan umum', icon: 'help-circle' },
@@ -69,7 +69,7 @@ export default function ProfileActionModal({ panel, onClose }) {
       Alert.alert(
         'Foto belum dapat dipilih',
         error.code === 'PHOTO_PERMISSION_DENIED'
-          ? 'Izinkan akses galeri agar CIRCULAI dapat menggunakan foto pilihanmu.'
+          ? 'Izinkan akses galeri agar FashionKu dapat menggunakan foto pilihanmu.'
           : 'Terjadi masalah saat memproses foto. Silakan coba lagi.'
       );
     }
@@ -240,7 +240,7 @@ export default function ProfileActionModal({ panel, onClose }) {
                 <SettingToggle label="Personalisasi rekomendasi" desc="Gunakan profil gaya untuk kurasi produk" value={preferences.privacy.personalization} onValueChange={(value) => updatePreference('privacy', 'personalization', value)} />
                 <SettingToggle label="Analitik penggunaan" desc="Bantu kami meningkatkan pengalaman aplikasi" value={preferences.privacy.analytics} onValueChange={(value) => updatePreference('privacy', 'analytics', value)} />
                 <Text style={styles.privacyCopy}>
-                  CIRCULAI tidak menjual data personal. Kamu dapat mengubah preferensi ini kapan saja.
+                  FashionKu tidak menjual data personal. Kamu dapat mengubah preferensi ini kapan saja.
                 </Text>
               </>
             )}

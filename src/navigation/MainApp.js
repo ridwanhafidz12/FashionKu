@@ -1,6 +1,6 @@
 /**
  * @file MainApp.js
- * @description Root in-app navigator for CIRCULAI.
+ * @description Root in-app navigator for FashionKu.
  *
  * Implements a custom tab + stack navigation system without react-navigation,
  * keeping the bundle slim and navigation logic fully under our control.
@@ -298,7 +298,7 @@ export default function MainApp() {
     }
     if (active === 'address') {
       if (!isLoggedIn) {
-        openAuthModal('Silakan masuk ke akun CIRCULAI untuk memilih alamat & membuat pesanan.');
+        openAuthModal('Silakan masuk ke akun FashionKu untuk memilih alamat & membuat pesanan.');
         return null;
       }
       return <AddressScreen onBack={goBack} onContinue={(address) => navigate('payment', { address })} />;
@@ -308,7 +308,7 @@ export default function MainApp() {
     }
     if (active === 'payment' && params.address) {
       if (!isLoggedIn) {
-        openAuthModal('Silakan masuk ke akun CIRCULAI untuk menyelesaikan pembayaran.');
+        openAuthModal('Silakan masuk ke akun FashionKu untuk menyelesaikan pembayaran.');
         return null;
       }
       return (

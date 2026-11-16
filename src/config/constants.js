@@ -61,7 +61,7 @@ export const INITIAL_CIRCULAR_POINTS = 320;
 // ─── Storage ─────────────────────────────────────────────────────────────────
 
 /** AsyncStorage key for persisted application state. */
-export const APP_STORAGE_KEY = '@circulai/app-state-v3';
+export const APP_STORAGE_KEY = '@fashionku/app-state-v3';
 
 // ─── Tailor Chat ─────────────────────────────────────────────────────────────
 

@@ -102,7 +102,7 @@ export default function CustomDesignScreen({ onBack, onAddedToCart, registerBack
           },
         ]
       );
-    }, 'Silakan masuk ke akun CIRCULAI untuk memesan produk kustom.');
+    }, 'Silakan masuk ke akun FashionKu untuk memesan produk kustom.');
   };
 
   const next = () => {

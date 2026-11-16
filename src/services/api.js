@@ -1,6 +1,6 @@
 /**
  * @file api.js
- * @description Unified API client for CIRCULAI.
+ * @description Unified API client for FashionKu.
  *
  * Resolves the correct backend implementation at module load time based on
  * the DATA_BACKEND environment variable, then re-exports a single `api`
@@ -106,7 +106,7 @@ async function callGeminiStylist(answers, styleResult) {
   }
 
   const prompt = [
-    'Kamu adalah AI Fashion Stylist profesional untuk CIRCULAI (platform fashion berkelanjutan Indonesia).',
+    'Kamu adalah AI Fashion Stylist profesional untuk FashionKu (platform fashion berkelanjutan Indonesia).',
     'Pengguna mengisi kuis gaya dengan profil:',
     `- Warna Kulit: ${answers.skinTone ?? 'tidak ditentukan'}`,
     `- Bentuk Tubuh: ${answers.bodyShape ?? 'tidak ditentukan'}`,
