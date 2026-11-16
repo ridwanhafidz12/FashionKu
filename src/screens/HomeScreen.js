@@ -74,6 +74,8 @@ const shopeeCategories = [
   { id: 'c6', label: 'Bespoke Kustom', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2023/1/10/7c4da692-f048-4cb2-83b6-2bcbe5d36e2f.jpg', route: 'custom-design' },
   { id: 'c7', label: 'Aksesoris Etnik', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2022/5/20/0e4370cf-6047-49f3-85cb-4340fc29b0f4.jpg', route: 'explore' },
   { id: 'c8', label: 'Baju Anak', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2021/11/17/5adba5ea-27df-4ee8-b21a-e87f174e928d.jpg', route: 'explore' },
+  { id: 'c9', label: 'Linen Premium', image: 'https://images.tokopedia.net/img/cache/700/aphluv/1997/1/1/43427d1d8a6642af8db7bbc290ee71d3~.jpeg.webp', route: 'explore' },
+  { id: 'c10', label: 'Zero Waste Pack', image: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2022/9/13/2e8c2017-c454-4638-b615-5cb8bdf63da2.jpg', route: 'explore' },
 ];
 
 export default function HomeScreen({ isActive = true, onNavigate, onProductPress, onTailorPress, onExchange }) {
@@ -333,7 +335,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   onPress={() => setScanModalVisible(true)}
                   hitSlop={8}
                 >
-                  <MaterialCommunityIcons name="qrcode-scan" size={20} color="#111827" />
+                  <MaterialCommunityIcons name="qrcode-scan" size={20} color="#FFFFFF" />
                   {isDesktop && <Text style={styles.actionBtnLabel}>Paspor</Text>}
                 </Pressable>
 
@@ -344,7 +346,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                     onPress={() => onNavigate('explore', { wishlistOnly: true })}
                     hitSlop={8}
                   >
-                    <Feather name="heart" size={20} color="#111827" />
+                    <Feather name="heart" size={20} color="#FFFFFF" />
                     <Text style={styles.actionBtnLabel}>Favorit</Text>
                   </Pressable>
                 )}
@@ -356,7 +358,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   hitSlop={8}
                 >
                   <View style={styles.cartIconWrapper}>
-                    <Feather name="shopping-bag" size={22} color={colors.forest} />
+                    <Feather name="shopping-bag" size={22} color="#FFFFFF" />
                     {cart.length > 0 && (
                       <View style={styles.cartCountBadge}>
                         <Text style={styles.cartCountText}>{cart.length}</Text>
@@ -396,31 +398,31 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
             {isDesktop && (
               <View style={styles.desktopNavStrip}>
                 <Pressable style={[styles.navTabItem, styles.navTabItemActive]} onPress={() => onNavigate('home')}>
-                  <MaterialCommunityIcons name="home-variant" size={15} color={colors.forest} />
+                  <MaterialCommunityIcons name="home-variant" size={15} color="#DDEB9D" />
                   <Text style={[styles.navTabText, styles.navTabTextActive]}>Beranda</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('explore')}>
-                  <MaterialCommunityIcons name="hanger" size={15} color="#475569" />
+                  <MaterialCommunityIcons name="hanger" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Katalog Busana</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('quiz')}>
-                  <MaterialCommunityIcons name="creation" size={15} color={colors.forest} />
+                  <MaterialCommunityIcons name="creation" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>AI Stylist Pintar</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('explore')}>
-                  <MaterialCommunityIcons name="account-group" size={15} color="#475569" />
+                  <MaterialCommunityIcons name="account-group" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Mitra Penjahit</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('exchange')}>
-                  <MaterialCommunityIcons name="recycle" size={15} color="#475569" />
+                  <MaterialCommunityIcons name="recycle" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Eco Swap</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('impact')}>
-                  <MaterialCommunityIcons name="leaf" size={15} color="#475569" />
+                  <MaterialCommunityIcons name="leaf" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Dampak Lingkungan</Text>
                 </Pressable>
                 <Pressable style={styles.navTabItem} onPress={() => onNavigate('orders')}>
-                  <MaterialCommunityIcons name="package-variant-closed" size={15} color="#475569" />
+                  <MaterialCommunityIcons name="package-variant-closed" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Pesanan Saya</Text>
                 </Pressable>
               </View>
@@ -431,11 +433,11 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               style={styles.locationBar}
               onPress={() => requireAuth(() => onNavigate('profile-addresses'), 'Masuk untuk mengelola alamat pengiriman.')}
             >
-              <Feather name="map-pin" size={11} color="#64748B" />
+              <Feather name="map-pin" size={11} color="#DDEB9D" />
               <Text style={styles.locationText} numberOfLines={1}>
-                Dikirim ke: <Text style={{ fontWeight: '700', color: '#111827' }}>{activeAddressLabel}</Text>
+                Dikirim ke: <Text style={{ fontWeight: '700', color: '#FFFFFF' }}>{activeAddressLabel}</Text>
               </Text>
-              <Feather name="chevron-down" size={11} color="#64748B" />
+              <Feather name="chevron-down" size={11} color="rgba(255,255,255,0.8)" />
             </Pressable>
           </View>
         </View>
@@ -648,10 +650,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           )}
         </View>
 
-        {/* ─── Trust Badges Bar ───────────────────────────────────────── */}
-        <TrustStrip />
-
-        {/* ─── 10-Icon Service Launcher (Menu Lingkaran Brand Palette) ─── */}
+        {/* ─── 10-Icon Service Launcher (Shopee Single Row Style) ─────── */}
         <View style={styles.serviceGridContainer}>
           <View style={styles.serviceGridCard}>
             <View style={styles.serviceGridRow}>
@@ -674,6 +673,36 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                 </Pressable>
               ))}
             </View>
+          </View>
+        </View>
+
+        {/* ─── Trust Badges Bar ───────────────────────────────────────── */}
+        <TrustStrip />
+
+        {/* ─── Kategori Pilihan (Visual Categories Grid) ───────────────── */}
+        <View style={styles.shopeeCategorySection}>
+          <View style={styles.shopeeCategoryInner}>
+            <View style={styles.shopeeCategoryHeader}>
+              <Text style={styles.shopeeCategoryHeaderText}>KATEGORI</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={[styles.shopeeCategoryScroll, isDesktop && { justifyContent: 'space-between', flexGrow: 1 }]}
+            >
+              {shopeeCategories.map((cat) => (
+                <Pressable
+                  key={cat.id}
+                  style={styles.shopeeCategoryItem}
+                  onPress={() => onNavigate(cat.route)}
+                >
+                  <View style={styles.shopeeCategoryThumbWrap}>
+                    <Image source={{ uri: cat.image }} style={styles.shopeeCategoryThumb} />
+                  </View>
+                  <Text style={styles.shopeeCategoryLabel} numberOfLines={2}>{cat.label}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
           </View>
         </View>
 
@@ -792,33 +821,6 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                     <Text style={styles.shopeeMallCardCity} numberOfLines={1}>{t.city}</Text>
                   </ImageBackground>
                 </AnimatedPressable>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-
-        {/* ─── Kategori Pilihan (Visual Categories Grid) ───────────────── */}
-        <View style={styles.shopeeCategorySection}>
-          <View style={styles.shopeeCategoryInner}>
-            <View style={styles.shopeeCategoryHeader}>
-              <Text style={styles.shopeeCategoryHeaderText}>KATEGORI PILIHAN</Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[styles.shopeeCategoryScroll, isDesktop && { justifyContent: 'space-between', flexGrow: 1 }]}
-            >
-              {shopeeCategories.map((cat) => (
-                <Pressable
-                  key={cat.id}
-                  style={styles.shopeeCategoryItem}
-                  onPress={() => onNavigate(cat.route)}
-                >
-                  <View style={styles.shopeeCategoryThumbWrap}>
-                    <Image source={{ uri: cat.image }} style={styles.shopeeCategoryThumb} />
-                  </View>
-                  <Text style={styles.shopeeCategoryLabel} numberOfLines={2}>{cat.label}</Text>
-                </Pressable>
               ))}
             </ScrollView>
           </View>
@@ -1067,19 +1069,19 @@ const styles = StyleSheet.create({
     paddingBottom: 110,
   },
 
-  // ─── Clean Header Top (White + Forest Green Accents) ───────────────────────
+  // ─── Header: Solid Forest Green (99.5% Authentic Shopee Layout) ─────────────
   topHeader: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.forest,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: colors.forestMid,
     width: '100%',
     paddingBottom: 6,
-    ...shadows.sm,
+    ...shadows.md,
   },
   topUtilityBar: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-    backgroundColor: '#FAFBF6',
+    borderBottomColor: 'rgba(255, 255, 255, 0.14)',
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
     paddingVertical: 5,
     paddingHorizontal: 16,
     marginBottom: 6,
@@ -1105,27 +1107,27 @@ const styles = StyleSheet.create({
   },
   utilityLink: {
     fontSize: 11.5,
-    color: '#6B7280',
+    color: 'rgba(255, 255, 255, 0.88)',
     fontWeight: '500',
   },
   utilityDivider: {
     fontSize: 11,
-    color: '#D1D5DB',
+    color: 'rgba(255, 255, 255, 0.35)',
   },
   utilityPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#EDF7EE',
+    backgroundColor: 'rgba(255, 255, 255, 0.20)',
     paddingHorizontal: 8,
     paddingVertical: 2.5,
     borderRadius: 99,
     borderWidth: 1,
-    borderColor: '#C6E7CE',
+    borderColor: 'rgba(255, 255, 255, 0.35)',
   },
   utilityPillText: {
     fontSize: 11,
-    color: '#20603D',
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   topHeaderInner: {
@@ -1148,7 +1150,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   brandLogoCard: {
-    backgroundColor: '#EDF7EE',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 6,
     padding: 3,
   },
@@ -1160,15 +1162,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   brandTitleText: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '900',
-    color: colors.forest,
+    color: '#FFFFFF',
     letterSpacing: -0.5,
   },
   brandTaglineText: {
     fontSize: 9,
-    fontWeight: '700',
-    color: '#64748B',
+    fontWeight: '800',
+    color: '#DDEB9D',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
@@ -1180,16 +1182,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   searchInner: {
-    height: 40,
-    borderRadius: 4,
+    height: 42,
+    borderRadius: 3,
     backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: colors.forest,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 10,
+    paddingLeft: 12,
     paddingRight: 3,
     justifyContent: 'space-between',
+    ...shadows.sm,
   },
   searchIconLeft: {
     marginRight: 6,
@@ -1201,9 +1202,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   searchSubmitBtn: {
-    height: 34,
-    paddingHorizontal: 16,
-    borderRadius: 3,
+    height: 36,
+    paddingHorizontal: 20,
+    borderRadius: 2,
     backgroundColor: colors.forest,
     flexDirection: 'row',
     alignItems: 'center',
@@ -1223,7 +1224,7 @@ const styles = StyleSheet.create({
   },
   quickKeyword: {
     fontSize: 11,
-    color: '#64748B',
+    color: 'rgba(255, 255, 255, 0.90)',
     fontWeight: '500',
   },
   headerRightActions: {
@@ -1241,7 +1242,7 @@ const styles = StyleSheet.create({
   actionBtnLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   cartIconWrapper: {
     position: 'relative',
@@ -1250,13 +1251,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -6,
     right: -8,
-    backgroundColor: colors.forest,
+    backgroundColor: '#EA580C',
     borderRadius: 10,
     minWidth: 18,
     height: 18,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 3,
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
   },
   cartCountText: {
     color: '#FFFFFF',
@@ -1264,13 +1267,13 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   headerLoginBtn: {
-    backgroundColor: colors.forest,
-    paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 18,
     paddingVertical: 7,
-    borderRadius: 4,
+    borderRadius: 3,
   },
   headerLoginText: {
-    color: '#FFFFFF',
+    color: colors.forest,
     fontSize: 12.5,
     fontWeight: '800',
   },
@@ -1283,9 +1286,11 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: colors.forest,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
   },
   userAvatarInitial: {
     color: '#FFFFFF',
@@ -1295,7 +1300,7 @@ const styles = StyleSheet.create({
   userNameHeader: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   desktopNavStrip: {
     flexDirection: 'row',
@@ -1304,7 +1309,7 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     paddingBottom: 2,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: 'rgba(255, 255, 255, 0.15)',
   },
   navTabItem: {
     flexDirection: 'row',
@@ -1315,15 +1320,15 @@ const styles = StyleSheet.create({
   },
   navTabItemActive: {
     borderBottomWidth: 2.5,
-    borderBottomColor: colors.forest,
+    borderBottomColor: '#DDEB9D',
   },
   navTabText: {
     fontSize: 12.5,
     fontWeight: '500',
-    color: '#475569',
+    color: 'rgba(255, 255, 255, 0.85)',
   },
   navTabTextActive: {
-    color: colors.forest,
+    color: '#FFFFFF',
     fontWeight: '800',
   },
   locationBar: {
@@ -1335,7 +1340,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 11,
-    color: '#64748B',
+    color: 'rgba(255, 255, 255, 0.85)',
   },
 
   // ─── Hero Section ──────────────────────────────────────────────────────────
@@ -1580,10 +1585,11 @@ const styles = StyleSheet.create({
   serviceGridCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 4,
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 8,
-    borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
     ...shadows.sm,
   },
   serviceGridRow: {
@@ -1898,15 +1904,16 @@ const styles = StyleSheet.create({
   },
   shopeeCategoryItem: {
     alignItems: 'center',
-    width: 80,
+    width: 90,
   },
   shopeeCategoryThumbWrap: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 68,
+    height: 68,
+    borderRadius: 4,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#ECECEC',
+    backgroundColor: '#FAFAFA',
     marginBottom: 6,
   },
   shopeeCategoryThumb: {
