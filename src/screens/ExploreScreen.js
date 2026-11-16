@@ -196,11 +196,10 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
                 </View>
               </Pressable>
 
-              {/* ─── Big Search Box with Forest Green "Cari" Button (EXACT MATCH) ─── */}
+              {/* ─── Big Search Box with Forest Green Search Button (EXACT SHOPEE MATCH) ─── */}
               <View style={styles.searchSection}>
                 <View style={styles.searchBox}>
                   <View style={styles.searchInner}>
-                    <Feather name="search" size={16} color="#64748B" style={styles.searchIconLeft} />
                     <TextInput
                       ref={searchInputRef}
                       value={query}
@@ -210,30 +209,27 @@ export default function ExploreScreen({ onProductPress, onNavigate, onBack, wish
                           ? 'Cari outfit upcycled, dress kain sisa, penjahit Jogja...'
                           : 'Cari di FashionKu...'
                       }
-                      placeholderTextColor="#64748B"
+                      placeholderTextColor="#757575"
                       style={styles.searchInput}
                       returnKeyType="search"
+                      autoCapitalize="none"
+                      autoCorrect={false}
                     />
 
                     {/* Clear Button */}
                     {!!query && (
                       <Pressable onPress={() => setQuery('')} hitSlop={8} style={styles.clearBtnWrap}>
-                        <Feather name="x" size={14} color="#94A3B8" />
+                        <Feather name="x" size={16} color="#94A3B8" />
                       </Pressable>
                     )}
 
-                    {/* Forest Green Search Submit Button */}
+                    {/* Forest Green Search Submit Button (Shopee exact match) */}
                     <Pressable
                       style={styles.searchSubmitBtn}
                       onPress={() => searchInputRef.current?.blur()}
+                      accessibilityLabel="Cari"
                     >
-                      <Feather
-                        name="search"
-                        size={14}
-                        color="#FFFFFF"
-                        style={{ marginRight: isDesktop ? 4 : 0 }}
-                      />
-                      {isDesktop && <Text style={styles.searchSubmitText}>Cari</Text>}
+                      <Feather name="search" size={17} color="#FFFFFF" />
                     </Pressable>
                   </View>
                 </View>
@@ -702,13 +698,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   searchInner: {
-    height: 42,
-    borderRadius: 3,
+    height: 40,
+    borderRadius: 2,
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 12,
+    paddingLeft: 14,
     paddingRight: 3,
+    overflow: 'hidden',
     ...shadows.sm,
   },
   searchIconLeft: {
@@ -716,17 +713,34 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontSize: 13,
+    height: '100%',
+    fontSize: 14,
     color: '#1E293B',
-    fontWeight: '500',
+    fontWeight: '400',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    borderColor: 'transparent',
+    paddingHorizontal: 0,
     paddingVertical: 0,
+    margin: 0,
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none',
+        outlineWidth: 0,
+        outlineColor: 'transparent',
+        boxShadow: 'none',
+      },
+    }),
   },
   clearBtnWrap: {
     paddingHorizontal: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   searchSubmitBtn: {
-    height: 36,
-    paddingHorizontal: 20,
+    height: 34,
+    minWidth: 58,
+    paddingHorizontal: 16,
     borderRadius: 2,
     backgroundColor: '#2C6842',
     flexDirection: 'row',

@@ -48,6 +48,27 @@ export default function App() {
     NavigationBar.setBorderColorAsync(colors.lightGray).catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      const styleId = 'circulai-web-global-styles';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+          /* Remove default browser outlines & borders for clean Shopee-style input */
+          input, textarea {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+          }
+          input:focus, textarea:focus {
+            outline: none !important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+  }, []);
+
   const handleSplashDone = async () => {
     try {
       const val = await AsyncStorage.getItem(ONBOARDING_KEY);

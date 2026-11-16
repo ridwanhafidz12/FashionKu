@@ -331,13 +331,11 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   scaleDown={0.99}
                 >
                   <View style={styles.searchInner}>
-                    <Feather name="search" size={15} color="#64748B" style={styles.searchIconLeft} />
                     <Text style={styles.searchText} numberOfLines={1}>
                       {isDesktop ? 'Cari outfit upcycled, dress kain sisa, penjahit Jogja...' : 'Cari di FashionKu...'}
                     </Text>
                     <View style={styles.searchSubmitBtn}>
-                      <Feather name="search" size={14} color="#FFFFFF" style={{ marginRight: isDesktop ? 4 : 0 }} />
-                      {isDesktop && <Text style={styles.searchSubmitText}>Cari</Text>}
+                      <Feather name="search" size={17} color="#FFFFFF" />
                     </View>
                   </View>
                 </AnimatedPressable>
@@ -1257,14 +1255,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   searchInner: {
-    height: 42,
-    borderRadius: 3,
+    height: 40,
+    borderRadius: 2,
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 12,
+    paddingLeft: 14,
     paddingRight: 3,
     justifyContent: 'space-between',
+    overflow: 'hidden',
     ...shadows.sm,
   },
   searchIconLeft: {
@@ -1272,13 +1271,14 @@ const styles = StyleSheet.create({
   },
   searchText: {
     flex: 1,
-    fontSize: 13,
-    color: '#64748B',
-    fontWeight: '500',
+    fontSize: 14,
+    color: '#757575',
+    fontWeight: '400',
   },
   searchSubmitBtn: {
-    height: 36,
-    paddingHorizontal: 20,
+    height: 34,
+    minWidth: 58,
+    paddingHorizontal: 16,
     borderRadius: 2,
     backgroundColor: colors.forest,
     flexDirection: 'row',
