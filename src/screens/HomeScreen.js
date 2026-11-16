@@ -29,11 +29,14 @@ import {
   Share,
   StyleSheet,
   Text,
+  TextInput,
   useWindowDimensions,
   View,
 } from 'react-native';
 
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+
+import { useDebounce } from '../hooks/useDebounce';
 
 import AnimatedPressable from '../components/AnimatedPressable';
 import IconButton from '../components/IconButton';
@@ -106,6 +109,11 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   const [notifModalVisible, setNotifModalVisible] = useState(false);
   const [helpModalVisible, setHelpModalVisible] = useState(false);
   const [catImageMap, setCatImageMap] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebounce(searchQuery, 250);
+  const searchInputRef = useRef(null);
+  const scrollViewRef = useRef(null);
+  const discoverSectionY = useRef(0);
 
   const {
     categories,
@@ -185,9 +193,35 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   const heroScrollX = useRef(new Animated.Value(0)).current;
   const heroIsDragging = useRef(false);
 
-  const featuredProducts = category === 'Semua'
-    ? products
-    : products.filter((p) => p.category === category);
+  const featuredProducts = useMemo(() => {
+    const q = debouncedSearch.trim().toLowerCase();
+    return products.filter((p) => {
+      const catMatch = category === 'Semua' || p.category === category;
+      const searchMatch =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.tailor.toLowerCase().includes(q) ||
+        (p.category && p.category.toLowerCase().includes(q)) ||
+        (p.material && p.material.toLowerCase().includes(q)) ||
+        (Array.isArray(p.badges) && p.badges.some((b) => b.toLowerCase().includes(q)));
+      return catMatch && searchMatch;
+    });
+  }, [category, debouncedSearch, products]);
+
+  const handleKeywordClick = (kw) => {
+    setSearchQuery(kw);
+    setCategory('Semua');
+    if (isDesktop && discoverSectionY.current > 0) {
+      scrollViewRef.current?.scrollTo({ y: Math.max(0, discoverSectionY.current - 120), animated: true });
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    searchInputRef.current?.blur();
+    if (searchQuery.trim() && discoverSectionY.current > 0) {
+      scrollViewRef.current?.scrollTo({ y: Math.max(0, discoverSectionY.current - 120), animated: true });
+    }
+  };
 
   useEffect(() => {
     if (!isActive) return undefined;
@@ -247,6 +281,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   return (
     <View style={{ flex: 1, backgroundColor: '#F5F6F8' }}>
       <ScrollView
+        ref={scrollViewRef}
         style={layout.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -323,26 +358,49 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
 
               {/* Big Search Box with Forest Green Search Button */}
               <View style={styles.searchSection}>
-                <AnimatedPressable
-                  style={styles.searchBox}
-                  onPress={() => onNavigate('explore')}
-                  scaleDown={0.99}
-                >
+                <View style={styles.searchBox}>
                   <View style={styles.searchInner}>
-                    <Text style={styles.searchText} numberOfLines={1}>
-                      {isDesktop ? 'Cari outfit upcycled, dress kain sisa, penjahit Jogja...' : 'Cari di FashionKu...'}
-                    </Text>
-                    <View style={styles.searchSubmitBtn}>
+                    <TextInput
+                      ref={searchInputRef}
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                      placeholder={
+                        isDesktop
+                          ? 'Cari outfit upcycled, dress kain sisa, penjahit Jogja...'
+                          : 'Cari di FashionKu...'
+                      }
+                      placeholderTextColor="#757575"
+                      style={styles.searchInput}
+                      returnKeyType="search"
+                      onSubmitEditing={handleSearchSubmit}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                    />
+
+                    {/* Clear Button */}
+                    {!!searchQuery && (
+                      <Pressable onPress={() => setSearchQuery('')} hitSlop={8} style={styles.clearBtnWrap}>
+                        <Feather name="x" size={16} color="#94A3B8" />
+                      </Pressable>
+                    )}
+
+                    {/* Forest Green Search Submit Button */}
+                    <Pressable
+                      style={styles.searchSubmitBtn}
+                      onPress={handleSearchSubmit}
+                      accessibilityRole="button"
+                      accessibilityLabel="Cari"
+                    >
                       <Feather name="search" size={17} color="#FFFFFF" />
-                    </View>
+                    </Pressable>
                   </View>
-                </AnimatedPressable>
+                </View>
 
                 {/* Quick Trending Keywords under Search Box (Desktop only) */}
                 {isDesktop && (
                   <View style={styles.quickKeywordsRow}>
                     {['Kain Sisa', 'Outer Linen', 'Batik Upcycled', 'Zero Waste', 'Penjahit Lokal', 'Dress MTO'].map((kw) => (
-                      <Pressable key={kw} onPress={() => onNavigate('explore')}>
+                      <Pressable key={kw} onPress={() => handleKeywordClick(kw)} hitSlop={4}>
                         <Text style={styles.quickKeyword}>{kw}</Text>
                       </Pressable>
                     ))}
@@ -913,7 +971,12 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
         </View>
 
         {/* ─── Rekomendasi (Daily Discover Sticky Tabs & Product Grid) ─── */}
-        <View style={styles.shopeeDailyDiscoverContainer}>
+        <View
+          style={styles.shopeeDailyDiscoverContainer}
+          onLayout={(e) => {
+            discoverSectionY.current = e.nativeEvent.layout.y;
+          }}
+        >
           <View style={styles.shopeeDailyDiscoverInner}>
             {/* Active Tab Header Bar */}
             <View style={styles.shopeeDiscoverTabsBar}>
@@ -940,25 +1003,69 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
               </ScrollView>
             </View>
 
-            {/* Responsive Product Grid */}
-            <View style={[styles.productGrid, { gap: gridGap }]}>
-              {featuredProducts.slice(0, numCols * 4).map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  grid
-                  slotStyle={cardSlotStyle}
-                  favorite={wishlist.includes(product.id)}
-                  onToggleFavorite={() => requireAuth(() => toggleWishlist(product.id), 'Masuk ke akun untuk menyimpan produk ke Wishlist.')}
-                  onPress={() => onProductPress(product)}
-                />
-              ))}
-            </View>
+            {/* Active Search Filter Pill */}
+            {!!searchQuery && (
+              <View style={styles.searchActivePillRow}>
+                <View style={styles.searchActivePill}>
+                  <Feather name="search" size={13} color={colors.forest} style={{ marginRight: 6 }} />
+                  <Text style={styles.searchActivePillText}>
+                    Hasil: &quot;{searchQuery}&quot; ({featuredProducts.length} produk)
+                  </Text>
+                  <Pressable
+                    onPress={() => setSearchQuery('')}
+                    hitSlop={8}
+                    style={{ marginLeft: 8 }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Hapus pencarian"
+                  >
+                    <Feather name="x-circle" size={15} color={colors.forest} />
+                  </Pressable>
+                </View>
+              </View>
+            )}
+
+            {/* Responsive Product Grid or Empty State */}
+            {featuredProducts.length === 0 ? (
+              <View style={styles.emptySearchWrap}>
+                <View style={styles.emptySearchIconCircle}>
+                  <MaterialCommunityIcons name="hanger" size={32} color={colors.forest} />
+                </View>
+                <Text style={styles.emptySearchTitle}>Produk tidak ditemukan</Text>
+                <Text style={styles.emptySearchSub}>
+                  Tidak ada busana yang cocok dengan pencarian &quot;{searchQuery}&quot;. Coba kata kunci atau kategori lain.
+                </Text>
+                <Pressable
+                  style={styles.emptySearchResetBtn}
+                  onPress={() => {
+                    setSearchQuery('');
+                    setCategory('Semua');
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Reset pencarian"
+                >
+                  <Text style={styles.emptySearchResetBtnText}>Reset Pencarian &amp; Filter</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <View style={[styles.productGrid, { gap: gridGap }]}>
+                {featuredProducts.slice(0, numCols * 4).map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    grid
+                    slotStyle={cardSlotStyle}
+                    favorite={wishlist.includes(product.id)}
+                    onToggleFavorite={() => requireAuth(() => toggleWishlist(product.id), 'Masuk ke akun untuk menyimpan produk ke Wishlist.')}
+                    onPress={() => onProductPress(product)}
+                  />
+                ))}
+              </View>
+            )}
 
             {/* Load More Button */}
             <View style={styles.loadMoreWrap}>
               <Pressable style={styles.loadMoreBtn} onPress={() => onNavigate('explore')}>
-                <Text style={styles.loadMoreText}>Lihat Lebih Banyak</Text>
+                <Text style={styles.loadMoreText}>Lihat Semua di Katalog &gt;</Text>
               </Pressable>
             </View>
           </View>
@@ -1168,11 +1275,36 @@ const styles = StyleSheet.create({
   searchIconLeft: {
     marginRight: 6,
   },
-  searchText: {
+  searchInput: {
     flex: 1,
+    height: '100%',
     fontSize: 14,
-    color: '#757575',
+    color: '#1E293B',
     fontWeight: '400',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    borderColor: 'transparent',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    margin: 0,
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none',
+        outlineWidth: 0,
+        outlineColor: 'transparent',
+        boxShadow: 'none',
+      },
+    }),
+  },
+  clearBtnWrap: {
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
   },
   searchSubmitBtn: {
     height: 34,
@@ -1183,8 +1315,83 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
   },
   searchSubmitText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  searchActivePillRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  searchActivePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EDF7EE',
+    borderWidth: 1,
+    borderColor: '#C6E7CE',
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  searchActivePillText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.forest,
+  },
+  emptySearchWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 48,
+    paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    marginBottom: 16,
+    ...shadows.xs,
+  },
+  emptySearchIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#EDF7EE',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  emptySearchTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#1E293B',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptySearchSub: {
+    fontSize: 13,
+    color: '#64748B',
+    textAlign: 'center',
+    maxWidth: 420,
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  emptySearchResetBtn: {
+    backgroundColor: colors.forest,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 4,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
+  },
+  emptySearchResetBtnText: {
     color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '700',
