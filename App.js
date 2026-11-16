@@ -51,21 +51,68 @@ export default function App() {
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
       const styleId = 'circulai-web-global-styles';
-      if (!document.getElementById(styleId)) {
-        const style = document.createElement('style');
+      let style = document.getElementById(styleId);
+      if (!style) {
+        style = document.createElement('style');
         style.id = styleId;
-        style.textContent = `
-          /* Remove default browser outlines & borders for clean Shopee-style input */
-          input, textarea {
-            outline: none !important;
-            -webkit-tap-highlight-color: transparent !important;
-          }
-          input:focus, textarea:focus {
-            outline: none !important;
-          }
-        `;
         document.head.appendChild(style);
       }
+      style.textContent = `
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
+
+        /* ─── Premium SAAS Typography Architecture (Reference Design) ─── */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        body, #root, [data-testid="root"], button, input, optgroup, select, textarea {
+          font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          -webkit-font-smoothing: antialiased !important;
+          -moz-osx-font-smoothing: grayscale !important;
+          text-rendering: optimizeLegibility !important;
+          letter-spacing: -0.012em;
+        }
+
+        /* ─── Subtle Ambient Background Aura (Reference Design System) ─── */
+        body::after {
+          content: "";
+          position: fixed;
+          inset: 0;
+          background: radial-gradient(circle at 10% 20%, rgba(44, 104, 66, 0.035) 0%, rgba(160, 200, 120, 0.015) 40%, transparent 70%);
+          z-index: -1;
+          pointer-events: none;
+        }
+
+        /* ─── Seamless Inputs (No Ugly Black Box / Outline) ─── */
+        input, textarea, select {
+          outline: none !important;
+          -webkit-tap-highlight-color: transparent !important;
+        }
+        input:focus, textarea:focus, select:focus {
+          outline: none !important;
+        }
+
+        /* ─── Interactive Micro-Interactions (Reference Design) ─── */
+        button, [role="button"] {
+          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.15s ease;
+        }
+
+        /* ─── Sleek Precision Scrollbars ─── */
+        ::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #CBD5E1;
+          border-radius: 99px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #94A3B8;
+        }
+      `;
     }
   }, []);
 

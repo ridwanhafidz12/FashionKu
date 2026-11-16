@@ -67,43 +67,64 @@ export const colors = {
   forestAlpha20: 'rgba(160,200,120,0.25)',
 };
 
-// ─── Shadow System ────────────────────────────────────────────────────────────
+// ─── Shadow System (Refined Multi-Layer Soft Shadows from Reference Design) ───
 export const shadows = {
+  xs: {
+    shadowColor: '#101828',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
+    boxShadow: '0 1px 2px rgba(16, 24, 40, 0.04)',
+  },
   sm: {
-    shadowColor: '#143D60',
+    shadowColor: '#101828',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.07,
-    shadowRadius: 8,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
     elevation: 2,
+    boxShadow: '0 2px 4px rgba(16, 24, 40, 0.05)',
   },
   md: {
-    shadowColor: '#143D60',
+    shadowColor: '#101828',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.09,
-    shadowRadius: 16,
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
     elevation: 4,
+    boxShadow: '0 4px 12px -2px rgba(16, 24, 40, 0.07), 0 2px 4px -2px rgba(16, 24, 40, 0.03)',
   },
   lg: {
-    shadowColor: '#143D60',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.11,
+    shadowColor: '#101828',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.08,
     shadowRadius: 24,
     elevation: 6,
+    boxShadow: '0 12px 24px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03)',
   },
   xl: {
-    shadowColor: '#143D60',
+    shadowColor: '#101828',
     shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.15,
-    shadowRadius: 40,
+    shadowOpacity: 0.12,
+    shadowRadius: 36,
     elevation: 10,
+    boxShadow: '0 20px 36px -4px rgba(16, 24, 40, 0.10), 0 6px 12px -2px rgba(16, 24, 40, 0.04)',
+  },
+  card: {
+    shadowColor: '#101828',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.06,
+    shadowRadius: 30,
+    elevation: 6,
+    boxShadow: '0 16px 32px -4px rgba(16, 24, 40, 0.06), 0 4px 8px -2px rgba(16, 24, 40, 0.02)',
   },
   // Colored shadow for primary CTA buttons
   forest: {
     shadowColor: '#2C6842',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
+    shadowOpacity: 0.28,
+    shadowRadius: 18,
     elevation: 6,
+    boxShadow: '0 8px 24px rgba(44, 104, 66, 0.28)',
   },
 };
 
