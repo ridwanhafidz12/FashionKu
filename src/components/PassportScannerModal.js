@@ -1,10 +1,14 @@
 /**
  * @file PassportScannerModal.js
- * @description Real camera QR scanner for Digital Product Passport (DPP).
+ * @description Real camera QR scanner & Tracking Hub for Digital Product Passport (DPP)
+ * and Shipping Resi tracking.
  *
- * Uses `expo-camera` with live barcode scanning and visual target reticle.
- * When a circular fashion tag is scanned, it verifies the product traceability
- * and opens the Digital Product Passport sheet.
+ * Dwifungsi:
+ * 1. Scan Circular Passport QR tag fisik pada pakaian CIRCULAI untuk membaca
+ *    asal-usul kain sisa, profil penjahit, dan dampak lingkungan yang dihemat.
+ * 2. Info Resi & Tracking: Customer bisa melihat nomor resi pengiriman dan foto struk
+ *    resi yang diupload penjahit, disertai tombol "Salin Resi".
+ * 3. Opsi input manual kode passport/resi jika kamera bermasalah.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -12,12 +16,15 @@ import {
   Alert,
   Animated,
   Easing,
+  Image,
   Linking,
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -28,11 +35,22 @@ import AnimatedPressable from './AnimatedPressable';
 import LeafMark from './LeafMark';
 import { colors, shadows } from '../theme/colors';
 
-export default function PassportScannerModal({ visible, onClose, onScannedPassport, orders = [], products = [] }) {
+export default function PassportScannerModal({
+  visible,
+  onClose,
+  onScannedPassport,
+  onViewOrderTracking,
+  orders = [],
+  products = []
+}) {
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [activeTorch, setActiveTorch] = useState(false);
+  const [activeTab, setActiveTab] = useState('passport'); // 'passport' | 'tracking'
+  const [manualCode, setManualCode] = useState('');
+  const [copiedResi, setCopiedResi] = useState(null);
+  const [previewReceipt, setPreviewReceipt] = useState(null);
 
   // Laser sweep animation
   const laserAnim = useRef(new Animated.Value(0)).current;
@@ -40,6 +58,9 @@ export default function PassportScannerModal({ visible, onClose, onScannedPasspo
   useEffect(() => {
     if (!visible) {
       setScanned(false);
+      setManualCode('');
+      setCopiedResi(null);
+      setPreviewReceipt(null);
       return undefined;
     }
 
@@ -74,28 +95,64 @@ export default function PassportScannerModal({ visible, onClose, onScannedPasspo
       if (!res?.granted) {
         Alert.alert(
           'Izin Kamera Diperlukan',
-          'Izin kamera belum aktif. Buka Pengaturan iPhone (Settings > Expo Go) lalu aktifkan izin Camera.',
+          'Izin kamera belum aktif. Buka Pengaturan perangkat untuk mengaktifkan izin Kamera.',
           [
             { text: 'Batal', style: 'cancel' },
             { text: 'Buka Pengaturan', onPress: () => Linking.openSettings() }
           ]
         );
       }
-    } catch (err) {
+    } catch {
       Linking.openSettings();
     }
   };
 
-  const handleBarcodeScanned = ({ data }) => {
-    if (scanned) return;
-    setScanned(true);
+  const copyResi = async (code) => {
+    try {
+      if (Platform.OS === 'web' && typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(code);
+      }
+      setCopiedResi(code);
+      setTimeout(() => setCopiedResi(null), 2500);
+    } catch {
+      setCopiedResi(code);
+      setTimeout(() => setCopiedResi(null), 2500);
+    }
+  };
+
+  const processCodeMatch = (codeStr) => {
+    const cleanData = String(codeStr || '').trim();
+    if (!cleanData) return;
+
+    // Check if it matches an order's tracking code or order ID
+    const matchedTracking = orders.find(
+      (o) =>
+        (o.trackingCode && o.trackingCode.toLowerCase() === cleanData.toLowerCase()) ||
+        (o.id && o.id.toLowerCase() === cleanData.toLowerCase())
+    );
+
+    if (matchedTracking) {
+      if (activeTab === 'tracking') {
+        Alert.alert(
+          'Resi Ditemukan!',
+          `Kurir: ${matchedTracking.courier || 'J&T Express'}\nNomor Resi: ${matchedTracking.trackingCode || cleanData}\nStatus: ${matchedTracking.shipmentStatus || 'Dalam Pengiriman'}`
+        );
+        return;
+      }
+    }
 
     // Try to match scanned data with existing orders or products
-    const cleanData = String(data || '').trim();
     let matchedOrder = orders.find((o) => o.id === cleanData || o.product === cleanData);
-    
+
     if (!matchedOrder) {
-      const matchedProduct = products.find((p) => String(p.id) === cleanData || p.name.toLowerCase() === cleanData.toLowerCase()) ?? products[0];
+      const matchedProduct =
+        products.find(
+          (p) =>
+            String(p.id) === cleanData ||
+            p.name.toLowerCase() === cleanData.toLowerCase() ||
+            cleanData.toLowerCase().includes(p.name.toLowerCase())
+        ) ?? products[0];
+
       matchedOrder = {
         id: `PASSPORT-${matchedProduct?.id ?? '001'}`,
         product: matchedProduct?.name ?? 'Luna Wrap Top',
@@ -119,12 +176,12 @@ export default function PassportScannerModal({ visible, onClose, onScannedPasspo
           status: 'ACTIVE',
           impact: {
             savedFabric: matchedProduct?.savedFabric,
-            estimatedCo2: '1.8 kg CO2e'
+            estimatedCo2: '1.8 kg CO2e',
           },
           verificationCode: 'VERIFIED-AUTHENTIC-2026',
           issuedAt: '4 Juni 2026',
-          activatedAt: '10 Juni 2026'
-        }
+          activatedAt: '10 Juni 2026',
+        },
       };
     }
 
@@ -134,8 +191,22 @@ export default function PassportScannerModal({ visible, onClose, onScannedPasspo
     }, 200);
   };
 
+  const handleBarcodeScanned = ({ data }) => {
+    if (scanned) return;
+    setScanned(true);
+    processCodeMatch(data);
+  };
+
+  const handleManualSubmit = () => {
+    if (!manualCode.trim()) {
+      Alert.alert('Input Kosong', 'Ketikkan nomor resi atau kode paspor digital terlebih dahulu.');
+      return;
+    }
+    processCodeMatch(manualCode);
+  };
+
   const handleSampleScan = (sampleProduct) => {
-    handleBarcodeScanned({ data: String(sampleProduct.id) });
+    processCodeMatch(String(sampleProduct.id));
   };
 
   const laserTranslateY = laserAnim.interpolate({
@@ -145,6 +216,11 @@ export default function PassportScannerModal({ visible, onClose, onScannedPasspo
 
   const canUseCamera = Platform.OS !== 'web' && permission?.granted;
 
+  // Active orders with tracking info
+  const shippedOrders = orders.filter(
+    (o) => o.trackingCode || ['SHIPPED', 'DELIVERED', 'COMPLETED'].includes(o.status)
+  );
+
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -153,111 +229,298 @@ export default function PassportScannerModal({ visible, onClose, onScannedPasspo
           <AnimatedPressable style={styles.iconBtn} onPress={onClose} scaleDown={0.9}>
             <Feather name="x" size={20} color={colors.white} />
           </AnimatedPressable>
-          <View style={styles.headerTitleWrap}>
-            <LeafMark size={16} color={colors.mint} />
-            <Text style={styles.headerTitle}>Digital Passport Scanner</Text>
+
+          <View style={styles.modeTabs}>
+            <Pressable
+              style={[styles.modeTab, activeTab === 'passport' && styles.modeTabActive]}
+              onPress={() => setActiveTab('passport')}
+            >
+              <LeafMark size={14} color={activeTab === 'passport' ? colors.forest : colors.white} />
+              <Text style={[styles.modeTabText, activeTab === 'passport' && styles.modeTabTextActive]}>
+                Paspor DPP
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.modeTab, activeTab === 'tracking' && styles.modeTabActive]}
+              onPress={() => setActiveTab('tracking')}
+            >
+              <Feather
+                name="truck"
+                size={14}
+                color={activeTab === 'tracking' ? colors.forest : colors.white}
+              />
+              <Text style={[styles.modeTabText, activeTab === 'tracking' && styles.modeTabTextActive]}>
+                Lacak Resi
+              </Text>
+            </Pressable>
           </View>
-          {canUseCamera ? (
+
+          {canUseCamera && activeTab === 'passport' ? (
             <AnimatedPressable
               style={[styles.iconBtn, activeTorch && styles.iconBtnActive]}
               onPress={() => setActiveTorch((prev) => !prev)}
               scaleDown={0.9}
             >
-              <Feather name={activeTorch ? 'zap' : 'zap-off'} size={18} color={activeTorch ? colors.forest : colors.white} />
+              <Feather
+                name={activeTorch ? 'zap' : 'zap-off'}
+                size={18}
+                color={activeTorch ? colors.forest : colors.white}
+              />
             </AnimatedPressable>
           ) : (
             <View style={{ width: 40 }} />
           )}
         </View>
 
-        {/* Camera Viewfinder Area */}
-        <View style={styles.viewfinderContainer}>
-          {canUseCamera ? (
-            <CameraView
-              style={StyleSheet.absoluteFillObject}
-              facing="back"
-              enableTorch={activeTorch}
-              barcodeScannerSettings={{
-                barcodeTypes: ['qr', 'ean13', 'code128', 'code39'],
-              }}
-              onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
-            />
-          ) : (
-            <View style={styles.webFallbackCamera}>
-              <MaterialCommunityIcons name="camera-off" size={48} color="rgba(255,255,255,0.4)" />
-              <Text style={styles.fallbackTitle}>
-                {!permission?.granted ? 'Izin Kamera Diperlukan' : 'Mode Simulator Aktif'}
-              </Text>
-              <Text style={styles.fallbackSub}>
-                {!permission?.granted
-                  ? 'Berikan izin kamera untuk memindai QR code tag pakaian CIRCULAI secara langsung.'
-                  : 'Pilih tag contoh di bawah untuk menguji verifikasi Paspor Digital.'}
-              </Text>
-              {!permission?.granted && (
-                <AnimatedPressable style={styles.grantBtn} onPress={handleRequestPermission} scaleDown={0.96}>
-                  <Feather name="camera" size={16} color={colors.white} />
-                  <Text style={styles.grantBtnText}>Beri Izin Kamera</Text>
-                </AnimatedPressable>
+        {/* ─── Mode 1: Paspor DPP Scanner ───────────────────────────────── */}
+        {activeTab === 'passport' && (
+          <>
+            <View style={styles.viewfinderContainer}>
+              {canUseCamera ? (
+                <CameraView
+                  style={StyleSheet.absoluteFillObject}
+                  facing="back"
+                  enableTorch={activeTorch}
+                  barcodeScannerSettings={{
+                    barcodeTypes: ['qr', 'ean13', 'code128', 'code39'],
+                  }}
+                  onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
+                />
+              ) : (
+                <View style={styles.webFallbackCamera}>
+                  <MaterialCommunityIcons name="camera-off" size={44} color="rgba(255,255,255,0.4)" />
+                  <Text style={styles.fallbackTitle}>
+                    {!permission?.granted ? 'Izin Kamera Diperlukan' : 'Mode Scanner Digital'}
+                  </Text>
+                  <Text style={styles.fallbackSub}>
+                    {!permission?.granted
+                      ? 'Berikan izin kamera untuk memindai QR code tag pakaian CIRCULAI secara langsung.'
+                      : 'Kamera aktif. Gunakan input manual atau sampel tag untuk memverifikasi paspor sirkular.'}
+                  </Text>
+                  {!permission?.granted && (
+                    <AnimatedPressable
+                      style={styles.grantBtn}
+                      onPress={handleRequestPermission}
+                      scaleDown={0.96}
+                    >
+                      <Feather name="camera" size={16} color={colors.white} />
+                      <Text style={styles.grantBtnText}>Beri Izin Kamera</Text>
+                    </AnimatedPressable>
+                  )}
+                </View>
+              )}
+
+              {canUseCamera && (
+                <View style={styles.overlayMask} pointerEvents="none">
+                  <View style={styles.reticleBox}>
+                    <View style={[styles.corner, styles.topLeft]} />
+                    <View style={[styles.corner, styles.topRight]} />
+                    <View style={[styles.corner, styles.bottomLeft]} />
+                    <View style={[styles.corner, styles.bottomRight]} />
+                    <Animated.View
+                      style={[styles.laserLine, { transform: [{ translateY: laserTranslateY }] }]}
+                    />
+                    <View style={styles.reticleCenter}>
+                      <MaterialCommunityIcons name="qrcode-scan" size={36} color="rgba(255,255,255,0.4)" />
+                    </View>
+                  </View>
+                </View>
               )}
             </View>
-          )}
 
-          {/* Dark Vignette Overlay - Only rendered with active camera and transparent to clicks */}
-          {canUseCamera && (
-            <View style={styles.overlayMask} pointerEvents="none">
-              {/* Target Reticle Box */}
-              <View style={styles.reticleBox}>
-                {/* 4 Corner Markers */}
-                <View style={[styles.corner, styles.topLeft]} />
-                <View style={[styles.corner, styles.topRight]} />
-                <View style={[styles.corner, styles.bottomLeft]} />
-                <View style={[styles.corner, styles.bottomRight]} />
+            {/* Bottom Card for Passport */}
+            <View style={styles.bottomCard}>
+              <Text style={styles.instructionTitle}>Scan QR Tag Fisik Pakaian</Text>
+              <Text style={styles.instructionDesc}>
+                Arahkan kamera ke QR tag baju untuk membaca asal-usul kain sisa, profil penjahit UMKM, dan jejak karbon dihemat.
+              </Text>
 
-                {/* Animated Laser Line */}
-                <Animated.View
-                  style={[
-                    styles.laserLine,
-                    {
-                      transform: [{ translateY: laserTranslateY }],
-                    },
-                  ]}
+              {/* Manual Input Bar */}
+              <View style={styles.manualInputRow}>
+                <TextInput
+                  style={styles.manualInput}
+                  placeholder="Atau ketik ID / Kode Passport..."
+                  placeholderTextColor={colors.warmGray}
+                  value={manualCode}
+                  onChangeText={setManualCode}
+                  autoCapitalize="characters"
                 />
+                <AnimatedPressable
+                  style={styles.manualSubmitBtn}
+                  onPress={handleManualSubmit}
+                  scaleDown={0.95}
+                >
+                  <Text style={styles.manualSubmitText}>Cek</Text>
+                </AnimatedPressable>
+              </View>
 
-                <View style={styles.reticleCenter}>
-                  <MaterialCommunityIcons name="qrcode-scan" size={36} color="rgba(255,255,255,0.4)" />
+              {/* Quick Demo Test Buttons */}
+              <View style={styles.sampleSection}>
+                <Text style={styles.sampleLabel}>Atau coba simulasi tag produk:</Text>
+                <View style={styles.sampleRow}>
+                  {products.slice(0, 3).map((p) => (
+                    <AnimatedPressable
+                      key={p.id}
+                      style={styles.sampleChip}
+                      onPress={() => handleSampleScan(p)}
+                      scaleDown={0.95}
+                    >
+                      <MaterialCommunityIcons name="qrcode" size={14} color={colors.forest} />
+                      <Text style={styles.sampleChipText} numberOfLines={1}>
+                        {p.name}
+                      </Text>
+                    </AnimatedPressable>
+                  ))}
                 </View>
               </View>
             </View>
-          )}
-        </View>
+          </>
+        )}
 
-        {/* Instruction Bottom Sheet */}
-        <View style={styles.bottomCard}>
-          <Text style={styles.instructionTitle}>Arahkan Kamera ke QR Code Tag</Text>
-          <Text style={styles.instructionDesc}>
-            Scan QR tag pada pakaian CIRCULAI untuk melihat transparansi bahan, jejak karbon dihemat, dan sertifikat digital penjahit lokal.
-          </Text>
-
-          {/* Quick Demo Test Buttons */}
-          <View style={styles.sampleSection}>
-            <Text style={styles.sampleLabel}>Atau coba simulasi tag produk:</Text>
-            <View style={styles.sampleRow}>
-              {products.slice(0, 3).map((p) => (
-                <AnimatedPressable
-                  key={p.id}
-                  style={styles.sampleChip}
-                  onPress={() => handleSampleScan(p)}
-                  scaleDown={0.95}
-                >
-                  <MaterialCommunityIcons name="qrcode" size={14} color={colors.forest} />
-                  <Text style={styles.sampleChipText} numberOfLines={1}>
-                    {p.name}
-                  </Text>
-                </AnimatedPressable>
-              ))}
+        {/* ─── Mode 2: Info & Lacak Resi Pengiriman ─────────────────────── */}
+        {activeTab === 'tracking' && (
+          <ScrollView
+            style={styles.trackingContainer}
+            contentContainerStyle={styles.trackingContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.trackingHeader}>
+              <Text style={styles.trackingTitle}>Info Resi & Foto Struk Kurir</Text>
+              <Text style={styles.trackingSubtitle}>
+                Pantau pengiriman baju dari workshop penjahit dan cek foto bukti struk fisik dari ekspedisi.
+              </Text>
             </View>
-          </View>
-        </View>
+
+            {/* Manual Resi Search Bar */}
+            <View style={styles.manualResiBox}>
+              <Feather name="search" size={18} color={colors.forest} />
+              <TextInput
+                style={styles.manualResiInput}
+                placeholder="Cari nomor resi atau ID pesanan..."
+                placeholderTextColor={colors.warmGray}
+                value={manualCode}
+                onChangeText={setManualCode}
+              />
+              <AnimatedPressable
+                style={styles.manualSubmitBtn}
+                onPress={handleManualSubmit}
+                scaleDown={0.95}
+              >
+                <Text style={styles.manualSubmitText}>Lacak</Text>
+              </AnimatedPressable>
+            </View>
+
+            {/* Active Shipments List */}
+            <Text style={styles.trackingSectionTitle}>Pesanan Sedang Dikirim</Text>
+            {shippedOrders.length === 0 ? (
+              <View style={styles.emptyTrackingBox}>
+                <Feather name="package" size={40} color={colors.warmGrayLight} />
+                <Text style={styles.emptyTrackingTitle}>Belum ada paket dalam perjalanan</Text>
+                <Text style={styles.emptyTrackingSub}>
+                  Ketika penjahit menyerahkan baju ke kurir dan mengupload foto struk resi, kamu bisa melacaknya langsung di sini.
+                </Text>
+              </View>
+            ) : (
+              shippedOrders.map((ord) => {
+                const resiCode = ord.trackingCode || `JNT-CRC-${ord.id.slice(-6)}`;
+                const courierName = ord.courier || 'J&T Express';
+                const receiptImg =
+                  ord.receiptImage ||
+                  ord.extraData?.receiptImage ||
+                  'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=400&q=80';
+
+                return (
+                  <View key={ord.id} style={styles.trackingCard}>
+                    <View style={styles.trackingCardTop}>
+                      <View style={styles.courierBadge}>
+                        <Feather name="truck" size={13} color={colors.forest} />
+                        <Text style={styles.courierText}>{courierName}</Text>
+                      </View>
+                      <View style={styles.shipmentStatusPill}>
+                        <Text style={styles.shipmentStatusText}>{ord.status}</Text>
+                      </View>
+                    </View>
+
+                    <Text style={styles.trackingProductName}>{ord.product}</Text>
+                    <Text style={styles.trackingTailorName}>Oleh {ord.tailor}</Text>
+
+                    {/* Resi Box with Copy Button */}
+                    <View style={styles.resiBox}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.resiLabel}>Nomor Resi Pengiriman</Text>
+                        <Text style={styles.resiCode}>{resiCode}</Text>
+                      </View>
+                      <AnimatedPressable
+                        style={[
+                          styles.copyBtn,
+                          copiedResi === resiCode && styles.copyBtnSuccess,
+                        ]}
+                        onPress={() => copyResi(resiCode)}
+                        scaleDown={0.93}
+                      >
+                        <Feather
+                          name={copiedResi === resiCode ? 'check' : 'copy'}
+                          size={14}
+                          color={copiedResi === resiCode ? colors.white : colors.forest}
+                        />
+                        <Text
+                          style={[
+                            styles.copyBtnText,
+                            copiedResi === resiCode && styles.copyBtnTextSuccess,
+                          ]}
+                        >
+                          {copiedResi === resiCode ? 'Tersalin' : 'Salin Resi'}
+                        </Text>
+                      </AnimatedPressable>
+                    </View>
+
+                    {/* Receipt photo preview */}
+                    <View style={styles.receiptPreviewRow}>
+                      <Pressable
+                        style={styles.receiptThumbWrap}
+                        onPress={() => setPreviewReceipt(receiptImg)}
+                      >
+                        <Image source={{ uri: receiptImg }} style={styles.receiptThumb} />
+                        <View style={styles.receiptOverlay}>
+                          <Feather name="zoom-in" size={14} color={colors.white} />
+                        </View>
+                      </Pressable>
+                      <View style={styles.receiptInfo}>
+                        <Text style={styles.receiptTitle}>Struk Fisik Resi</Text>
+                        <Text style={styles.receiptNote}>
+                          Diupload langsung oleh mitra penjahit saat paket diserahkan ke gerai kurir.
+                        </Text>
+                        <Pressable onPress={() => setPreviewReceipt(receiptImg)}>
+                          <Text style={styles.receiptViewLink}>Perbesar Foto Struk</Text>
+                        </Pressable>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })
+            )}
+          </ScrollView>
+        )}
+
+        {/* Modal Foto Struk Resi Fullscreen */}
+        {previewReceipt && (
+          <Modal transparent animationType="fade" visible={!!previewReceipt} onRequestClose={() => setPreviewReceipt(null)}>
+            <View style={styles.fullImageOverlay}>
+              <View style={styles.fullImageCard}>
+                <View style={styles.fullImageHeader}>
+                  <Text style={styles.fullImageTitle}>Foto Struk Fisik Pengiriman</Text>
+                  <Pressable onPress={() => setPreviewReceipt(null)} style={styles.fullImageClose}>
+                    <Feather name="x" size={20} color={colors.charcoal} />
+                  </Pressable>
+                </View>
+                <Image source={{ uri: previewReceipt }} style={styles.fullImage} resizeMode="contain" />
+                <Text style={styles.fullImageDesc}>
+                  Bukti sah serah terima paket pakaian sirkular ke pihak ekspedisi kurir.
+                </Text>
+              </View>
+            </View>
+          </Modal>
+        )}
       </View>
     </Modal>
   );
@@ -267,7 +530,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0F1713',
-    maxWidth: 480,
+    maxWidth: 520,
     width: '100%',
     alignSelf: 'center',
   },
@@ -275,24 +538,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     zIndex: 10,
   },
-  headerTitleWrap: {
+  modeTabs: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderRadius: 20,
+    padding: 3,
+  },
+  modeTab: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 18,
   },
-  headerTitle: {
+  modeTabActive: {
+    backgroundColor: colors.sand,
+  },
+  modeTabText: {
     color: colors.white,
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  modeTabTextActive: {
+    color: colors.forest,
+    fontWeight: '900',
   },
   iconBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: 'rgba(255,255,255,0.15)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -325,7 +604,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 6,
     lineHeight: 19,
-    maxWidth: 280,
+    maxWidth: 290,
   },
   grantBtn: {
     flexDirection: 'row',
@@ -410,9 +689,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
-    paddingHorizontal: 22,
-    paddingTop: 20,
-    paddingBottom: 24,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 22,
     ...shadows.xl,
   },
   instructionTitle: {
@@ -425,18 +704,47 @@ const styles = StyleSheet.create({
     color: colors.warmGray,
     fontSize: 12,
     textAlign: 'center',
-    marginTop: 6,
-    lineHeight: 18,
+    marginTop: 5,
+    lineHeight: 17,
+  },
+  manualInputRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 14,
+  },
+  manualInput: {
+    flex: 1,
+    height: 42,
+    backgroundColor: colors.ivory,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    fontSize: 13,
+    color: colors.charcoal,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+  },
+  manualSubmitBtn: {
+    backgroundColor: colors.forest,
+    paddingHorizontal: 16,
+    height: 42,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manualSubmitText: {
+    color: colors.white,
+    fontWeight: '800',
+    fontSize: 13,
   },
   sampleSection: {
-    marginTop: 16,
-    paddingTop: 14,
+    marginTop: 14,
+    paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: colors.lightGray,
   },
   sampleLabel: {
     color: colors.charcoal,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     marginBottom: 8,
   },
@@ -461,5 +769,251 @@ const styles = StyleSheet.create({
     color: colors.forest,
     fontSize: 11,
     fontWeight: '700',
+  },
+  // Mode 2 Tracking styles
+  trackingContainer: {
+    flex: 1,
+    backgroundColor: colors.ivory,
+  },
+  trackingContent: {
+    padding: 18,
+    paddingBottom: 32,
+  },
+  trackingHeader: {
+    marginBottom: 14,
+  },
+  trackingTitle: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: colors.charcoal,
+  },
+  trackingSubtitle: {
+    fontSize: 12,
+    color: colors.warmGray,
+    marginTop: 3,
+    lineHeight: 18,
+  },
+  manualResiBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: colors.white,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    marginBottom: 16,
+    height: 48,
+  },
+  manualResiInput: {
+    flex: 1,
+    fontSize: 13,
+    color: colors.charcoal,
+  },
+  trackingSectionTitle: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: colors.charcoal,
+    marginBottom: 10,
+  },
+  emptyTrackingBox: {
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    padding: 24,
+    alignItems: 'center',
+    textAlign: 'center',
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+  },
+  emptyTrackingTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.charcoal,
+    marginTop: 12,
+  },
+  emptyTrackingSub: {
+    fontSize: 12,
+    color: colors.warmGray,
+    textAlign: 'center',
+    marginTop: 5,
+    lineHeight: 18,
+  },
+  trackingCard: {
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    ...shadows.sm,
+  },
+  trackingCardTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  courierBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.sandLight,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+  courierText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.forest,
+  },
+  shipmentStatusPill: {
+    backgroundColor: colors.successLight,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  shipmentStatusText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: colors.forest,
+  },
+  trackingProductName: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: colors.charcoal,
+  },
+  trackingTailorName: {
+    fontSize: 11,
+    color: colors.warmGray,
+    marginTop: 2,
+    marginBottom: 12,
+  },
+  resiBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.ivory,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+  },
+  resiLabel: {
+    fontSize: 10,
+    color: colors.warmGray,
+  },
+  resiCode: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: colors.forest,
+    marginTop: 2,
+    letterSpacing: 0.5,
+  },
+  copyBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: colors.sand,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 10,
+  },
+  copyBtnSuccess: {
+    backgroundColor: colors.forest,
+  },
+  copyBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.forest,
+  },
+  copyBtnTextSuccess: {
+    color: colors.white,
+  },
+  receiptPreviewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: colors.sandLight,
+    borderRadius: 12,
+    padding: 10,
+  },
+  receiptThumbWrap: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  receiptThumb: {
+    width: '100%',
+    height: '100%',
+  },
+  receiptOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  receiptInfo: {
+    flex: 1,
+  },
+  receiptTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: colors.charcoal,
+  },
+  receiptNote: {
+    fontSize: 10,
+    color: colors.warmGray,
+    marginTop: 2,
+    lineHeight: 14,
+  },
+  receiptViewLink: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.forest,
+    marginTop: 4,
+    textDecorationLine: 'underline',
+  },
+  fullImageOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  fullImageCard: {
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    padding: 16,
+    width: '100%',
+    maxWidth: 420,
+  },
+  fullImageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  fullImageTitle: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: colors.charcoal,
+  },
+  fullImageClose: {
+    padding: 4,
+  },
+  fullImage: {
+    width: '100%',
+    height: 320,
+    borderRadius: 12,
+    backgroundColor: colors.ivory,
+  },
+  fullImageDesc: {
+    fontSize: 11,
+    color: colors.warmGray,
+    marginTop: 10,
+    textAlign: 'center',
   },
 });

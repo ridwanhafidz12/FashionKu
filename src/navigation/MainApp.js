@@ -43,6 +43,8 @@ import TailorChatScreen from '../screens/TailorChatScreen';
 import ReturnRequestScreen from '../screens/ReturnRequestScreen';
 import ExchangeScreen from '../screens/ExchangeScreen';
 import ImpactDashboardScreen from '../screens/ImpactDashboardScreen';
+import TailorPortalScreen from '../screens/TailorPortalScreen';
+import AdminCmsScreen from '../screens/AdminCmsScreen';
 import AuthModal from '../components/AuthModal';
 import { TOAST_FADE_IN_MS, TOAST_FADE_OUT_MS, TOAST_VISIBLE_DURATION_MS, TAB_PRELOAD_INTERVAL_MS } from '../config/constants';
 import { layout } from '../styles/layout';
@@ -280,6 +282,7 @@ export default function MainApp() {
           initial={params.initial}
           onBack={goBack}
           onGoCart={() => navigate('cart')}
+          onChat={() => openTailorChat(params.product.tailor, { product: params.product })}
         />
       );
     }
@@ -362,6 +365,23 @@ export default function MainApp() {
     }
     if (active === 'exchange') {
       return <ExchangeScreen onBack={goBack} />;
+    }
+    if (active === 'tailor-portal') {
+      return (
+        <TailorPortalScreen
+          onBack={goBack}
+          onNavigate={navigate}
+          onChatCustomer={(customerName, order) => openTailorChat(customerName, { order })}
+        />
+      );
+    }
+    if (active === 'admin-cms') {
+      return (
+        <AdminCmsScreen
+          onBack={goBack}
+          onNavigate={navigate}
+        />
+      );
     }
     return null;
   }, [active, goBack, handlePayOrder, navigate, openReturnRequest, openTailorChat, registerScreenBackHandler, route.params]);

@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
+  Alert,
   Animated,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -34,9 +36,11 @@ const TABS = [
 // ─── Step IDs for Tukar flow ─────────────────────────────────────────────────
 const STEP_SELECT = 'select';
 const STEP_DETAIL = 'detail';
+const STEP_SHIPPING = 'shipping';
 const STEP_MODE = 'mode';
 const STEP_CONFIRM = 'confirm';
 const STEP_SUCCESS = 'success';
+const CONDITIONS = ['Bahan Utuh', 'Kancing Lepas', 'Noda', 'Robek'];
 
 // ─── Helper ──────────────────────────────────────────────────────────────────
 function PointBadge({ points, small }) {
@@ -61,6 +65,11 @@ export default function ExchangeScreen({ onBack }) {
   const [step, setStep] = useState(STEP_SELECT);
   const [selectedType, setSelectedType] = useState(null);
   const [quantity, setQuantity] = useState('');
+  const [condition, setCondition] = useState('Bahan Utuh');
+  const [itemPhoto, setItemPhoto] = useState('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80');
+  const [courierName, setCourierName] = useState('J&T Express');
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [receiptPhoto, setReceiptPhoto] = useState('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80');
   const [mode, setMode] = useState('points'); // 'points' | 'donate'
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [notes, setNotes] = useState('');
@@ -87,12 +96,14 @@ export default function ExchangeScreen({ onBack }) {
   const handleSelectType = useCallback((type) => {
     setSelectedType(type);
     setQuantity('');
+    setCondition('Bahan Utuh');
     setStep(STEP_DETAIL);
   }, []);
 
   const handleBackStep = useCallback(() => {
     if (step === STEP_DETAIL) { setStep(STEP_SELECT); setSelectedType(null); }
-    else if (step === STEP_MODE) setStep(STEP_DETAIL);
+    else if (step === STEP_SHIPPING) setStep(STEP_DETAIL);
+    else if (step === STEP_MODE) setStep(STEP_SHIPPING);
     else if (step === STEP_CONFIRM) setStep(STEP_MODE);
   }, [step]);
 
@@ -101,6 +112,11 @@ export default function ExchangeScreen({ onBack }) {
       const record = await submitExchange({
         itemTypeId: selectedType.id,
         quantity: parseFloat(quantity),
+        condition,
+        itemPhoto,
+        courierName,
+        trackingNumber: trackingNumber.trim() || `JP${Math.floor(100000000 + Math.random() * 900000000)}`,
+        receiptPhoto,
         mode,
         donationPartnerId: selectedPartner?.id ?? null,
         notes
@@ -108,12 +124,15 @@ export default function ExchangeScreen({ onBack }) {
       setSubmittedRecord(record);
       setStep(STEP_SUCCESS);
     }, 'Silakan masuk ke akun CIRCULAI untuk mengajukan tukar barang.');
-  }, [submitExchange, selectedType, quantity, mode, selectedPartner, notes, requireAuth]);
+  }, [submitExchange, selectedType, quantity, condition, itemPhoto, courierName, trackingNumber, receiptPhoto, mode, selectedPartner, notes, requireAuth]);
 
   const handleReset = useCallback(() => {
     setStep(STEP_SELECT);
     setSelectedType(null);
     setQuantity('');
+    setCondition('Bahan Utuh');
+    setCourierName('J&T Express');
+    setTrackingNumber('');
     setMode('points');
     setSelectedPartner(null);
     setNotes('');
@@ -164,6 +183,11 @@ export default function ExchangeScreen({ onBack }) {
           step={step}
           selectedType={selectedType}
           quantity={quantity}
+          condition={condition}
+          itemPhoto={itemPhoto}
+          courierName={courierName}
+          trackingNumber={trackingNumber}
+          receiptPhoto={receiptPhoto}
           mode={mode}
           selectedPartner={selectedPartner}
           notes={notes}
@@ -172,9 +196,12 @@ export default function ExchangeScreen({ onBack }) {
           onSelectType={handleSelectType}
           onBackStep={handleBackStep}
           onQuantityChange={setQuantity}
-          onModeChange={setMode}
-          onPartnerChange={setSelectedPartner}
-          onNotesChange={setNotes}
+          onConditionChange={setCondition}
+          onItemPhotoChange={setItemPhoto}
+          onCourierNameChange={setCourierName}
+          onTrackingNumberChange={setTrackingNumber}
+          onReceiptPhotoChange={setReceiptPhoto}
+          onNextToShipping={() => setStep(STEP_SHIPPING)}
           onNextToMode={() => setStep(STEP_MODE)}
           onNextToConfirm={() => setStep(STEP_CONFIRM)}
           onSubmit={handleSubmit}
@@ -205,52 +232,87 @@ export default function ExchangeScreen({ onBack }) {
 
 // ─── Tab: Tukar Barang ────────────────────────────────────────────────────────
 function TukarTab({
-  step, selectedType, quantity, mode, selectedPartner, notes,
-  estimatedPoints, submittedRecord,
-  onSelectType, onBackStep, onQuantityChange, onModeChange, onPartnerChange, onNotesChange,
-  onNextToMode, onNextToConfirm, onSubmit, onReset, insets
+  step,
+  selectedType,
+  quantity,
+  condition,
+  itemPhoto,
+  courierName,
+  trackingNumber,
+  receiptPhoto,
+  mode,
+  selectedPartner,
+  notes,
+  estimatedPoints,
+  submittedRecord,
+  onSelectType,
+  onBackStep,
+  onQuantityChange,
+  onConditionChange,
+  onItemPhotoChange,
+  onCourierNameChange,
+  onTrackingNumberChange,
+  onReceiptPhotoChange,
+  onNextToShipping,
+  onNextToMode,
+  onNextToConfirm,
+  onSubmit,
+  onReset,
+  insets,
 }) {
   const qty = parseFloat(quantity);
   const qtyValid = !isNaN(qty) && selectedType && qty >= selectedType.minUnit;
 
   if (step === STEP_SUCCESS) {
+    const isPoints = submittedRecord?.mode === 'points';
     return (
       <ScrollView style={styles.scroll} contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 32 }]}>
         <View style={styles.successCard}>
           <View style={styles.successIcon}>
-            <Feather name={submittedRecord?.mode === 'donate' ? 'heart' : 'star'} size={36} color={colors.white} />
+            <Feather name={isPoints ? 'check' : 'heart'} size={36} color={colors.white} />
           </View>
           <Text style={styles.successTitle}>
-            {submittedRecord?.mode === 'donate' ? 'Donasi Berhasil!' : 'Poin Ditambahkan!'}
+            Pengajuan Eco Swap Berhasil!
           </Text>
           <Text style={styles.successDesc}>
-            {submittedRecord?.mode === 'donate'
-              ? 'Barang bekasmu akan disalurkan ke mitra donasi CIRCULAI. Terima kasih!'
-              : `+${submittedRecord?.earnedPoints} CircularPoints telah ditambahkan ke akunmu.`}
+            {isPoints
+              ? `Pengajuan tukar pakaian berhasil dikirim. Poin sebesar +${submittedRecord?.earnedPoints} Pts akan masuk otomatis setelah Admin / Penjahit memverifikasi resi dan kondisi barang sampai.`
+              : 'Pakaian bekasmu akan disalurkan ke mitra sosial CIRCULAI. Terima kasih atas kontribusimu!'}
           </Text>
-          {submittedRecord?.mode === 'points' && (
+
+          {isPoints && (
             <View style={styles.successPointRow}>
-              <Feather name="star" size={18} color={colors.warning} />
-              <Text style={styles.successPointText}>+{submittedRecord.earnedPoints} pts</Text>
+              <Feather name="clock" size={16} color="#D97706" />
+              <Text style={styles.successPointText}>Status: Menunggu Verifikasi Admin</Text>
             </View>
           )}
-          <View style={styles.successInfo}>
-            <Text style={styles.successInfoLabel}>ID Pengajuan</Text>
-            <Text style={styles.successInfoValue}>{submittedRecord?.id}</Text>
+
+          <View style={styles.successSummaryCard}>
+            <View style={styles.successRow}>
+              <Text style={styles.successInfoLabel}>ID Pengajuan</Text>
+              <Text style={styles.successInfoValue}>{submittedRecord?.id}</Text>
+            </View>
+            <View style={styles.successRow}>
+              <Text style={styles.successInfoLabel}>Kondisi Pakaian</Text>
+              <Text style={styles.successInfoValue}>{submittedRecord?.condition}</Text>
+            </View>
+            <View style={styles.successRow}>
+              <Text style={styles.successInfoLabel}>Ekspedisi & Resi</Text>
+              <Text style={styles.successInfoValue}>
+                {submittedRecord?.courierName || 'J&T Express'} · {submittedRecord?.trackingNumber || '-'}
+              </Text>
+            </View>
+            <View style={styles.successRow}>
+              <Text style={styles.successInfoLabel}>Estimasi Poin</Text>
+              <Text style={[styles.successInfoValue, { color: colors.forest, fontWeight: '900' }]}>
+                +{submittedRecord?.earnedPoints} Poin Sirkular
+              </Text>
+            </View>
           </View>
-          <View style={styles.successInfo}>
-            <Text style={styles.successInfoLabel}>Status</Text>
-            <Text style={[styles.successInfoValue, { color: colors.warning }]}>Menunggu Pengiriman</Text>
-          </View>
-          <View style={styles.successAddress}>
-            <Feather name="map-pin" size={14} color={colors.warmGray} />
-            <Text style={styles.successAddressText}>
-              Kirim barang ke: Jl. Circular Eco Hub No.1, Sleman, Yogyakarta 55581
-            </Text>
-          </View>
+
           <TouchableOpacity style={styles.btnPrimary} onPress={onReset}>
             <Feather name="plus" size={16} color={colors.white} />
-            <Text style={styles.btnPrimaryText}>Tukar Barang Lagi</Text>
+            <Text style={styles.btnPrimaryText}>Tukar Barang Lainnya</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -266,12 +328,12 @@ function TukarTab({
             <Feather name="chevron-left" size={20} color={colors.forest} />
           </TouchableOpacity>
           <View style={styles.stepDots}>
-            {[STEP_DETAIL, STEP_MODE, STEP_CONFIRM].map((s, i) => (
+            {[STEP_DETAIL, STEP_SHIPPING, STEP_MODE, STEP_CONFIRM].map((s, i) => (
               <View
                 key={s}
                 style={[
                   styles.stepDot,
-                  [STEP_DETAIL, STEP_MODE, STEP_CONFIRM].indexOf(step) >= i && styles.stepDotActive
+                  [STEP_DETAIL, STEP_SHIPPING, STEP_MODE, STEP_CONFIRM].indexOf(step) >= i && styles.stepDotActive,
                 ]}
               />
             ))}
@@ -279,11 +341,11 @@ function TukarTab({
         </View>
       )}
 
-      {/* ── STEP: Pilih Kategori ── */}
+      {/* ── STEP 1: Pilih Kategori ── */}
       {step === STEP_SELECT && (
         <>
-          <Text style={styles.sectionTitle}>Pilih Jenis Barang</Text>
-          <Text style={styles.sectionDesc}>Barang yang kamu kirim akan didaur ulang atau disumbangkan.</Text>
+          <Text style={styles.sectionTitle}>Pilih Jenis Pakaian / Kain</Text>
+          <Text style={styles.sectionDesc}>Barang yang kamu kirim akan didaur ulang menjadi koleksi busana upcycle baru.</Text>
           <View style={styles.typeGrid}>
             {exchangeItemTypes.map((type) => (
               <TouchableOpacity
@@ -306,7 +368,7 @@ function TukarTab({
         </>
       )}
 
-      {/* ── STEP: Detail Kuantitas ── */}
+      {/* ── STEP 2: Detail Pakaian, Kondisi & Foto ── */}
       {step === STEP_DETAIL && selectedType && (
         <>
           <View style={[styles.selectedTypeBar, { borderLeftColor: selectedType.color }]}>
@@ -319,14 +381,17 @@ function TukarTab({
             </View>
           </View>
 
-          <Text style={styles.fieldLabel}>Estimasi {selectedType.unit === 'kg' ? 'Berat' : selectedType.unit === 'meter' ? 'Panjang' : 'Jumlah'}</Text>
+          {/* Kuantitas Input & Point Calculator */}
+          <Text style={styles.fieldLabel}>
+            Estimasi {selectedType.unit === 'kg' ? 'Berat' : selectedType.unit === 'meter' ? 'Panjang' : 'Jumlah Pakaian'}
+          </Text>
           <View style={styles.qtyRow}>
             <TextInput
               style={styles.qtyInput}
               value={quantity}
               onChangeText={onQuantityChange}
               keyboardType="decimal-pad"
-              placeholder={`Min. ${selectedType.minUnit} ${selectedType.unit}`}
+              placeholder={`Contoh: 3 ${selectedType.unit}`}
               placeholderTextColor={colors.warmGrayLight}
             />
             <View style={styles.qtyUnit}>
@@ -337,24 +402,148 @@ function TukarTab({
           {qtyValid && (
             <View style={styles.estimateBox}>
               <Feather name="star" size={16} color={colors.warning} />
-              <Text style={styles.estimateText}>Estimasi poin: <Text style={styles.estimatePoints}>+{estimatedPoints} pts</Text></Text>
+              <Text style={styles.estimateText}>
+                Kalkulator Poin: <Text style={styles.estimatePoints}>+{estimatedPoints} CircularPoints</Text>
+              </Text>
             </View>
           )}
 
-          <Text style={styles.fieldLabel}>Syarat yang Diterima</Text>
-          <View style={styles.conditionList}>
-            {selectedType.acceptedConditions.map((cond, i) => (
-              <View key={i} style={styles.conditionRow}>
-                <Feather name="check-circle" size={13} color={colors.success} />
-                <Text style={styles.conditionText}>{cond}</Text>
+          {/* Pilihan Catatan Kondisi Pakaian */}
+          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Catatan Kondisi Pakaian</Text>
+          <View style={styles.conditionChipsRow}>
+            {CONDITIONS.map((cond) => {
+              const active = condition === cond;
+              return (
+                <TouchableOpacity
+                  key={cond}
+                  style={[styles.conditionChipItem, active && styles.conditionChipItemActive]}
+                  onPress={() => onConditionChange(cond)}
+                >
+                  <Text style={[styles.conditionChipItemText, active && styles.conditionChipItemTextActive]}>
+                    {cond}
+                  </Text>
+                  {active && <Feather name="check" size={12} color={colors.forest} />}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Upload Foto Pakaian */}
+          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Upload Foto Pakaian / Kain</Text>
+          <View style={styles.photoUploadCard}>
+            <Image source={{ uri: itemPhoto }} style={styles.photoPreview} />
+            <View style={styles.photoActionCol}>
+              <Text style={styles.photoHint}>Ambil dari kamera langsung atau pilih foto dari galeri</Text>
+              <View style={styles.photoButtonsRow}>
+                <TouchableOpacity
+                  style={styles.photoBtn}
+                  onPress={() => {
+                    setItemPhoto('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80');
+                    Alert.alert('Foto Terambil', 'Foto pakaian berhasil diambil melalui kamera.');
+                  }}
+                >
+                  <Feather name="camera" size={13} color={colors.forest} />
+                  <Text style={styles.photoBtnText}>Kamera</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.photoBtn}
+                  onPress={() => {
+                    setItemPhoto('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=600&q=80');
+                    Alert.alert('Foto Terpilih', 'Foto pakaian berhasil dipilih dari galeri.');
+                  }}
+                >
+                  <Feather name="image" size={13} color={colors.forest} />
+                  <Text style={styles.photoBtnText}>Galeri</Text>
+                </TouchableOpacity>
               </View>
-            ))}
+            </View>
           </View>
 
           <TouchableOpacity
             style={[styles.btnPrimary, !qtyValid && styles.btnDisabled]}
-            onPress={onNextToMode}
+            onPress={onNextToShipping}
             disabled={!qtyValid}
+          >
+            <Text style={styles.btnPrimaryText}>Lanjut ke Pengiriman</Text>
+            <Feather name="arrow-right" size={16} color={colors.white} />
+          </TouchableOpacity>
+        </>
+      )}
+
+      {/* ── STEP 3: Alur Pengiriman Simpel & Upload Resi ── */}
+      {step === STEP_SHIPPING && (
+        <>
+          <Text style={styles.sectionTitle}>Alur Pengiriman Simpel</Text>
+          <Text style={styles.sectionDesc}>
+            Kirim pakaian via ekspedisi pilihanmu sendiri. Setelah paket diserahkan ke kurir, ketik nomor resi dan upload foto struk pengiriman.
+          </Text>
+
+          {/* Eco Hub Address Card */}
+          <View style={styles.shippingBox}>
+            <Feather name="map-pin" size={16} color={colors.forest} />
+            <View style={styles.shippingInfo}>
+              <Text style={styles.shippingTitle}>Alamat Tujuan Pengiriman:</Text>
+              <Text style={styles.shippingAddr}>
+                CIRCULAI Eco Hub (Upcycling Workshop){'\n'}
+                Jl. Kaliurang KM 7, Sleman, D.I. Yogyakarta 55581{'\n'}
+                Penerima: Tim Verifikasi Circulai (0812-3456-7890)
+              </Text>
+            </View>
+          </View>
+
+          {/* Courier Selector */}
+          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Pilih Nama Kurir / Ekspedisi</Text>
+          <View style={styles.conditionChipsRow}>
+            {['J&T Express', 'JNE REG', 'SiCepat', 'Anteraja', 'Pos Indonesia', 'GoSend/Grab'].map((c) => {
+              const active = courierName === c;
+              return (
+                <TouchableOpacity
+                  key={c}
+                  style={[styles.conditionChipItem, active && styles.conditionChipItemActive]}
+                  onPress={() => onCourierNameChange(c)}
+                >
+                  <Text style={[styles.conditionChipItemText, active && styles.conditionChipItemTextActive]}>
+                    {c}
+                  </Text>
+                  {active && <Feather name="check" size={12} color={colors.forest} />}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Tracking Number Input */}
+          <Text style={[styles.fieldLabel, { marginTop: 14 }]}>Nomor Resi Pengiriman</Text>
+          <TextInput
+            style={styles.modalInputText}
+            value={trackingNumber}
+            onChangeText={onTrackingNumberChange}
+            placeholder="Contoh: JP829103810 / 002849103851"
+            placeholderTextColor={colors.warmGrayLight}
+          />
+
+          {/* Receipt Photo Upload */}
+          <Text style={[styles.fieldLabel, { marginTop: 14 }]}>Upload Foto Struk / Bukti Resi</Text>
+          <View style={styles.photoUploadCard}>
+            <Image source={{ uri: receiptPhoto }} style={styles.photoPreview} />
+            <View style={styles.photoActionCol}>
+              <Text style={styles.photoHint}>Foto struk dari kurir untuk verifikasi kelayakan poin</Text>
+              <TouchableOpacity
+                style={[styles.photoBtn, { marginTop: 6 }]}
+                onPress={() => {
+                  setReceiptPhoto('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80');
+                  Alert.alert('Foto Struk Terpilih', 'Foto struk resi berhasil dilampirkan.');
+                }}
+              >
+                <Feather name="camera" size={13} color={colors.forest} />
+                <Text style={styles.photoBtnText}>Ambil / Ganti Foto Struk</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={styles.btnPrimary}
+            onPress={onNextToMode}
           >
             <Text style={styles.btnPrimaryText}>Lanjut</Text>
             <Feather name="arrow-right" size={16} color={colors.white} />
@@ -362,11 +551,11 @@ function TukarTab({
         </>
       )}
 
-      {/* ── STEP: Pilih Modus ── */}
+      {/* ── STEP 4: Pilih Modus (Poin / Donasi) ── */}
       {step === STEP_MODE && (
         <>
-          <Text style={styles.sectionTitle}>Kamu ingin...</Text>
-          <Text style={styles.sectionDesc}>Pilih cara kontribusimu untuk barang ini.</Text>
+          <Text style={styles.sectionTitle}>Pilih Metode Kontribusi</Text>
+          <Text style={styles.sectionDesc}>Tentukan bagaimana kamu ingin memanfaatkan pakaian yang kamu tukar.</Text>
 
           <TouchableOpacity
             style={[styles.modeCard, mode === 'points' && styles.modeCardActive]}
@@ -376,8 +565,8 @@ function TukarTab({
               <Feather name="star" size={22} color={colors.warning} />
             </View>
             <View style={styles.modeInfo}>
-              <Text style={styles.modeTitle}>Dapat CircularPoints</Text>
-              <Text style={styles.modeDesc}>Tukar barang jadi {estimatedPoints} poin yang bisa diredeem untuk diskon.</Text>
+              <Text style={styles.modeTitle}>Dapatkan CircularPoints (+{estimatedPoints} Pts)</Text>
+              <Text style={styles.modeDesc}>Poin bisa langsung dipakai memotong total belanja atau ditukar voucher diskon.</Text>
             </View>
             <View style={[styles.radioOuter, mode === 'points' && styles.radioOuterActive]}>
               {mode === 'points' && <View style={styles.radioInner} />}
@@ -392,8 +581,8 @@ function TukarTab({
               <Feather name="heart" size={22} color={colors.terracotta} />
             </View>
             <View style={styles.modeInfo}>
-              <Text style={styles.modeTitle}>Sumbangkan</Text>
-              <Text style={styles.modeDesc}>Langsung donasikan ke mitra sosial CIRCULAI tanpa poin.</Text>
+              <Text style={styles.modeTitle}>Sumbangkan ke Mitra Sosial</Text>
+              <Text style={styles.modeDesc}>Salurkan kain ke komunitas penjahit dan santri binaan CIRCULAI.</Text>
             </View>
             <View style={[styles.radioOuter, mode === 'donate' && styles.radioOuterActive]}>
               {mode === 'donate' && <View style={styles.radioInner} />}
@@ -414,7 +603,6 @@ function TukarTab({
                     <Text style={styles.partnerName}>{partner.name}</Text>
                     <Text style={styles.partnerLocation}>{partner.location}</Text>
                     <Text style={styles.partnerDesc} numberOfLines={2}>{partner.desc}</Text>
-                    <Text style={styles.partnerBenef}>{partner.beneficiaries}</Text>
                   </View>
                   {selectedPartner?.id === partner.id && (
                     <Feather name="check-circle" size={18} color={partner.color} />
@@ -429,25 +617,38 @@ function TukarTab({
             onPress={onNextToConfirm}
             disabled={mode === 'donate' && !selectedPartner}
           >
-            <Text style={styles.btnPrimaryText}>Lanjut</Text>
+            <Text style={styles.btnPrimaryText}>Lanjut ke Konfirmasi</Text>
             <Feather name="arrow-right" size={16} color={colors.white} />
           </TouchableOpacity>
         </>
       )}
 
-      {/* ── STEP: Konfirmasi ── */}
+      {/* ── STEP 5: Konfirmasi ── */}
       {step === STEP_CONFIRM && selectedType && (
         <>
-          <Text style={styles.sectionTitle}>Konfirmasi Pengajuan</Text>
+          <Text style={styles.sectionTitle}>Konfirmasi Pengajuan Eco Swap</Text>
 
           <View style={styles.confirmCard}>
-            <ConfirmRow label="Jenis Barang" value={selectedType.label} />
-            <ConfirmRow label="Estimasi Jumlah" value={`${quantity} ${selectedType.unit}`} />
+            <ConfirmRow label="Jenis Pakaian" value={selectedType.label} />
+            <ConfirmRow label="Kondisi" value={condition} />
+            <ConfirmRow label="Jumlah" value={`${quantity} ${selectedType.unit}`} />
             <ConfirmRow
-              label="Modus"
-              value={mode === 'points' ? `Dapat Poin (+${estimatedPoints} pts)` : `Donasi → ${selectedPartner?.name}`}
-              valueColor={mode === 'points' ? colors.warning : colors.terracotta}
+              label="Ekspedisi / Resi"
+              value={`${courierName} · ${trackingNumber || '(Resi otomatis)'}`}
             />
+            <ConfirmRow
+              label="Estimasi Poin"
+              value={mode === 'points' ? `+${estimatedPoints} CircularPoints` : `Donasi (${selectedPartner?.name})`}
+              valueColor={mode === 'points' ? colors.forest : colors.terracotta}
+            />
+          </View>
+
+          {/* Verification Notice */}
+          <View style={styles.verificationNoticeBox}>
+            <Feather name="info" size={15} color={colors.forest} />
+            <Text style={styles.verificationNoticeText}>
+              Poin akan masuk ke akun Anda setelah Admin / Penjahit memverifikasi foto resi dan fisik pakaian sampai di Eco Hub.
+            </Text>
           </View>
 
           <Text style={styles.fieldLabel}>Catatan Tambahan (opsional)</Text>
@@ -455,24 +656,15 @@ function TukarTab({
             style={styles.notesInput}
             value={notes}
             onChangeText={onNotesChange}
-            placeholder="Kondisi barang, warna, dll..."
+            placeholder="Catatan kondisi bahan, warna, dll..."
             placeholderTextColor={colors.warmGrayLight}
             multiline
-            numberOfLines={3}
+            numberOfLines={2}
           />
-
-          <View style={styles.shippingBox}>
-            <Feather name="map-pin" size={14} color={colors.forest} />
-            <View style={styles.shippingInfo}>
-              <Text style={styles.shippingTitle}>Kirim ke CIRCULAI Eco Hub</Text>
-              <Text style={styles.shippingAddr}>Jl. Circular Eco Hub No.1, Sleman, Yogyakarta 55581</Text>
-              <Text style={styles.shippingNote}>Tulis ID pengajuanmu di luar paket setelah submit.</Text>
-            </View>
-          </View>
 
           <TouchableOpacity style={styles.btnPrimary} onPress={onSubmit}>
             <Feather name="send" size={16} color={colors.white} />
-            <Text style={styles.btnPrimaryText}>Submit Pengajuan</Text>
+            <Text style={styles.btnPrimaryText}>Kirim Pengajuan Tukar Pakaian</Text>
           </TouchableOpacity>
         </>
       )}
@@ -484,7 +676,7 @@ function ConfirmRow({ label, value, valueColor }) {
   return (
     <View style={styles.confirmRow}>
       <Text style={styles.confirmLabel}>{label}</Text>
-      <Text style={[styles.confirmValue, valueColor && { color: valueColor }]}>{value}</Text>
+      <Text style={[styles.confirmValue, valueColor && { color: valueColor, fontWeight: '900' }]}>{value}</Text>
     </View>
   );
 }
@@ -516,46 +708,48 @@ function PoinTab({ circularPoints, tier, nextTier, tierProgress, exchangeHistory
         )}
       </View>
 
-      {/* Tiers */}
-      <Text style={styles.sectionTitle}>Level Tier</Text>
-      <View style={styles.tierList}>
-        {exchangePointTiers.filter((t) => t.maxPoints !== Infinity || t.name === tier.name).concat(
-          exchangePointTiers.filter((t) => t.maxPoints === Infinity && t.name !== tier.name)
-        ).map((t) => (
-          <View key={t.name} style={[styles.tierItem, tier.name === t.name && styles.tierItemActive]}>
-            <View style={[styles.tierDot, { backgroundColor: t.color }]} />
-            <View style={styles.tierItemInfo}>
-              <Text style={styles.tierItemName}>{t.name}</Text>
-              <Text style={styles.tierItemRange}>
-                {t.maxPoints === Infinity ? `≥ ${t.minPoints.toLocaleString('id-ID')} pts` : `${t.minPoints}–${t.maxPoints} pts`}
-              </Text>
-            </View>
-            {tier.name === t.name && <Feather name="check" size={14} color={t.color} />}
-          </View>
-        ))}
-      </View>
-
-      {/* Riwayat */}
-      <Text style={styles.sectionTitle}>Riwayat Exchange</Text>
+      {/* Riwayat Eco Swap dengan Status Verifikasi Lengkap */}
+      <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Status Verifikasi & Riwayat Swap</Text>
       {exchangeHistory.length === 0 ? (
         <View style={styles.emptyBox}>
           <Feather name="refresh-cw" size={28} color={colors.warmGrayLight} />
-          <Text style={styles.emptyText}>Belum ada riwayat exchange</Text>
+          <Text style={styles.emptyText}>Belum ada riwayat pengajuan tukar pakaian</Text>
         </View>
       ) : (
         exchangeHistory.map((record) => {
           const itemType = exchangeItemTypes.find((t) => t.id === record.itemTypeId);
+          const isWaiting = record.status === 'WAITING_VERIFICATION' || record.status === 'PENDING_SHIPMENT';
+          const isApproved = record.status === 'APPROVED' || record.status === 'CLAIMED_BY_TAILOR';
+
           return (
-            <View key={record.id} style={styles.historyItem}>
-              <View style={[styles.historyDot, { backgroundColor: record.mode === 'donate' ? colors.terracotta : colors.warning }]} />
-              <View style={styles.historyInfo}>
-                <Text style={styles.historyProduct}>{itemType?.label ?? record.itemTypeId}</Text>
-                <Text style={styles.historyDate}>{record.createdAtLabel}</Text>
-                <Text style={styles.historyStatus}>{record.status}</Text>
+            <View key={record.id} style={styles.historyCardEnhanced}>
+              <View style={styles.historyCardTop}>
+                <View style={styles.historyCardLeft}>
+                  <Text style={styles.historyIdText}>{record.id}</Text>
+                  <Text style={styles.historyProductTitle}>{itemType?.label ?? record.itemTypeId}</Text>
+                  <Text style={styles.historyMetaDetail}>
+                    Kondisi: {record.condition || 'Bahan Utuh'} · Jumlah: {record.quantity} {itemType?.unit || 'pcs'}
+                  </Text>
+                  {record.courierName && (
+                    <Text style={styles.historyCourierText}>
+                      Kurir: {record.courierName} ({record.trackingNumber || '-'})
+                    </Text>
+                  )}
+                </View>
+
+                <View style={[styles.statusBadgeHistory, isApproved ? styles.badgeGreen : isWaiting ? styles.badgeAmber : styles.badgeRed]}>
+                  <Text style={[styles.statusBadgeTextHistory, isApproved ? styles.textGreen : isWaiting ? styles.textAmber : styles.textRed]}>
+                    {isApproved ? 'DIVERIFIKASI & POIN CAIR' : isWaiting ? 'MENUNGGU VERIFIKASI ADMIN' : 'DITOLAK'}
+                  </Text>
+                </View>
               </View>
-              <Text style={[styles.historyPoints, { color: record.mode === 'donate' ? colors.terracotta : colors.warning }]}>
-                {record.mode === 'donate' ? 'Donasi' : `+${record.earnedPoints} pts`}
-              </Text>
+
+              <View style={styles.historyBottomRow}>
+                <Text style={styles.historyDateText}>{record.createdAtLabel}</Text>
+                <Text style={[styles.historyPointsHighlight, { color: isApproved ? colors.forest : '#D97706' }]}>
+                  {record.mode === 'donate' ? 'Donasi' : `+${record.earnedPoints} pts`}
+                </Text>
+              </View>
             </View>
           );
         })
@@ -835,4 +1029,46 @@ const styles = StyleSheet.create({
   modalCancelText: { fontSize: 13, fontWeight: '600', color: colors.charcoal },
   modalConfirm: { flex: 1, backgroundColor: colors.forest, borderRadius: radius.sm, paddingVertical: 12, alignItems: 'center' },
   modalConfirmText: { fontSize: 13, fontWeight: '700', color: colors.white },
+
+  // Enhanced Eco Swap Elements
+  conditionChipsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 4, marginBottom: 8 },
+  conditionChipItem: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.lightGray },
+  conditionChipItemActive: { backgroundColor: '#EDF7EE', borderColor: colors.forest },
+  conditionChipItemText: { fontSize: 12, color: colors.warmGray, fontWeight: '600' },
+  conditionChipItemTextActive: { color: colors.forest, fontWeight: '800' },
+
+  photoUploadCard: { flexDirection: 'row', gap: 12, backgroundColor: colors.white, borderRadius: 10, padding: 10, borderWidth: 1, borderColor: colors.lightGray, marginTop: 4, marginBottom: 16 },
+  photoPreview: { width: 80, height: 90, borderRadius: 8, backgroundColor: colors.sand },
+  photoActionCol: { flex: 1, justifyContent: 'center' },
+  photoHint: { fontSize: 11, color: colors.warmGray, lineHeight: 15 },
+  photoButtonsRow: { flexDirection: 'row', gap: 8, marginTop: 8 },
+  photoBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 6, backgroundColor: '#EDF7EE', borderWidth: 1, borderColor: colors.forest },
+  photoBtnText: { fontSize: 11, fontWeight: '700', color: colors.forest },
+
+  modalInputText: { backgroundColor: colors.white, borderWidth: 1, borderColor: colors.lightGray, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontSize: 13, color: colors.charcoal, marginTop: 4, marginBottom: 8 },
+  verificationNoticeBox: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#EDF7EE', padding: 12, borderRadius: 10, marginTop: 12, marginBottom: 12 },
+  verificationNoticeText: { flex: 1, fontSize: 11, color: colors.forest, lineHeight: 16 },
+
+  successSummaryCard: { backgroundColor: colors.white, borderRadius: 12, padding: 14, marginVertical: 14, width: '100%', borderWidth: 1, borderColor: colors.lightGray },
+  successRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#F8F9FA' },
+
+  historyCardEnhanced: { backgroundColor: colors.white, borderRadius: 12, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: colors.lightGray, ...shadows.sm },
+  historyCardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  historyCardLeft: { flex: 1, marginRight: 8 },
+  historyIdText: { fontSize: 10, fontWeight: '800', color: colors.forest },
+  historyProductTitle: { fontSize: 13, fontWeight: '800', color: colors.charcoal, marginTop: 2 },
+  historyMetaDetail: { fontSize: 11, color: colors.warmGray, marginTop: 2 },
+  historyCourierText: { fontSize: 11, color: '#0284C7', fontWeight: '700', marginTop: 2 },
+  statusBadgeHistory: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
+  statusBadgeTextHistory: { fontSize: 9, fontWeight: '800' },
+  historyBottomRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: '#F1F5F9' },
+  historyDateText: { fontSize: 10, color: colors.warmGrayLight },
+  historyPointsHighlight: { fontSize: 13, fontWeight: '900' },
+
+  badgeGreen: { backgroundColor: '#DCFCE7' },
+  badgeAmber: { backgroundColor: '#FEF3C7' },
+  badgeRed: { backgroundColor: '#FEE2E2' },
+  textGreen: { color: '#15803D' },
+  textAmber: { color: '#D97706' },
+  textRed: { color: '#DC2626' },
 });

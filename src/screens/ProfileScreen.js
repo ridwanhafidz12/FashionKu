@@ -244,6 +244,55 @@ export default function ProfileScreen({ onNavigate, onExchange }) {
         </View>
       </Pressable>
 
+      {/* ─── Mode Khusus: Portal Mitra & Admin CMS ────────────────────── */}
+      <View style={styles.hubSection}>
+        <Text style={styles.hubSectionTitle}>MODE MITRA & PENGELOLA</Text>
+
+        <AnimatedPressable
+          style={styles.hubCard}
+          onPress={() => onNavigate('tailor-portal')}
+          scaleDown={0.97}
+        >
+          <View style={[styles.hubIconBg, { backgroundColor: '#FEF3C7' }]}>
+            <Feather name="scissors" size={20} color="#D97706" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={styles.hubTitle}>Portal Mitra Penjahit (Tailor Hub)</Text>
+              <View style={styles.hubBadgeUMKM}>
+                <Text style={styles.hubBadgeUMKMText}>UMKM</Text>
+              </View>
+            </View>
+            <Text style={styles.hubDesc}>
+              Kelola pesanan kustom, stok kain sisa, dan ajukan pencairan dana escrow semi-manual.
+            </Text>
+          </View>
+          <Feather name="chevron-right" size={18} color={colors.warmGray} />
+        </AnimatedPressable>
+
+        <AnimatedPressable
+          style={styles.hubCard}
+          onPress={() => onNavigate('admin-cms')}
+          scaleDown={0.97}
+        >
+          <View style={[styles.hubIconBg, { backgroundColor: '#E0F2FE' }]}>
+            <Feather name="shield" size={20} color="#0284C7" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={styles.hubTitle}>Dashboard Superadmin CMS</Text>
+              <View style={[styles.hubBadgeUMKM, { backgroundColor: '#0284C7' }]}>
+                <Text style={styles.hubBadgeUMKMText}>ADMIN</Text>
+              </View>
+            </View>
+            <Text style={styles.hubDesc}>
+              Verifikasi Eco Swap & poin, transfer manual penarikan dana penjahit, dan kurasi katalog.
+            </Text>
+          </View>
+          <Feather name="chevron-right" size={18} color={colors.warmGray} />
+        </AnimatedPressable>
+      </View>
+
       {/* ─── Menu groups ──────────────────────────────────────────────────── */}
       {profileGroups.map((group) => (
         <View key={group.title} style={styles.menuGroup}>
@@ -756,5 +805,62 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
     letterSpacing: 0.3,
+  },
+  // ─── Hub Mode Mitra & Admin ──────────────────────────────────────────────
+  hubSection: {
+    marginHorizontal: 20,
+    marginBottom: 16,
+    maxWidth: 720,
+    width: 'auto',
+    alignSelf: 'center',
+  },
+  hubSectionTitle: {
+    fontSize: 11,
+    fontWeight: '900',
+    color: colors.warmGray,
+    letterSpacing: 0.5,
+    marginBottom: 10,
+    marginLeft: 4,
+  },
+  hubCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: colors.white,
+    padding: 14,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    marginBottom: 10,
+    ...shadows.sm,
+  },
+  hubIconBg: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  hubTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.charcoal,
+  },
+  hubDesc: {
+    fontSize: 11,
+    color: colors.warmGray,
+    marginTop: 2,
+    lineHeight: 15,
+  },
+  hubBadgeUMKM: {
+    backgroundColor: '#D97706',
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 4,
+  },
+  hubBadgeUMKMText: {
+    color: colors.white,
+    fontSize: 8,
+    fontWeight: '900',
   },
 });

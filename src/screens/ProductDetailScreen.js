@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, ImageBackground, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Image, ImageBackground, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -253,6 +253,103 @@ export default function ProductDetailScreen({ product, onBack, onCustomize, onCh
                   <Text style={styles.recommendText}>{item}</Text>
                 </View>
               ))}
+            </View>
+          </View>
+
+          {/* ─── Ulasan & Rating Produk dengan Lampiran Foto Pembeli ───── */}
+          <View style={styles.reviewSection}>
+            <View style={styles.reviewHeader}>
+              <View>
+                <Text style={styles.reviewTitle}>Penilaian Produk</Text>
+                <View style={styles.reviewScoreRow}>
+                  <Text style={styles.reviewScoreNum}>4.9</Text>
+                  <Text style={styles.reviewScoreMax}>/5.0</Text>
+                  <View style={styles.starRow}>
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Feather key={s} name="star" size={13} color="#F59E0B" />
+                    ))}
+                  </View>
+                  <Text style={styles.reviewTotalText}>(128 ulasan)</Text>
+                </View>
+              </View>
+              <View style={styles.satisfactionBadge}>
+                <Feather name="thumbs-up" size={13} color={colors.forest} />
+                <Text style={styles.satisfactionText}>98% Puas</Text>
+              </View>
+            </View>
+
+            {/* Buyer Review Items */}
+            <View style={styles.reviewItem}>
+              <View style={styles.reviewerTop}>
+                <View style={styles.reviewerAvatar}>
+                  <Text style={styles.reviewerAvatarText}>AL</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.reviewerName}>anindya.larasati</Text>
+                  <View style={styles.starRowSmall}>
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Feather key={s} name="star" size={11} color="#F59E0B" />
+                    ))}
+                    <Text style={styles.reviewDate}>12 Mei 2026</Text>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={styles.reviewVariant}>Variasi: Sage Green, Ukuran Custom (Dada 92cm)</Text>
+              <Text style={styles.reviewComment}>
+                Jahitan rapi banget, bahan linen sisa ateliernya jatuh dan super adem! Pas banget di badan sesuai ukuran yang kuisi. Penjahitnya sangat responsif dan ramah saat chat fitting.
+              </Text>
+
+              {/* Photos attached by buyer */}
+              <View style={styles.reviewPhotosRow}>
+                <Image
+                  source={{ uri: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80' }}
+                  style={styles.reviewPhoto}
+                />
+                <Image
+                  source={{ uri: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=400&q=80' }}
+                  style={styles.reviewPhoto}
+                />
+              </View>
+
+              <View style={styles.reviewLikeRow}>
+                <Feather name="thumbs-up" size={12} color={colors.warmGray} />
+                <Text style={styles.reviewLikeText}>Membantu (24)</Text>
+              </View>
+            </View>
+
+            <View style={styles.reviewItem}>
+              <View style={styles.reviewerTop}>
+                <View style={[styles.reviewerAvatar, { backgroundColor: '#E0E7FF' }]}>
+                  <Text style={[styles.reviewerAvatarText, { color: '#3730A3' }]}>DP</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.reviewerName}>dimas_prayoga</Text>
+                  <View style={styles.starRowSmall}>
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Feather key={s} name="star" size={11} color="#F59E0B" />
+                    ))}
+                    <Text style={styles.reviewDate}>28 Apr 2026</Text>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={styles.reviewVariant}>Variasi: Indigo Denim, Ukuran L</Text>
+              <Text style={styles.reviewComment}>
+                Senang banget bisa beli baju sirkular yang kualitasnya setara brand butik ternama. Detail paspor digitalnya beneran bisa discan dan keliatan jejak kain sisa yang dihemat!
+              </Text>
+
+              <View style={styles.reviewPhotosRow}>
+                <Image
+                  source={{ uri: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=400&q=80' }}
+                  style={styles.reviewPhoto}
+                />
+              </View>
+
+              <View style={styles.reviewLikeRow}>
+                <Feather name="thumbs-up" size={12} color={colors.warmGray} />
+                <Text style={styles.reviewLikeText}>Membantu (19)</Text>
+              </View>
             </View>
           </View>
 
@@ -769,5 +866,139 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     fontWeight: '700',
     marginTop: 1,
+  },
+  // ─── Reviews & Ratings ──────────────────────────────────────────────────
+  reviewSection: {
+    marginTop: 20,
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    ...shadows.sm,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.lightGray,
+  },
+  reviewTitle: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: colors.charcoal,
+  },
+  reviewScoreRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  },
+  reviewScoreNum: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: colors.forest,
+  },
+  reviewScoreMax: {
+    fontSize: 12,
+    color: colors.warmGray,
+  },
+  starRow: {
+    flexDirection: 'row',
+    gap: 2,
+    marginLeft: 4,
+  },
+  reviewTotalText: {
+    fontSize: 11,
+    color: colors.warmGray,
+    marginLeft: 4,
+  },
+  satisfactionBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: colors.sandLight,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  satisfactionText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.forest,
+  },
+  reviewItem: {
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.lightGray,
+  },
+  reviewerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  reviewerAvatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#DCFCE7',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reviewerAvatarText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: colors.forest,
+  },
+  reviewerName: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: colors.charcoal,
+  },
+  starRowSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    marginTop: 2,
+  },
+  reviewDate: {
+    fontSize: 10,
+    color: colors.warmGray,
+    marginLeft: 6,
+  },
+  reviewVariant: {
+    fontSize: 10,
+    color: colors.warmGray,
+    marginTop: 6,
+  },
+  reviewComment: {
+    fontSize: 12,
+    color: colors.charcoal,
+    lineHeight: 18,
+    marginTop: 6,
+  },
+  reviewPhotosRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 10,
+  },
+  reviewPhoto: {
+    width: 72,
+    height: 72,
+    borderRadius: 8,
+    backgroundColor: colors.sand,
+  },
+  reviewLikeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginTop: 10,
+  },
+  reviewLikeText: {
+    fontSize: 10,
+    color: colors.warmGray,
+    fontWeight: '600',
   },
 });

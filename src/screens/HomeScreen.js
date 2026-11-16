@@ -41,6 +41,8 @@ import LeafMark from '../components/LeafMark';
 import MetricCard from '../components/MetricCard';
 import PassportModal from '../components/PassportModal';
 import PassportScannerModal from '../components/PassportScannerModal';
+import NotificationModal from '../components/NotificationModal';
+import HelpCenterModal from '../components/HelpCenterModal';
 import ProductCard from '../components/ProductCard';
 import SectionHeader from '../components/SectionHeader';
 import { useAppState } from '../state/AppContext';
@@ -56,7 +58,7 @@ const serviceIcons = [
   { id: 'quiz', label: 'AI Stylist\nPintar', icon: 'creation', color: '#7C3AED', bg: '#F5F3FF', route: 'quiz' },
   { id: 'exchange', label: 'Eco Swap\nTukar Baju', icon: 'recycle', color: '#2C6842', bg: '#EDF7EE', route: 'exchange' },
   { id: 'mto', label: 'Koleksi\nMade-To-Order', icon: 'hanger', color: '#0284C7', bg: '#F0F9FF', route: 'explore' },
-  { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#D97706', bg: '#FFFBEB', route: 'explore' },
+  { id: 'tailor', label: 'Mitra\nPenjahit UMKM', icon: 'account-group-outline', color: '#D97706', bg: '#FFFBEB', route: 'tailor-portal' },
   { id: 'passport', label: 'Paspor DPP\nDigital QR', icon: 'qrcode-scan', color: '#047857', bg: '#ECFDF5', route: 'passport-info' },
   { id: 'voucher', label: 'Poin Sirkular\n& Hadiah', icon: 'tag-multiple-outline', color: '#EA580C', bg: '#FFF7ED', route: 'exchange' },
   { id: 'shipping', label: 'Gratis Ongkir\nXTRA', icon: 'truck-fast-outline', color: '#00897B', bg: '#E0F2F1', route: 'explore' },
@@ -103,6 +105,9 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
   const [scanModalVisible, setScanModalVisible] = useState(false);
   const [scannedPassportOrder, setScannedPassportOrder] = useState(null);
   const [flashSaleTime, setFlashSaleTime] = useState({ h: '00', m: '00', s: '00' });
+  const [notifModalVisible, setNotifModalVisible] = useState(false);
+  const [helpModalVisible, setHelpModalVisible] = useState(false);
+  const [catImageMap, setCatImageMap] = useState({});
 
   const {
     categories,
@@ -121,7 +126,10 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
     selectedAddress,
     setNotice,
     backend,
+    notifications = [],
   } = useAppState();
+
+  const unreadNotifsCount = notifications.filter((n) => !n.read).length;
 
   const heroSlides = useMemo(() => {
     const bannerImg1 = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1920&q=85';
@@ -262,7 +270,13 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                 <View style={styles.utilityLeft}>
                   <Text style={styles.utilityLink}>Tentang FashionKu</Text>
                   <Text style={styles.utilityDivider}>|</Text>
-                  <Text style={styles.utilityLink}>Mitra Penjahit UMKM</Text>
+                  <Pressable onPress={() => onNavigate('tailor-portal')}>
+                    <Text style={styles.utilityLink}>Mitra Penjahit UMKM</Text>
+                  </Pressable>
+                  <Text style={styles.utilityDivider}>|</Text>
+                  <Pressable onPress={() => onNavigate('admin-cms')}>
+                    <Text style={styles.utilityLink}>Admin CMS</Text>
+                  </Pressable>
                   <Text style={styles.utilityDivider}>|</Text>
                   <Text style={styles.utilityLink}>Download Aplikasi</Text>
                 </View>
@@ -276,7 +290,20 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                     <Text style={styles.utilityLink}>Lacak Pesanan</Text>
                   </Pressable>
                   <Text style={styles.utilityDivider}>|</Text>
-                  <Text style={styles.utilityLink}>Bantuan</Text>
+                  <Pressable
+                    onPress={() => setNotifModalVisible(true)}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+                  >
+                    <Feather name="bell" size={12} color="#FFFFFF" />
+                    <Text style={styles.utilityLink}>Notifikasi</Text>
+                    {unreadNotifsCount > 0 && (
+                      <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: '#EF4444' }} />
+                    )}
+                  </Pressable>
+                  <Text style={styles.utilityDivider}>|</Text>
+                  <Pressable onPress={() => setHelpModalVisible(true)}>
+                    <Text style={styles.utilityLink}>Bantuan</Text>
+                  </Pressable>
                 </View>
               </View>
             </View>
@@ -337,6 +364,31 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                 >
                   <MaterialCommunityIcons name="qrcode-scan" size={20} color="#FFFFFF" />
                   {isDesktop && <Text style={styles.actionBtnLabel}>Paspor</Text>}
+                </Pressable>
+
+                {/* Notifications Bell */}
+                <Pressable
+                  style={styles.headerActionBtn}
+                  onPress={() => setNotifModalVisible(true)}
+                  hitSlop={8}
+                >
+                  <View style={styles.cartIconWrapper}>
+                    <Feather name="bell" size={20} color="#FFFFFF" />
+                    {unreadNotifsCount > 0 && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: -3,
+                          right: -4,
+                          width: 8,
+                          height: 8,
+                          borderRadius: 4,
+                          backgroundColor: '#EF4444',
+                        }}
+                      />
+                    )}
+                  </View>
+                  {isDesktop && <Text style={styles.actionBtnLabel}>Notifikasi</Text>}
                 </Pressable>
 
                 {/* Wishlist (Desktop only) */}
@@ -409,7 +461,7 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   <MaterialCommunityIcons name="creation" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>AI Stylist Pintar</Text>
                 </Pressable>
-                <Pressable style={styles.navTabItem} onPress={() => onNavigate('explore')}>
+                <Pressable style={styles.navTabItem} onPress={() => onNavigate('tailor-portal')}>
                   <MaterialCommunityIcons name="account-group" size={15} color="rgba(255,255,255,0.85)" />
                   <Text style={styles.navTabText}>Mitra Penjahit</Text>
                 </Pressable>
@@ -697,7 +749,17 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
                   onPress={() => onNavigate(cat.route)}
                 >
                   <View style={styles.shopeeCategoryThumbWrap}>
-                    <Image source={{ uri: cat.image }} style={styles.shopeeCategoryThumb} />
+                    <Image
+                      source={{ uri: catImageMap[cat.id] || cat.image }}
+                      onError={() => {
+                        setCatImageMap((prev) => ({
+                          ...prev,
+                          [cat.id]: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=300&h=300&q=80',
+                        }));
+                      }}
+                      style={styles.shopeeCategoryThumb}
+                      resizeMode="cover"
+                    />
                   </View>
                   <Text style={styles.shopeeCategoryLabel} numberOfLines={2}>{cat.label}</Text>
                 </Pressable>
@@ -1032,6 +1094,19 @@ export default function HomeScreen({ isActive = true, onNavigate, onProductPress
           onClose={() => setScannedPassportOrder(null)}
         />
       )}
+
+      {/* ─── In-App Notification Center Modal ──────────────────────────── */}
+      <NotificationModal
+        visible={notifModalVisible}
+        onClose={() => setNotifModalVisible(false)}
+        onNavigate={onNavigate}
+      />
+
+      {/* ─── Pusat Bantuan / Komplain Modal ────────────────────────────── */}
+      <HelpCenterModal
+        visible={helpModalVisible}
+        onClose={() => setHelpModalVisible(false)}
+      />
     </View>
   );
 }

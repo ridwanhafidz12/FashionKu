@@ -9,7 +9,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 // ─── Body shape illustration assets ─────────────────────────────────────────
 const BODY_IMAGES = {
@@ -58,7 +58,22 @@ export default function StylistScreen({
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState({});
   const [loadingIndex, setLoadingIndex] = useState(0);
+  const [scanModalVisible, setScanModalVisible] = useState(false);
+  const [selfiePhoto, setSelfiePhoto] = useState('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80');
+  const [fullBodyPhoto, setFullBodyPhoto] = useState('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=80');
   const { products, styleProfile, saveStyleProfile, resetStyleProfile, wishlist, toggleWishlist, requireAuth } = useAppState();
+
+  const handleExecuteAiVision = () => {
+    setScanModalVisible(false);
+    setAnswers({
+      skinTone: 'medium-warm',
+      bodyShape: 'hourglass',
+      height: '160-169 cm',
+      styleVibe: ['Minimalist Chic', 'Casual Earth'],
+      occasion: ['Daily Wear', 'Semi-formal']
+    });
+    setStep('analyzing');
+  };
 
   const result = useMemo(() => {
     if (step === 'result') return styleProfile ?? getStyleAnalysis(answers);
@@ -167,6 +182,27 @@ export default function StylistScreen({
           ))}
         </View>
       </View>
+
+      {/* ── AI Vision Photo Scan Shortcut ── */}
+      <AnimatedPressable
+        style={styles.visionBanner}
+        onPress={() => setScanModalVisible(true)}
+        scaleDown={0.98}
+      >
+        <View style={styles.visionIconWrap}>
+          <MaterialCommunityIcons name="camera-iris" size={24} color="#FFFFFF" />
+        </View>
+        <View style={styles.visionTextGroup}>
+          <View style={styles.visionTag}>
+            <Text style={styles.visionTagText}>⚡ INSTAN DENGAN AI VISION</Text>
+          </View>
+          <Text style={styles.visionTitle}>Scan Foto Wajah & Full Body</Text>
+          <Text style={styles.visionSub}>
+            AI Vision menganalisis tone kulit & bentuk siluet tubuh otomatis untuk rekomendasi busana yang paling flattering.
+          </Text>
+        </View>
+        <Feather name="chevron-right" size={18} color={colors.forest} />
+      </AnimatedPressable>
 
       {step === 1 && (
         <QuestionBlock
@@ -372,6 +408,85 @@ export default function StylistScreen({
           <Feather name="arrow-right" size={16} color={canContinue ? colors.forest : colors.warmGray} />
         </View>
       </AnimatedPressable>
+
+      {/* ── AI Vision Photo Scan Modal ── */}
+      <Modal visible={scanModalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <View style={styles.modalTitleRow}>
+                <MaterialCommunityIcons name="camera-iris" size={22} color={colors.forest} />
+                <Text style={styles.modalTitle}>AI Vision Personal Stylist</Text>
+              </View>
+              <TouchableOpacity onPress={() => setScanModalVisible(false)} hitSlop={10}>
+                <Feather name="x" size={20} color={colors.charcoal} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalDesc}>
+              AI Vision menganalisis tone kulit wajah (Warm/Cool/Neutral) dan memetakan siluet tubuh (Hourglass, Pear, Rectangle) untuk memfilter produk upcycle sirkular yang paling flattering.
+            </Text>
+
+            {/* 2 Photos Input */}
+            <View style={styles.photoSlotsRow}>
+              {/* Selfie Wajah */}
+              <View style={styles.photoSlot}>
+                <Text style={styles.slotLabel}>1. Selfie Wajah</Text>
+                <Image source={{ uri: selfiePhoto }} style={styles.slotImage} />
+                <View style={styles.slotTag}>
+                  <Text style={styles.slotTagText}>Tone Kulit (Warm)</Text>
+                </View>
+                <View style={styles.slotBtnRow}>
+                  <TouchableOpacity
+                    style={styles.slotBtn}
+                    onPress={() => Alert.alert('Kamera', 'Selfie wajah berhasil diambil.')}
+                  >
+                    <Feather name="camera" size={11} color={colors.forest} />
+                    <Text style={styles.slotBtnText}>Kamera</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.slotBtn}
+                    onPress={() => Alert.alert('Galeri', 'Foto selfie wajah dipilih dari galeri.')}
+                  >
+                    <Feather name="image" size={11} color={colors.forest} />
+                    <Text style={styles.slotBtnText}>Galeri</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Full Body */}
+              <View style={styles.photoSlot}>
+                <Text style={styles.slotLabel}>2. Foto Full Body</Text>
+                <Image source={{ uri: fullBodyPhoto }} style={styles.slotImage} />
+                <View style={[styles.slotTag, { backgroundColor: '#EFF6FF' }]}>
+                  <Text style={[styles.slotTagText, { color: '#2563EB' }]}>Siluet (Hourglass)</Text>
+                </View>
+                <View style={styles.slotBtnRow}>
+                  <TouchableOpacity
+                    style={styles.slotBtn}
+                    onPress={() => Alert.alert('Kamera', 'Foto full body berhasil diambil.')}
+                  >
+                    <Feather name="camera" size={11} color={colors.forest} />
+                    <Text style={styles.slotBtnText}>Kamera</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.slotBtn}
+                    onPress={() => Alert.alert('Galeri', 'Foto full body dipilih dari galeri.')}
+                  >
+                    <Feather name="image" size={11} color={colors.forest} />
+                    <Text style={styles.slotBtnText}>Galeri</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+
+            <TouchableOpacity style={styles.executeBtn} onPress={handleExecuteAiVision}>
+              <MaterialCommunityIcons name="lightning-bolt" size={16} color="#FFFFFF" />
+              <Text style={styles.executeBtnText}>Mulai Analisis AI Vision</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -1148,5 +1263,164 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: 'center',
     fontWeight: '700'
-  }
+  },
+
+  // Vision Banner & Modal Styles
+  visionBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#EDF7EE',
+    borderWidth: 1.5,
+    borderColor: colors.forest,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 20,
+    ...shadows.sm,
+  },
+  visionIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.forest,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  visionTextGroup: {
+    flex: 1,
+  },
+  visionTag: {
+    backgroundColor: colors.forest,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+    marginBottom: 4,
+  },
+  visionTagText: {
+    color: '#FFFFFF',
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 0.3,
+  },
+  visionTitle: {
+    color: colors.charcoal,
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  visionSub: {
+    color: colors.warmGray,
+    fontSize: 11,
+    lineHeight: 15,
+    marginTop: 2,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalCard: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '85%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  modalTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  modalTitle: {
+    color: colors.charcoal,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  modalDesc: {
+    color: colors.warmGray,
+    fontSize: 12,
+    lineHeight: 17,
+    marginBottom: 16,
+  },
+  photoSlotsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  photoSlot: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  slotLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.charcoal,
+    marginBottom: 8,
+  },
+  slotImage: {
+    width: 90,
+    height: 110,
+    borderRadius: 8,
+    backgroundColor: colors.sand,
+    marginBottom: 8,
+  },
+  slotTag: {
+    backgroundColor: '#DCFCE7',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  slotTagText: {
+    color: '#15803D',
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  slotBtnRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  slotBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EDF7EE',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.forest,
+  },
+  slotBtnText: {
+    color: colors.forest,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  executeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.forest,
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginBottom: 12,
+    ...shadows.forest,
+  },
+  executeBtnText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '900',
+  },
 });

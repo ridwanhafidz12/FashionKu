@@ -72,6 +72,141 @@ const defaultPreferences = {
   }
 };
 
+const defaultTailorBalances = {
+  'Rahayu Tailor': { available: 780000, pendingEscrow: 344000, totalEarned: 2450000 },
+  'Kartika Studio': { available: 520000, pendingEscrow: 175000, totalEarned: 1890000 },
+  'Sari Tailor': { available: 360000, pendingEscrow: 120000, totalEarned: 1100000 },
+  'Jogja Atelier': { available: 950000, pendingEscrow: 220000, totalEarned: 3100000 }
+};
+
+const defaultTailorWithdrawals = [
+  {
+    id: 'WD-001',
+    tailorName: 'Rahayu Tailor',
+    amount: 500000,
+    bank: 'BCA',
+    accountNumber: '8830192841',
+    accountHolder: 'Sri Rahayu',
+    status: 'PENDING',
+    proofPhoto: null,
+    requestedAt: 'Hari ini, 08:15 WIB',
+    transferredAt: null
+  },
+  {
+    id: 'WD-002',
+    tailorName: 'Kartika Studio',
+    amount: 350000,
+    bank: 'Mandiri',
+    accountNumber: '137001928491',
+    accountHolder: 'Kartika Sari',
+    status: 'TRANSFERRED',
+    proofPhoto: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80',
+    requestedAt: 'Kemarin, 14:00 WIB',
+    transferredAt: 'Kemarin, 16:30 WIB'
+  }
+];
+
+const defaultEcoSwapSubmissions = [
+  {
+    id: 'EXC-2026-A1',
+    customerName: 'SalSalmann',
+    customerEmail: 'salsalman@circulai.com',
+    itemTypeId: 'baju_bekas',
+    itemTypeLabel: 'Baju / Pakaian Bekas',
+    quantity: 3,
+    condition: 'Kancing Lepas',
+    itemPhoto: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80',
+    earnedPoints: 120,
+    status: 'WAITING_VERIFICATION',
+    courierName: 'J&T Express',
+    trackingNumber: 'JP829103810',
+    receiptPhoto: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80',
+    notes: 'Kemeja flanel kancing lepas 2 buah, kain masih sangat kuat dan tebal.',
+    createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+    createdAtLabel: 'Hari ini, 09:30 WIB',
+    claimedBy: null
+  },
+  {
+    id: 'EXC-2026-A2',
+    customerName: 'Budi Santoso',
+    customerEmail: 'budi.santoso@email.com',
+    itemTypeId: 'kain_sisa',
+    itemTypeLabel: 'Kain Sisa Jahit (Deadstock)',
+    quantity: 4.5,
+    condition: 'Bahan Utuh',
+    itemPhoto: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=600&q=80',
+    earnedPoints: 225,
+    status: 'APPROVED',
+    courierName: 'SiCepat REG',
+    trackingNumber: '002849103851',
+    receiptPhoto: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80',
+    notes: 'Sisa potongan kain linen murni warna krem dan khaki.',
+    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+    createdAtLabel: '2 hari lalu',
+    claimedBy: 'Rahayu Tailor'
+  }
+];
+
+const defaultTailorDeadstocks = [
+  { id: 'DS-1', tailor: 'Rahayu Tailor', fabric: 'Katun Rayon Atelier Sisa', color: 'Terracotta', length: '8.5 meter', image: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=400&q=80', ready: true },
+  { id: 'DS-2', tailor: 'Rahayu Tailor', fabric: 'Linen Slub Deadstock', color: 'Sage Green', length: '12 meter', image: 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=400&q=80', ready: true },
+  { id: 'DS-3', tailor: 'Kartika Studio', fabric: 'Tenun Lurik Scraps', color: 'Natural Earth', length: '5 meter', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=400&q=80', ready: true },
+  { id: 'DS-4', tailor: 'Sari Tailor', fabric: 'Sutra Satin Sisa Butik', color: 'Emerald Green', length: '4 meter', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=400&q=80', ready: true }
+];
+
+const defaultAdminVouchers = [
+  {
+    id: 'VCH-01',
+    code: 'FASHIONKU25',
+    label: 'Welcome Voucher Diskon Rp25.000',
+    discount: 25000,
+    type: 'nominal',
+    quota: 100,
+    usedCount: 14,
+    minPurchase: 150000,
+    active: true
+  },
+  {
+    id: 'VCH-02',
+    code: 'ECODISC50',
+    label: 'Diskon Sirkular Rp50.000',
+    discount: 50000,
+    type: 'nominal',
+    quota: 50,
+    usedCount: 22,
+    minPurchase: 300000,
+    active: true
+  }
+];
+
+const defaultNotifications = [
+  {
+    id: 'notif-1',
+    title: 'Pesanan Diproses',
+    message: 'Rahayu Tailor sedang memotong pola & menjahit Luna Wrap Top kamu.',
+    type: 'order',
+    timestamp: '15 menit lalu',
+    read: false,
+    orderId: 'ORD-001'
+  },
+  {
+    id: 'notif-2',
+    title: 'Poin Swap Berhasil Masuk',
+    message: 'Verifikasi resi pengiriman pakaian bekas disetujui. +120 Poin Sirkular telah ditambahkan!',
+    type: 'swap',
+    timestamp: '2 jam lalu',
+    read: false
+  },
+  {
+    id: 'notif-3',
+    title: 'Pesan dari Penjahit',
+    message: 'Kartika Studio membalas pertanyaan ketersediaan kain deadstock di atelier.',
+    type: 'chat',
+    timestamp: '1 hari lalu',
+    read: true
+  }
+];
+
 /**
  * Rule-based fallback reply generator. Used when the Gemini API is
  * unavailable or the API key is not configured.
@@ -180,7 +315,7 @@ function getLocalCartSummary(cart) {
   return { subtotal, shipping, discount, total: subtotal + shipping - discount };
 }
 
-function applyOrderStatusLocally(order, nextStatus, actor) {
+function applyOrderStatusLocally(order, nextStatus, actor, extraData = {}) {
   const nextStep = orderSteps.find((step) => step.id === nextStatus);
   const updatedAt = new Date();
   const passports = (order.passports ?? [order.passport]).filter(Boolean).map((passport) => ({
@@ -199,6 +334,9 @@ function applyOrderStatusLocally(order, nextStatus, actor) {
   return {
     ...order,
     status: nextStatus,
+    courier: extraData.courier || order.courier || 'J&T Express',
+    trackingCode: extraData.trackingCode || order.trackingCode || (nextStatus === 'SHIPPED' ? `CRC-${Date.now().toString(36).toUpperCase()}` : order.trackingCode),
+    receiptPhoto: extraData.receiptPhoto || order.receiptPhoto || (nextStatus === 'SHIPPED' ? 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80' : order.receiptPhoto),
     passport: passports[0],
     passports,
     shipmentStatus:
@@ -212,7 +350,7 @@ function applyOrderStatusLocally(order, nextStatus, actor) {
       {
         status: nextStatus,
         label: updatedAt.toLocaleDateString('id-ID'),
-        note: nextStep?.desc ?? 'Status pesanan diperbarui',
+        note: extraData.note || nextStep?.desc || 'Status pesanan diperbarui',
         actor
       }
     ]
@@ -280,6 +418,19 @@ export function AppProvider({ children }) {
   const [circularPoints, setCircularPoints] = useState(INITIAL_CIRCULAR_POINTS);
   const [exchangeHistory, setExchangeHistory] = useState([]);
   const [userVouchers, setUserVouchers] = useState([]);
+  const [tailorBalances, setTailorBalances] = useState(defaultTailorBalances);
+  const [tailorWithdrawals, setTailorWithdrawals] = useState(defaultTailorWithdrawals);
+  const [ecoSwapSubmissions, setEcoSwapSubmissions] = useState(defaultEcoSwapSubmissions);
+  const [tailorDeadstocks, setTailorDeadstocks] = useState(defaultTailorDeadstocks);
+  const [adminVouchers, setAdminVouchers] = useState(defaultAdminVouchers);
+  const [notifications, setNotifications] = useState(defaultNotifications);
+  const [managedUsers, setManagedUsers] = useState([
+    { id: 'usr-1', name: 'SalSalmann', email: 'salsalman@circulai.com', role: 'customer', status: 'ACTIVE', joined: '12 Mei 2026' },
+    { id: 'usr-2', name: 'Budi Santoso', email: 'budi.santoso@email.com', role: 'customer', status: 'ACTIVE', joined: '28 April 2026' },
+    { id: 'tlr-1', name: 'Rahayu Tailor', email: 'rahayu.atelier@gmail.com', role: 'tailor', status: 'ACTIVE', joined: '10 Januari 2026' },
+    { id: 'tlr-2', name: 'Kartika Studio', email: 'kartika.bdg@gmail.com', role: 'tailor', status: 'ACTIVE', joined: '15 Februari 2026' },
+    { id: 'tlr-3', name: 'Sari Tailor', email: 'sari.solo@gmail.com', role: 'tailor', status: 'ACTIVE', joined: '20 Maret 2026' }
+  ]);
   const backendOnlineRef = useRef(false);
   const orderCounter = useRef(initialOrders.length + 1);
   const cartCounter = useRef(1);
@@ -890,38 +1041,233 @@ export function AppProvider({ children }) {
 
   const cartSummary = useMemo(() => getLocalCartSummary(cart), [cart]);
 
+  // ─── Notification Actions ───────────────────────────────────────────────────
+  const addNotification = useCallback(({ title, message, type = 'info', orderId = null }) => {
+    const newNotif = {
+      id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      title,
+      message,
+      type,
+      orderId,
+      timestamp: 'Baru saja',
+      read: false
+    };
+    setNotifications((prev) => [newNotif, ...prev]);
+  }, []);
+
+  const markNotificationsAsRead = useCallback(() => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  }, []);
+
+  const unreadNotificationCount = useMemo(() => {
+    return notifications.filter((n) => !n.read).length;
+  }, [notifications]);
+
   // ─── Circular Exchange Actions ──────────────────────────────────────────────
   const submitExchange = useCallback(async (draft) => {
     if (!isLoggedIn) {
       openAuthModal('Masuk ke akun untuk mengajukan penukaran atau donasi pakaian.');
       return null;
     }
-    const { itemTypeId, quantity, mode, donationPartnerId, notes } = draft;
+    const {
+      itemTypeId,
+      quantity,
+      mode = 'points',
+      donationPartnerId,
+      notes,
+      condition,
+      itemPhoto,
+      courierName,
+      trackingNumber,
+      receiptPhoto
+    } = draft;
     const earnedPoints = mode === 'donate' ? 0 : calcExchangePoints(itemTypeId, quantity);
     const exchangeId = `EXC-${Date.now().toString(36).toUpperCase()}`;
     const createdAt = new Date();
+    const itemType = exchangeItemTypes.find((t) => t.id === itemTypeId);
+
+    const hasShipment = Boolean(courierName && trackingNumber);
     const record = {
       id: exchangeId,
+      customerName: userProfile?.name || 'SalSalmann',
+      customerEmail: userProfile?.email || 'salsalman@circulai.com',
       itemTypeId,
+      itemTypeLabel: itemType?.label || 'Pakaian Bekas',
       quantity,
+      condition: condition || 'Bahan Utuh',
+      itemPhoto: itemPhoto || 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80',
       mode,
       donationPartnerId: mode === 'donate' ? donationPartnerId : null,
       notes: notes?.trim() || '',
       earnedPoints,
-      status: 'PENDING_SHIPMENT',
+      status: hasShipment ? 'WAITING_VERIFICATION' : 'PENDING_SHIPMENT',
+      courierName: courierName || '',
+      trackingNumber: trackingNumber || '',
+      receiptPhoto: receiptPhoto || null,
       createdAt: createdAt.toISOString(),
-      createdAtLabel: createdAt.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+      createdAtLabel: createdAt.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+      claimedBy: null
     };
 
     setExchangeHistory((current) => [record, ...current]);
-    if (mode === 'points') {
-      setCircularPoints((current) => current + earnedPoints);
-      setNotice(`+${earnedPoints} CircularPoints ditambahkan!`);
+    setEcoSwapSubmissions((current) => [record, ...current]);
+
+    if (hasShipment) {
+      setNotice('Eco Swap berhasil diajukan! Poin akan masuk setelah Admin memverifikasi resi.');
+      addNotification({
+        title: 'Eco Swap Diajukan 🌿',
+        message: `Tukar ${quantity} item via ${courierName} (${trackingNumber}) sedang dalam verifikasi Admin.`,
+        type: 'swap'
+      });
     } else {
-      setNotice('Donasi barang berhasil diajukan. Terima kasih!');
+      setNotice('Form swap disimpan. Silakan kirim pakaian & upload foto resi.');
     }
     return record;
-  }, [isLoggedIn, openAuthModal]);
+  }, [isLoggedIn, openAuthModal, userProfile, addNotification]);
+
+  const approveEcoSwapSubmission = useCallback((swapId) => {
+    let pts = 0;
+    setEcoSwapSubmissions((prev) =>
+      prev.map((item) => {
+        if (item.id === swapId) {
+          pts = item.earnedPoints || 100;
+          return { ...item, status: 'APPROVED', verifiedAt: new Date().toISOString() };
+        }
+        return item;
+      })
+    );
+    setExchangeHistory((prev) =>
+      prev.map((item) => (item.id === swapId ? { ...item, status: 'APPROVED', verifiedAt: new Date().toISOString() } : item))
+    );
+    if (pts > 0) {
+      setCircularPoints((prev) => prev + pts);
+      addNotification({
+        title: 'Poin Swap Berhasil Masuk! 🌿',
+        message: `Eco Swap ${swapId} telah diverifikasi Admin. +${pts} Poin Sirkular telah ditambahkan ke akunmu!`,
+        type: 'swap'
+      });
+      setNotice(`Eco Swap ${swapId} disetujui! +${pts} Poin Sirkular berhasil dicairkan.`);
+    }
+  }, [addNotification, setNotice]);
+
+  const rejectEcoSwapSubmission = useCallback((swapId, reason = 'Foto resi tidak jelas') => {
+    setEcoSwapSubmissions((prev) =>
+      prev.map((item) => (item.id === swapId ? { ...item, status: 'REJECTED', rejectReason: reason } : item))
+    );
+    setExchangeHistory((prev) =>
+      prev.map((item) => (item.id === swapId ? { ...item, status: 'REJECTED', rejectReason: reason } : item))
+    );
+    setNotice(`Pengajuan Eco Swap ${swapId} ditolak: ${reason}`);
+  }, [setNotice]);
+
+  const claimEcoSwapMaterial = useCallback((swapId, tailorName) => {
+    setEcoSwapSubmissions((prev) =>
+      prev.map((item) => (item.id === swapId ? { ...item, status: 'CLAIMED_BY_TAILOR', claimedBy: tailorName } : item))
+    );
+    setNotice(`Bahan dari Eco Swap ${swapId} berhasil diklaim untuk workshop ${tailorName}!`);
+  }, [setNotice]);
+
+  // ─── Tailor Hub & Withdrawals ───────────────────────────────────────────────
+  const requestTailorWithdrawal = useCallback(({ tailorName, amount, bank, accountNumber, accountHolder }) => {
+    const balance = tailorBalances[tailorName]?.available ?? 0;
+    if (amount <= 0 || amount > balance) {
+      setNotice('Nominal penarikan melebihi saldo tersedia');
+      return false;
+    }
+    const withdrawalId = `WD-${Date.now().toString(36).toUpperCase()}`;
+    const newReq = {
+      id: withdrawalId,
+      tailorName,
+      amount,
+      bank,
+      accountNumber,
+      accountHolder,
+      status: 'PENDING',
+      requestedAt: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      proofPhoto: null
+    };
+    setTailorWithdrawals((prev) => [newReq, ...prev]);
+    setNotice(`Pengajuan tarik dana Rp${amount.toLocaleString('id-ID')} berhasil dikirim ke Admin.`);
+    return true;
+  }, [tailorBalances, setNotice]);
+
+  const approveTailorWithdrawal = useCallback((withdrawalId, proofPhoto = null) => {
+    let req = null;
+    setTailorWithdrawals((prev) =>
+      prev.map((w) => {
+        if (w.id === withdrawalId) {
+          req = w;
+          return {
+            ...w,
+            status: 'TRANSFERRED',
+            proofPhoto: proofPhoto || 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80',
+            transferredAt: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+          };
+        }
+        return w;
+      })
+    );
+    if (req) {
+      setTailorBalances((prev) => {
+        const cur = prev[req.tailorName] || { available: 0, pendingEscrow: 0, totalEarned: 0 };
+        return {
+          ...prev,
+          [req.tailorName]: {
+            ...cur,
+            available: Math.max(0, cur.available - req.amount)
+          }
+        };
+      });
+      setNotice(`Penarikan dana ${req.id} ditandai sudah ditransfer!`);
+    }
+  }, [setNotice]);
+
+  const addTailorDeadstock = useCallback((deadstock) => {
+    const newDs = {
+      id: `DS-${Date.now().toString(36).toUpperCase()}`,
+      ...deadstock,
+      ready: true
+    };
+    setTailorDeadstocks((prev) => [newDs, ...prev]);
+    setNotice('Stok kain sisa (deadstock) berhasil dicatat di workshop!');
+  }, [setNotice]);
+
+  const addTailorProduct = useCallback((productData) => {
+    const newProd = {
+      id: `tailor-prod-${Date.now()}`,
+      ...productData,
+      status: 'PENDING_APPROVAL',
+      rating: 5.0,
+      stock: 5,
+      badges: ['Upcycled Fabric', 'UMKM Mitra']
+    };
+    setProducts((prev) => [newProd, ...prev]);
+    setNotice('Produk berhasil diupload! Menunggu kurasi & approval Admin sebelum tampil di katalog.');
+  }, [setNotice]);
+
+  const approveProduct = useCallback((productId) => {
+    setProducts((prev) =>
+      prev.map((p) => (String(p.id) === String(productId) ? { ...p, status: 'APPROVED' } : p))
+    );
+    setNotice(`Produk #${productId} telah disetujui & live di Circular Market!`);
+  }, [setNotice]);
+
+  const createAdminVoucher = useCallback((voucherData) => {
+    const newVoucher = {
+      id: `VCH-${Date.now().toString(36).toUpperCase()}`,
+      ...voucherData,
+      usedCount: 0,
+      active: true
+    };
+    setAdminVouchers((prev) => [newVoucher, ...prev]);
+    setNotice(`Voucher promo ${voucherData.code} berhasil diterbitkan!`);
+  }, [setNotice]);
+
+  const toggleUserStatus = useCallback((userId) => {
+    setManagedUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, status: u.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE' } : u))
+    );
+  }, []);
 
   const redeemPoints = useCallback((option) => {
     if (!isLoggedIn) {
@@ -951,11 +1297,29 @@ export function AppProvider({ children }) {
     return voucher;
   }, [circularPoints, isLoggedIn, openAuthModal]);
 
-  const placeOrder = useCallback(async ({ address, paymentMethod, total }) => {
+  const placeOrder = useCallback(async ({ address, paymentMethod, total, usedPoints = 0 }) => {
     if (!cart || cart.length === 0 || !address || !paymentMethod?.id) return null;
 
     const validAddress = address.id ? address : { ...address, id: `ADDR-${Date.now()}` };
     const orderTotal = total ?? cartSummary.total;
+    const tailorName = cart[0]?.product?.tailor ?? 'Rahayu Tailor';
+
+    // Record pending escrow for the tailor
+    setTailorBalances((prev) => {
+      const cur = prev[tailorName] || { available: 0, pendingEscrow: 0, totalEarned: 0 };
+      return {
+        ...prev,
+        [tailorName]: {
+          ...cur,
+          pendingEscrow: cur.pendingEscrow + orderTotal
+        }
+      };
+    });
+
+    // Deduct circular points if used
+    if (usedPoints > 0) {
+      setCircularPoints((prev) => Math.max(0, prev - usedPoints));
+    }
 
     if (backendOnlineRef.current) {
       try {
@@ -965,6 +1329,12 @@ export function AppProvider({ children }) {
           setOrders((current) => [normalized, ...current.filter((item) => item.id !== normalized.id)]);
           setCart([]);
           setNotice(`Pesanan ${normalized.id} berhasil dibuat`);
+          addNotification({
+            title: 'Pesanan Dibuat 🎉',
+            message: `Pesanan ${normalized.id} sebesar ${formatCurrency(orderTotal)} diteruskan ke ${tailorName}.`,
+            type: 'order',
+            orderId: normalized.id
+          });
           return normalized;
         }
       } catch (err) {
@@ -981,8 +1351,14 @@ export function AppProvider({ children }) {
     setOrders((current) => [newOrder, ...current]);
     setCart([]);
     setNotice(`Pesanan ${newOrder.id} berhasil dibuat`);
+    addNotification({
+      title: 'Pesanan Dibuat 🎉',
+      message: `Pesanan ${newOrder.id} sebesar ${formatCurrency(orderTotal)} diteruskan ke ${tailorName}.`,
+      type: 'order',
+      orderId: newOrder.id
+    });
     return newOrder;
-  }, [cart, cartSummary.total]);
+  }, [cart, cartSummary.total, addNotification]);
 
   const createMidtransPayment = useCallback(async (orderId, orderPayload = null) => {
     if (!api.createMidtransSnap) {
@@ -997,7 +1373,7 @@ export function AppProvider({ children }) {
     }
   }, [orders, setNotice]);
 
-  const updateOrderStatus = useCallback(async (orderId, nextStatus, actor) => {
+  const updateOrderStatus = useCallback(async (orderId, nextStatus, actor, extraData = {}) => {
     const targetOrder = orders.find((order) => order.id === orderId);
     if (!targetOrder || !canTransitionOrderStatus(targetOrder.status, nextStatus, actor)) {
       setNotice('Perubahan status tidak diizinkan untuk peran ini');
@@ -1012,10 +1388,40 @@ export function AppProvider({ children }) {
       return false;
     }
 
+    // Release Escrow to tailor when customer confirms delivery (COMPLETED)
+    if (nextStatus === 'COMPLETED') {
+      const orderAmount = targetOrder.rawPrice ?? (typeof targetOrder.price === 'number' ? targetOrder.price : 155000);
+      const tailorName = targetOrder.tailor ?? 'Rahayu Tailor';
+      setTailorBalances((prev) => {
+        const cur = prev[tailorName] || { available: 0, pendingEscrow: 0, totalEarned: 0 };
+        return {
+          ...prev,
+          [tailorName]: {
+            ...cur,
+            available: cur.available + orderAmount,
+            pendingEscrow: Math.max(0, cur.pendingEscrow - orderAmount),
+            totalEarned: cur.totalEarned + orderAmount
+          }
+        };
+      });
+      addNotification({
+        title: 'Pesanan Selesai & Dana Rekber Cair 💰',
+        message: `Pesanan ${targetOrder.id} selesai. Dana Rp${orderAmount.toLocaleString('id-ID')} masuk ke saldo mitra ${tailorName}.`,
+        type: 'escrow'
+      });
+    } else if (nextStatus === 'SHIPPED') {
+      addNotification({
+        title: 'Pesanan Telah Dikirim! 🚚',
+        message: `Pesanan ${targetOrder.id} (${targetOrder.product}) telah dikirim via ${extraData.courier || 'Kurir'}. No Resi: ${extraData.trackingCode || '-'}.`,
+        type: 'order',
+        orderId: targetOrder.id
+      });
+    }
+
     if (backendOnlineRef.current) {
       try {
         const order = await api.updateOrderStatus(orderId, nextStatus, actor);
-        setOrders((current) => current.map((item) => (item.id === orderId ? normalizeOrder(order) : item)));
+        setOrders((current) => current.map((item) => (item.id === orderId ? normalizeOrder({ ...order, ...extraData }) : item)));
         const nextStep = orderSteps.find((step) => step.id === nextStatus);
         setNotice(`Status pesanan: ${nextStep?.label ?? nextStatus}`);
         return true;
@@ -1028,12 +1434,12 @@ export function AppProvider({ children }) {
     const nextStep = orderSteps.find((step) => step.id === nextStatus);
     setOrders((current) =>
       current.map((order) => (
-        order.id === orderId ? applyOrderStatusLocally(order, nextStatus, actor) : order
+        order.id === orderId ? applyOrderStatusLocally(order, nextStatus, actor, extraData) : order
       ))
     );
     setNotice(`Status pesanan: ${nextStep?.label ?? nextStatus}`);
     return true;
-  }, [orders]);
+  }, [orders, addNotification]);
 
   const submitReturnRequest = useCallback(async (orderId, draft) => {
     const targetOrder = orders.find((order) => order.id === orderId);
@@ -1116,6 +1522,14 @@ export function AppProvider({ children }) {
       rawCircularPoints: circularPoints,
       exchangeHistory,
       userVouchers,
+      tailorBalances,
+      tailorWithdrawals,
+      ecoSwapSubmissions,
+      tailorDeadstocks,
+      adminVouchers,
+      notifications,
+      unreadNotificationCount,
+      managedUsers,
       backend: {
         status: backendStatus,
         baseUrl: api.baseUrl,
@@ -1143,30 +1557,56 @@ export function AppProvider({ children }) {
       resetStyleProfile,
       getTailorByName,
       submitExchange,
-      redeemPoints
+      redeemPoints,
+      addNotification,
+      markNotificationsAsRead,
+      approveEcoSwapSubmission,
+      rejectEcoSwapSubmission,
+      claimEcoSwapMaterial,
+      requestTailorWithdrawal,
+      approveTailorWithdrawal,
+      addTailorDeadstock,
+      addTailorProduct,
+      approveProduct,
+      createAdminVoucher,
+      toggleUserStatus
     }),
     [
       addAddress,
+      addNotification,
+      addTailorDeadstock,
+      addTailorProduct,
       addToCart,
       addresses,
+      adminVouchers,
+      approveEcoSwapSubmission,
+      approveProduct,
+      approveTailorWithdrawal,
       authModalConfig,
       backendStatus,
       cart,
       cartSummary,
       categories,
       circularPoints,
+      claimEcoSwapMaterial,
       clearCart,
       closeAuthModal,
       conversations,
+      createAdminVoucher,
       createMidtransPayment,
+      ecoSwapSubmissions,
+      effectiveCircularPoints,
+      effectiveOrders,
       exchangeHistory,
       getTailorByName,
       isLoggedIn,
       login,
-      register,
       logout,
+      managedUsers,
+      markNotificationsAsRead,
       measurements,
       notice,
+      notifications,
       openAuthModal,
       orders,
       paymentMethods,
@@ -1175,8 +1615,10 @@ export function AppProvider({ children }) {
       products,
       redeemPoints,
       refreshBackend,
+      rejectEcoSwapSubmission,
       removeAddress,
       removeFromCart,
+      requestTailorWithdrawal,
       requireAuth,
       resetAccountData,
       resetStyleProfile,
@@ -1190,8 +1632,13 @@ export function AppProvider({ children }) {
       styleProfile,
       submitExchange,
       submitReturnRequest,
+      tailorBalances,
+      tailorDeadstocks,
+      tailorWithdrawals,
       tailors,
+      toggleUserStatus,
       toggleWishlist,
+      unreadNotificationCount,
       updateCartQuantity,
       updateOrderStatus,
       updatePreference,
